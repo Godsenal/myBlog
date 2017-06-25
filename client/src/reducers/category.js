@@ -1,0 +1,146 @@
+import * as types from '../actions/ActionTypes';
+import update from 'react-addons-update';
+
+const initialState = {
+  add: {
+    status: 'INIT',
+    category: {},
+    err: 'ERROR',
+    errCode: -1,
+  },
+  list: {
+    status: 'INIT',
+    categories: [],
+    err: 'ERROR',
+    errCode: -1,
+  },
+  update: {
+    status: 'INIT',
+    category: {},
+    err: 'ERROR',
+    errCode: -1,
+  },
+  delete: {
+    status: 'INIT',
+    category: {},
+    err: 'ERROR',
+    errCode: -1,
+  }
+}
+
+export default function category(state, action){
+  if(typeof state === 'undefined'){
+    state = initialState;
+  }
+
+  switch (action.type) {
+
+    /* ADD CATEGORY */
+    case types.CATEGORY_ADD:
+      return update(state, {
+        add: {
+          status: {$set: 'WAITING'}
+        }
+      });
+    case types.CATEGORY_ADD_SUCCESS:
+      return update(state, {
+        add: {
+          status: {$set: 'SUCCESS'}
+        },
+        list:{
+          categories: {$unshift: action.category}
+        }
+      });
+    case types.CATEGORY_ADD_FAILURE:
+      return update(state, {
+        add: {
+          status: {$set: 'FAILURE'},
+          err: {$set: action.err},
+          errCode: {$set: action.errCode}
+        }
+      });
+
+    /* LIST CATEGORY */
+    case types.CATEGORY_LIST:
+      return update(state, {
+        list: {
+          status: {$set: 'WAITING'}
+        }
+      });
+    case types.CATEGORY_LIST_SUCCESS:
+      return update(state, {
+        list:{
+          category: {$set: action.category},
+          categories: {$set: action.categories}
+        }
+      });
+    case types.CATEGORY_LIST_FAILURE:
+      return update(state, {
+        list: {
+          status: {$set: 'FAILURE'},
+          err: {$set: action.err},
+          errCode: {$set: action.errCode}
+        }
+      });
+
+    /* UPDATE CATEGORY */
+    case types.CATEGORY_UPDATE:
+      return update(state, {
+        update: {
+          status: {$set: 'WAITING'}
+        }
+      });
+    case types.CATEGORY_UPDATE_SUCCESS:
+      for(var i=0; i<state.list.categories.length; i++){
+        // UPDATE 시 list에 있는 것도 업데이트.
+        if(state.list.categories[i].id == action.category.id){
+          state = update(state, {
+            list:{
+              categories:{
+                [i]: {$set: action.category}
+              },
+            },
+          });
+
+          break;
+        }
+      }
+      return update(state, {
+        update:{
+          category: {$set: action.category}
+        }
+      });
+    case types.CATEGORY_UPDATE_FAILURE:
+      return update(state, {
+        update: {
+          status: {$set: 'FAILURE'},
+          err: {$set: action.err},
+          errCode: {$set: action.errCode}
+        }
+      });
+
+    /* DELETE CATEGORY */
+    case types.CATEGORY_DELETE:
+      return update(state, {
+        delete: {
+          status: {$set: 'WAITING'}
+        }
+      });
+    case types.CATEGORY_DELETE_SUCCESS:
+      return update(state, {
+        delete:{
+          category: {$set: action.category}
+        }
+      });
+    case types.CATEGORY_DELETE_FAILURE:
+      return update(state, {
+        delete: {
+          status: {$set: 'FAILURE'},
+          err: {$set: action.err},
+          errCode: {$set: action.errCode}
+        }
+      });
+    default:
+      return state;
+  }
+}

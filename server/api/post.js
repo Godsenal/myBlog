@@ -17,7 +17,7 @@ router.get('/list/:category', function(req, res) {
 });
 
 // ADD POST
-router.post('/new', function(req, res) {
+router.post('/add', function(req, res) {
   var post = req.body;
   var newPost = new Posts(post);
   newPost.save(function(err, post){

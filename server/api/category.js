@@ -17,7 +17,7 @@ router.get('/list', function(req, res) {
 });
 
 //NEW CATEGORY
-router.post('/new', function(req, res) {
+router.post('/add', function(req, res) {
   var category = {
     name: req.body.name,
     parent: req.body.parent,
@@ -46,7 +46,7 @@ router.post('/new', function(req, res) {
 });
 
 //RENAME CATEGORY
-router.post('/rename', function(req, res) {
+router.post('/update', function(req, res) {
   var name = req.body.name;
   var newName = req.body.newName;
   Categories.find({name: newName}, function(err, category){
@@ -73,6 +73,8 @@ router.post('/rename', function(req, res) {
 //DELETE CATEGORY
 router.post('/delete', function(req, res) {
   var name = req.body.name;
+  var parent = req.body.parent;
+  
   if(!parent){
     return res.json({error:'Cannot Delete Root Category'});
   }

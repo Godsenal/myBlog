@@ -26,7 +26,7 @@ mongoose.connect(config.dbUrl);
 
 const app = express();
 
-
+/*
 const localSignupStrategy = require('./passport/local-signup');
 const localSigninStrategy = require('./passport/local-signin');
 const facebookSigninStrategy = require('./passport/facebook-signin');
@@ -35,7 +35,7 @@ passport.use('local-signup', localSignupStrategy);
 passport.use('local-signin', localSigninStrategy);
 passport.use('facebook-signin', facebookSigninStrategy);
 passport.use('other-signup', otherSignupStrategy);
-
+*/
 
 
 
@@ -43,7 +43,6 @@ app.use( bodyParser.urlencoded({ extended: true }) );
 app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cookieParser());
 
 app.use('/', express.static(path.join(__dirname, './../public'))); // 정적인 페이지 로드
 

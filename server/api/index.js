@@ -18,8 +18,8 @@ router.use('/*', (req, res, next) => {
 
 
 
-router.use('/account', account);
-router.use('/post', comment);
+//router.use('/account', account);
+router.use('/post', post);
 router.use('/comment', comment);
 
 export default router;

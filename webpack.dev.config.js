@@ -4,7 +4,7 @@ module.exports = {
 
   entry: [
     'babel-polyfill',
-    './src/index.js',
+    '.client/src/index.js',
     'webpack-dev-server/client?http://0.0.0.0:4000',
     'webpack/hot/only-dev-server',
   ],

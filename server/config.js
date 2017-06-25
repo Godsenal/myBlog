@@ -12,7 +12,7 @@ export default {
   },
   nodeEnv,
   //dbUrl : 'mongodb://localhost:27017/chatDB',
-  dbUrl : localDB
+  dbUrl : localDB,
   jwtSecret: 'Godsenal!3737',
   //sessionSecret: 'Godsenal!3737',
 };
