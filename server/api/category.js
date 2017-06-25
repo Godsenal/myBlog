@@ -20,15 +20,17 @@ router.get('/list', function(req, res) {
 router.post('/add', function(req, res) {
   var category = {
     name: req.body.name,
-    parent: req.body.parent,
   };
-  Categories.find({name: category.name}, function(err, category){
+  if('parent' in req.body){
+    category.parent = req.body.parent;
+  }
+  Categories.find({name: category.name}, function(err, categories){
     if(err){
       console.log(err);
       return res.status(500).json({error: 'internal server error', code: 1});
     }
-    if(category){
-      return res.json({error: 'Exist Name', code: 2});
+    if(categories.length){
+      return res.status(500).json({error: 'Exist Name', code: 2});
     }
     else{
       var newCategory = new Categories(category);
@@ -74,7 +76,7 @@ router.post('/update', function(req, res) {
 router.post('/delete', function(req, res) {
   var name = req.body.name;
   var parent = req.body.parent;
-  
+
   if(!parent){
     return res.json({error:'Cannot Delete Root Category'});
   }

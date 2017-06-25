@@ -2,6 +2,7 @@ import express from 'express';
 
 import account from './account';
 import post from './post';
+import category from './category';
 import comment from './comment';
 
 
@@ -20,6 +21,7 @@ router.use('/*', (req, res, next) => {
 
 //router.use('/account', account);
 router.use('/post', post);
+router.use('/category', category);
 router.use('/comment', comment);
 
 export default router;

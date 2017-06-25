@@ -48,7 +48,7 @@ export default function category(state, action){
           status: {$set: 'SUCCESS'}
         },
         list:{
-          categories: {$unshift: action.category}
+          categories: {$unshift: [action.category]}
         }
       });
     case types.CATEGORY_ADD_FAILURE:
@@ -70,7 +70,6 @@ export default function category(state, action){
     case types.CATEGORY_LIST_SUCCESS:
       return update(state, {
         list:{
-          category: {$set: action.category},
           categories: {$set: action.categories}
         }
       });

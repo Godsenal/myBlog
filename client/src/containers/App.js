@@ -7,6 +7,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import AppBar from 'material-ui/AppBar';
+
+import { Sidebar } from '../components';
 import { initEnvironment} from '../actions/environment';
 
 import Bluebird from 'bluebird';
@@ -43,14 +45,19 @@ class App extends Component{
 
   render(){
     const {screenHeight, screenWidth} = this.props.environment;
+    const sideWidth = 200;
+    const mainWidth = screenWidth - sideWidth;
     return(
       <MuiThemeProvider>
         <div style={{'height':{screenHeight}+'px', 'width':{screenWidth}+'px', 'overflowX':'hidden', 'overflowY':'hidden'}}>
-          <AppBar
-            title="Title"
-            iconClassNameRight="muidocs-icon-navigation-expand-more"
-          />
-          {this.props.children}
+          <div style={{'width':'85%'}}>
+            <AppBar
+              title="Title"
+              iconClassNameRight="muidocs-icon-navigation-expand-more"
+            />
+            {this.props.children}
+          </div>
+          <Sidebar/>
         </div>
       </MuiThemeProvider>
     );
