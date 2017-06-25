@@ -21,10 +21,24 @@ class Sidebar extends Component{
     this.props.listCategory();
     this.props.addCategory({name:'wow3',parent:'wow2'});
   }
-
+  //For , Push 와 Map , Filter 중 무엇이 더 빠를까
   handleNestedItems(list,category){
+    var nestedItems = [];
+    for(var i=0; i<list.categories.length; i++){
+      if(list.categories[i].parent && category.name == list.categories[i].parent){
+        nestedItems.push(
+            <ListItem
+              key={i}
+              nestedItems={
+                this.handleNestedItems(list,list.categories[i])
+              }>{list.categories[i].name}
+            </ListItem>
+        )
+      }
+    }
+    /*
     var nestedItems = list.categories.map((subCategory,i)=>{
-
+      //sub Category의 parent가 자신과 같은 자신의 nestedItems로 render
       if(subCategory.parent && subCategory.parent == category.name){
         return (
           <ListItem
@@ -35,7 +49,9 @@ class Sidebar extends Component{
           </ListItem>);
       }
     });
-    nestedItems = nestedItems.filter(Boolean);
+    nestedItems = nestedItems.filter(Boolean); // undefined 제거
+    */
+
     return nestedItems;
   }
   render(){
