@@ -6,6 +6,8 @@ import {browserHistory} from 'react-router';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import {List, ListItem} from 'material-ui/List';
+import Divider from 'material-ui/Divider';
+import Subheader from 'material-ui/Subheader';
 
 import {addCategory, listCategory, updateCategory, deleteCategory} from '../actions/category';
 
@@ -57,7 +59,9 @@ class Sidebar extends Component{
   render(){
     const {list} = this.props.category;
     return(
-      <Drawer width={'15%'} openSecondary={true} open={true} >
+      <Drawer width={400} openSecondary={true} open={true} >
+        <div style={{'fontSize':'3em'}}>이태희의 블로그</div>
+        <Divider inset={true} style={{'marginTop':'3rem'}} />
         {list.categories.map((category,i)=>{
           return (
             <ListItem

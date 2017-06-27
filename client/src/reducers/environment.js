@@ -3,8 +3,8 @@ import update from 'react-addons-update';
 
 const initialState = {
   isMobile: false,
-  screenHeight: null,
-  screenWidth: null,
+  screenHeight: window.innerHeight,
+  screenWidth: window.innerHeight,
   notification: {
     message: '',
     level: 'success',

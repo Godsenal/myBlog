@@ -10,7 +10,7 @@ import AppBar from 'material-ui/AppBar';
 
 import { Sidebar } from '../components';
 import { initEnvironment} from '../actions/environment';
-
+import styles from '../../../style/main.css';
 import Bluebird from 'bluebird';
 // Node
 global.Promise = Bluebird;
@@ -45,19 +45,19 @@ class App extends Component{
 
   render(){
     const {screenHeight, screenWidth} = this.props.environment;
-    const sideWidth = 200;
-    const mainWidth = screenWidth - sideWidth;
     return(
       <MuiThemeProvider>
-        <div style={{'height':{screenHeight}+'px', 'width':{screenWidth}+'px', 'overflowX':'hidden', 'overflowY':'hidden'}}>
-          <div style={{'width':'85%'}}>
+        <div className={styles.appContainer} style={{'overflowX':'hidden', 'overflowY':'hidden', 'margin': 0, 'padding': 0}}>
+          <div className={styles.mainContainer}>
             <AppBar
               title="Title"
-              iconClassNameRight="muidocs-icon-navigation-expand-more"
+              showMenuIconButton={false}
             />
             {this.props.children}
           </div>
-          <Sidebar/>
+          <div className={styles.sidebarContainer}>
+            <Sidebar />
+          </div>
         </div>
       </MuiThemeProvider>
     );
