@@ -7,9 +7,10 @@ const PostSchema = new Schema({
   title: String,
   content: String,
   category: String,
+  comments: {type: Array, default: []},
   rating: {type: Number, default: 0},
   viewer: {type: Number, default: 0},
   created: { type: Date, default: Date.now },
 });
-
-export default mongoose.model('Post', PostSchema);
+var collectionName = 'Posts';
+export default mongoose.model('Post', PostSchema, collectionName);

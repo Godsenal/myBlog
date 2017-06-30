@@ -4,10 +4,14 @@ import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
 
 import Drawer from 'material-ui/Drawer';
-import MenuItem from 'material-ui/MenuItem';
-import {List, ListItem} from 'material-ui/List';
+import {ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
-import Subheader from 'material-ui/Subheader';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import Snackbar from 'material-ui/Snackbar';
+import TextField from 'material-ui/TextField';
+
+import MdAddCircleOutline from 'react-icons/md/add-circle-outline';
 
 import {addCategory, listCategory, updateCategory, deleteCategory} from '../actions/category';
 
@@ -15,68 +19,214 @@ class Sidebar extends Component{
   constructor(props) {
     super(props);
     this.state = {
-
+      categoryName: '',
+      parentName: '',
+      modalOpen: false,
+      snackOpen: false,
+      snackMessage: '',
     };
     this.handleNestedItems = this.handleNestedItems.bind(this);
   }
   componentDidMount(){
     this.props.listCategory();
-    this.props.addCategory({name:'wow3',parent:'wow2'});
   }
   //For , Push 와 Map , Filter 중 무엇이 더 빠를까
+  //For 문 사용하면 onTouchtap 인자가 제대로 형성이 안됨.
   handleNestedItems(list,category){
+    /*
+
     var nestedItems = [];
+
     for(var i=0; i<list.categories.length; i++){
       if(list.categories[i].parent && category.name == list.categories[i].parent){
+        var name = list.categories[i].name;
         nestedItems.push(
             <ListItem
               key={i}
+              onTouchTap={()=>{this.handleSelectCategory();}}
+              primaryText={name}
               nestedItems={
                 this.handleNestedItems(list,list.categories[i])
-              }>{list.categories[i].name}
+              }>
             </ListItem>
-        )
+        );
       }
     }
-    /*
+
+
+    nestedItems.push(
+      <ListItem
+        key={list.categories.length}
+        onTouchTap={() => {this.handleOpenModal(category.name);}}><MdAddCircleOutline/>
+      </ListItem>
+    );
+    /* Need Authentication */
+
     var nestedItems = list.categories.map((subCategory,i)=>{
       //sub Category의 parent가 자신과 같은 자신의 nestedItems로 render
       if(subCategory.parent && subCategory.parent == category.name){
         return (
           <ListItem
             key={i}
+            onTouchTap={()=>{this.handleSelectCategory(subCategory.name);}}
             nestedItems={
               this.handleNestedItems(list,subCategory)
             }>{subCategory.name}
           </ListItem>);
       }
     });
+
+    /* Need Authentication */
+    nestedItems.push(
+      <ListItem
+        key={list.categories.length}
+        onTouchTap={() => {this.handleOpenModal(category.name);}}><MdAddCircleOutline/>
+      </ListItem>
+    );
     nestedItems = nestedItems.filter(Boolean); // undefined 제거
-    */
 
     return nestedItems;
+  }
+  handleChange = (e) => {
+    this.setState({
+      categoryName: e.target.value,
+    });
+  }
+  handleOpenModal = (parentName) => {
+    this.setState({
+      categoryName: '',
+      parentName,
+      modalOpen: true,
+    });
+  }
+  handleCloseModal = () => {
+    this.setState({
+      categoryName: '',
+      parentName: '',
+      modalOpen: false,
+    });
+  }
+  handleSnackClose = () => {
+    this.setState({
+      snackMessage: '',
+      snackOpen: false,
+    });
+  }
+  /* Add Category */
+  handleAddCategory = () => {
+    var {categoryName, parentName} = this.state;
+    if(categoryName.length == 0 || !categoryName.trim()){
+      this.setState({
+        snackOpen: true,
+        snackMessage: '카테고리 이름을 입력해주세요.',
+      });
+    }else{
+      this.handleCloseModal();
+      var category = {
+        name: categoryName,
+        parent: parentName,
+      };
+      this.props.addCategory(category)
+        .then(()=>{
+          if(this.props.category.add.status == 'SUCCESS'){
+            this.setState({
+              snackOpen: true,
+              snackMessage: '정상적으로 등록되었습니다.',
+            });
+          }
+          else{
+            this.setState({
+              snackOpen: true,
+              snackMessage: '등록에 실패하였습니다.',
+            });
+          }
+        });
+    }
+  }
+  renderAddCategory = () => {
+    const actions = [
+      <FlatButton
+        label="추가"
+        primary={true}
+        keyboardFocused={true}
+        onTouchTap={this.handleAddCategory}
+      />,
+      <FlatButton
+        label="취소"
+        keyboardFocused={true}
+        onTouchTap={this.handleCloseModal}
+      />,
+    ];
+
+    return (
+      <Dialog
+        title="새 카테고리 추가"
+        actions={actions}
+        modal={false}
+        open={this.state.modalOpen}
+        onRequestClose={this.handleCloseModal}>
+        <TextField
+          hintText="카테고리 명"
+          floatingLabelText="새 카테고리"
+          fullWidth={true}
+          onChange={this.handleChange} />
+      </Dialog>
+    );
+  }
+  /*Select Category*/
+  handleSelectCategory(categoryName){
+    browserHistory.push('/category/'+categoryName);
+    if(this.props.isMobile){
+      this.props.toggleSidebar();
+    }
   }
   render(){
     const {list} = this.props.category;
     return(
-      <Drawer width={400} openSecondary={true} open={true} >
-        <div style={{'fontSize':'3em'}}>이태희의 블로그</div>
-        <Divider inset={true} style={{'marginTop':'3rem'}} />
+      <Drawer
+        width={400}
+        docked={!this.props.isMobile}
+        onRequestChange={this.props.isMobile? this.props.toggleSidebar:null}
+        openSecondary={true}
+        open={this.props.open || !this.props.isMobile}
+        containerStyle={{'backgroundColor':'#ECF0F1'}}
+        style={{'textAlign':'center'}}>
+        <div style={{'fontSize':'2em','margin':'3rem','textAlign':'center','display':'block'}}>
+          <span>이태희의 블로그</span>
+        </div>
+        <Divider inset={true} style={{'margin':'3rem'}} />
         {list.categories.map((category,i)=>{
-          return (
-            <ListItem
-              key={i}
-              nestedItems={
-                this.handleNestedItems(list,category)
-              }>{category.name}
-            </ListItem>);
+          if(!category.parent){
+            return (
+              <ListItem
+                key={i}
+                onTouchTap={()=>{this.handleSelectCategory(category.name); }}
+                nestedItems={
+                  this.handleNestedItems(list,category)
+                }><span>{category.name}</span>
+              </ListItem>);
+          }
         })}
+        <ListItem
+          onTouchTap={() => {this.handleOpenModal();}}><MdAddCircleOutline/>
+        </ListItem>
+        <Snackbar
+          open={this.state.snackOpen}
+          message={this.state.snackMessage}
+          autoHideDuration={4000}
+          onRequestClose={this.handleSnackClose}
+        />
+      {this.renderAddCategory()}
       </Drawer>
-    )
+    );
   }
 }
 
 Sidebar.defaultProps ={
+  isMobile: false,
+  open: false,
+  toggleSidebar : () => {console.log('Sidebar props Error');},
+  params: {},
   category: {},
   addCategory : () => {console.log('Sidebar props Error');},
   listCategory : () => {console.log('Sidebar props Error');},
@@ -84,6 +234,10 @@ Sidebar.defaultProps ={
   deleteCategory : () => {console.log('Sidebar props Error');},
 };
 Sidebar.propTypes = {
+  isMobile: PropTypes.bool.isRequired,
+  open: PropTypes.bool.isRequired,
+  toggleSidebar : PropTypes.func.isRequired,
+  params: PropTypes.object.isRequired,
   category: PropTypes.object.isRequired,
   addCategory: PropTypes.func.isRequired,
   listCategory: PropTypes.func.isRequired,
@@ -104,10 +258,10 @@ const mapDispatchToProps = (dispatch) => {
       return dispatch(listCategory());
     },
     updateCategory: (category) => {
-      return dispatch(updateCategory());
+      return dispatch(updateCategory(category));
     },
     deleteCategory: (category) => {
-      return dispatch(deleteCategory());
+      return dispatch(deleteCategory(category));
     },
   };
 };

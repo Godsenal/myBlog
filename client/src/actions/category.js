@@ -18,7 +18,7 @@ import axios from 'axios';
 export function addCategory(category){
   return (dispatch) => {
     dispatch({type: CATEGORY_ADD});
-    return axios.post('api/category/add',category)
+    return axios.post('/api/category/add',category)
     .then((res)=> {
       dispatch({type: CATEGORY_ADD_SUCCESS, category: res.data.category});
     }).catch((err)=>{
@@ -27,10 +27,10 @@ export function addCategory(category){
   };
 }
 
-export function listCategory(category){
+export function listCategory(){
   return (dispatch) => {
     dispatch({type: CATEGORY_LIST});
-    return axios.get('api/category/list')
+    return axios.get('/api/category/list')
     .then((res)=> {
       dispatch({type: CATEGORY_LIST_SUCCESS, categories: res.data.categories});
     }).catch((err)=>{
@@ -42,7 +42,7 @@ export function listCategory(category){
 export function updateCategory(category){
   return (dispatch) => {
     dispatch({type: CATEGORY_UPDATE});
-    return axios.post('api/category/update',category)
+    return axios.post('/api/category/update',category)
     .then((res)=> {
       dispatch({type: CATEGORY_UPDATE_SUCCESS, category: res.data.category});
     }).catch((err)=>{
@@ -54,7 +54,7 @@ export function updateCategory(category){
 export function deleteCategory(categoryID){
   return (dispatch) => {
     dispatch({type: CATEGORY_DELETE});
-    return axios.post('api/category/delete',{id: categoryID})
+    return axios.post('/api/category/delete',{id: categoryID})
     .then((res)=> {
       dispatch({type: CATEGORY_DELETE_SUCCESS, category: res.data.category});
     }).catch((err)=>{

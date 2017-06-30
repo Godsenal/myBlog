@@ -5,6 +5,8 @@ import {browserHistory} from 'react-router';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import FlatButton from 'material-ui/FlatButton';
+
 
 import AppBar from 'material-ui/AppBar';
 
@@ -12,6 +14,8 @@ import { Sidebar } from '../components';
 import { initEnvironment} from '../actions/environment';
 import styles from '../../../style/main.css';
 import Bluebird from 'bluebird';
+
+
 // Node
 global.Promise = Bluebird;
 // Browser
@@ -23,7 +27,9 @@ class App extends Component{
   constructor(props){
     super(props);
     this.state={
+      open: false,
     };
+
   }
 
 
@@ -43,20 +49,32 @@ class App extends Component{
     this.props.initEnvironment();
   };
 
+  toggleSidebar = () => {
+    this.setState({
+      open: !this.state.open
+    });
+  }
   render(){
     const {screenHeight, screenWidth} = this.props.environment;
+    const {open} = this.state;
+    const isMobile = screenWidth<1000;
+    const sidebarStyle = !isMobile ? styles.sidebarContainer : null;
     return(
       <MuiThemeProvider>
         <div className={styles.appContainer} style={{'overflowX':'hidden', 'overflowY':'hidden', 'margin': 0, 'padding': 0}}>
           <div className={styles.mainContainer}>
+            {isMobile?
             <AppBar
-              title="Title"
+              title='이태희의 블로그'
+              style={{'backgroundColor':'#ECF0F1'}}
+              titleStyle={{'color':'#2C3E50'}}
               showMenuIconButton={false}
-            />
+              iconElementRight={<FlatButton style={{'color':'#2C3E50'}} label="메뉴" onTouchTap={()=>this.toggleSidebar()}/>}
+            />:null}
             {this.props.children}
           </div>
-          <div className={styles.sidebarContainer}>
-            <Sidebar />
+          <div className={sidebarStyle}>
+            <Sidebar isMobile={isMobile} open={open} toggleSidebar={this.toggleSidebar}/>
           </div>
         </div>
       </MuiThemeProvider>

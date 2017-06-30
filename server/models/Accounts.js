@@ -9,5 +9,5 @@ const AccountSchema = new Schema({
   created: { type: Date, default: Date.now },
   isAdmin: { type: Boolean, default: false},
 });
-
-export default mongoose.model('Account', AccountSchema);
+var collectionName = 'Accounts';
+export default mongoose.model('Account', AccountSchema, collectionName);

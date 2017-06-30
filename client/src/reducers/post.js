@@ -8,6 +8,12 @@ const initialState = {
     err: 'ERROR',
     errCode: -1,
   },
+  get: {
+    status: 'INIT',
+    post: {},
+    err: 'ERROR',
+    errCode: -1,
+  },
   list: {
     status: 'INIT',
     category: '',
@@ -26,8 +32,19 @@ const initialState = {
     post: {},
     err: 'ERROR',
     errCode: -1,
+  },
+  count: {
+    status: 'INIT',
+    count: 100,
+    err: 'ERROR',
+    errCode: -1,
+  },
+  rate:{
+    status: 'INIT',
+    err: 'ERROR',
+    errCode: -1,
   }
-}
+};
 
 export default function post(state, action){
   if(typeof state === 'undefined'){
@@ -49,12 +66,35 @@ export default function post(state, action){
           status: {$set: 'SUCCESS'}
         },
         list:{
-          posts: {$unshift: action.post}
+          posts: {$unshift: [action.post]}
         }
       });
     case types.POST_ADD_FAILURE:
       return update(state, {
         add: {
+          status: {$set: 'FAILURE'},
+          err: {$set: action.err},
+          errCode: {$set: action.errCode}
+        }
+      });
+
+    /* GET POST */
+    case types.POST_GET:
+      return update(state, {
+        get: {
+          status: {$set: 'WAITING'}
+        }
+      });
+    case types.POST_GET_SUCCESS:
+      return update(state, {
+        get: {
+          post: {$set: action.post},
+          status: {$set: 'SUCCESS'}
+        }
+      });
+    case types.POST_GET_FAILURE:
+      return update(state, {
+        get: {
           status: {$set: 'FAILURE'},
           err: {$set: action.err},
           errCode: {$set: action.errCode}
@@ -136,6 +176,53 @@ export default function post(state, action){
     case types.POST_DELETE_FAILURE:
       return update(state, {
         delete: {
+          status: {$set: 'FAILURE'},
+          err: {$set: action.err},
+          errCode: {$set: action.errCode}
+        }
+      });
+    /* COUNT POST */
+    case types.POST_COUNT:
+      return update(state, {
+        count: {
+          status: {$set: 'WAITING'}
+        }
+      });
+    case types.POST_COUNT_SUCCESS:
+      return update(state, {
+        count:{
+          count: {$set: action.count}
+        }
+      });
+    case types.POST_COUNT_FAILURE:
+      return update(state, {
+        count: {
+          status: {$set: 'FAILURE'},
+          err: {$set: action.err},
+          errCode: {$set: action.errCode}
+        }
+      });
+    /* RATE POST */
+    case types.POST_RATE:
+      return update(state, {
+        rate: {
+          status: {$set: 'WAITING'}
+        }
+      });
+    case types.POST_RATE_SUCCESS:
+      return update(state, {
+        rate:{
+          status:{$set: 'SUCCESS'}
+        },
+        get:{
+          post: {
+            rate: {$set: action.rating}
+          }
+        }
+      });
+    case types.POST_RATE_FAILURE:
+      return update(state, {
+        rate: {
           status: {$set: 'FAILURE'},
           err: {$set: action.err},
           errCode: {$set: action.errCode}

@@ -13,8 +13,24 @@
   src: url(/assets/fonts/NanumGothic.ttf);
 }
 
-body, h1, h2, h3, h4, h5, h6 {
+body {
   margin: 0;
+  font-family: 'NanumGothicExtraBold', cursive;
+  background-color: #EFEFEF;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-family: 'NanumGothicExtraBold', cursive;
+}
+
+h1 {
+  font-size: 3em;
+  margin: 3rem;
+}
+
+span {
+  font-family: 'NanumGothic', cursive;
 }
 
 .appContainer {
@@ -23,35 +39,113 @@ body, h1, h2, h3, h4, h5, h6 {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
-
   width: 100%;
 }
 
 .mainContainer {
   -webkit-box-flex: 1 1 auto;
-   /* OLD - iOS 6-, Safari 3.1-6 */
+  /* OLD - iOS 6-, Safari 3.1-6 */
   -moz-box-flex: 1 1 auto;
-   /* OLD - Firefox 19- */
-   /* For old syntax, otherwise collapses. */
+  /* OLD - Firefox 19- */
+  /* For old syntax, otherwise collapses. */
   -webkit-flex: 1 1 auto;
-   /* Chrome */
+  /* Chrome */
   -ms-flex: 1 1 auto;
-   /* IE 10 */
+  /* IE 10 */
   flex: 1 1 auto;
   order: 0;
-
 }
 
 .sidebarContainer {
-  -webkit-box-flex: 0 1 400px;
+  -webkit-box-flex: 0 0 400px;
   /* OLD - iOS 6-, Safari 3.1-6 */
-  -moz-box-flex: 0 1 400px;
+  -moz-box-flex: 0 0 400px;
   /* OLD - Firefox 19- */
   /* For old syntax, otherwise collapses. */
-  -webkit-flex: 0 1 400px;
+  -webkit-flex: 0 0 400px;
   /* Chrome */
-  -ms-flex: 0 1 400px;
+  -ms-flex: 0 0 400px;
   /* IE 10 */
-  flex: 0 1 400px;
+  flex: 0 0 400px;
   order: 1;
+}
+
+.drawer {
+  background-color: #91AA9D;
+}
+
+.listContainer {
+  max-width: 100%;
+  padding: 2rem;
+}
+
+.gridContainer {
+  overflow-y: auto,
+}
+
+.gridListContainer {
+  width: 100%;
+  overflow-y: auto;
+}
+
+.postPreviewContainer {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  border: 1.5px solid #EFEFEF;
+  height: 300px;
+}
+
+.postImg {
+  -webkit-box-flex: 0 0 30%;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  -moz-box-flex: 0 0 30%;
+  /* OLD - Firefox 19- */
+  /* For old syntax, otherwise collapses. */
+  -webkit-flex: 0 0 30%;
+  /* Chrome */
+  -ms-flex: 0 0 30%;
+  /* IE 10 */
+  flex: 0 0 40%;
+}
+
+.postContent {
+  -webkit-box-flex: 0 0 70%;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  -moz-box-flex: 0 0 70%;
+  /* OLD - Firefox 19- */
+  /* For old syntax, otherwise collapses. */
+  -webkit-flex: 0 0 70%;
+  /* Chrome */
+  -ms-flex: 0 0 70%;
+  /* IE 10 */
+  flex: 0 0 60%;
+  font-family: 'NanumGothic', cursive;
+}
+
+.postContainer {
+  padding: 10px;
+  background-color: #EFEFEF;
+}
+
+.paperContainer {
+  padding: 30px;
+}
+
+.category {
+  font-family: 'NanumGothicExtraBold', cursive;
+}
+
+.centerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10%;
+}
+
+.divider {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
 }

@@ -6,7 +6,26 @@ const router = express.Router();
 // GET ALL POST
 router.get('/list/:category', function(req, res) {
 
-  Posts.find({category: req.params.category}, function(err, posts) {
+  Posts.find({category: req.params.category})
+    .sort({_id:-1})
+    .exec(function(err, posts) {
+      if(err) {
+        console.log(err);
+        return res.status(500).json({error: 'internal server error', code: 1});
+      }
+
+      res.json({posts});
+    });
+});
+
+// GET PAGE POST
+router.get('/list/:category/:number', function(req, res) {
+  var skip = (req.params.number - 1) * 10; // skip할 페이지
+  var query = Posts.find({category: req.params.category})
+    .sort({_id:-1})
+    .limit(10)
+    .skip(skip);
+  query.exec(function(err, posts) {
     if(err) {
       console.log(err);
       return res.status(500).json({error: 'internal server error', code: 1});
@@ -14,6 +33,33 @@ router.get('/list/:category', function(req, res) {
 
     res.json({posts});
   });
+});
+
+// GET ONE POST
+router.get('/get/:postID', function(req, res) {
+  /* update viewer */
+  Posts.findOneAndUpdate({_id: req.params.postID},{$inc:{viewer:1}}, {new: true}, function(err, post) {
+    if(err) {
+      console.log(err);
+      return res.status(500).json({error: 'internal server error', code: 1});
+    }
+    res.json({post});
+  });
+});
+
+
+//GET PAGE COUNT
+router.get('/count/:category',function(req,res){
+  Posts.find({category:req.params.category})
+    .count()
+    .exec(function(err,count){
+      if(err){
+        console.log(err);
+        return res.status(400).json({error: 'internal server error', code: 1});
+      }
+      res.json({count});
+    });
+
 });
 
 // ADD POST
@@ -58,7 +104,7 @@ router.post('/increase/rating',function(req,res){
       console.log(err);
       return res.status(400).json({error: 'internal server error', code: 1});
     }
-    res.json({post});
+    res.json({rating:post.rating});
   });
 });
 
@@ -72,5 +118,7 @@ router.post('/increase/viewer',function(req,res){
     res.json({post});
   });
 });
+
+
 
 export default router;

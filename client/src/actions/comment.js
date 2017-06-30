@@ -18,7 +18,7 @@ import axios from 'axios';
 export function addComment(comment){
   return (dispatch) => {
     dispatch({type: COMMENT_ADD});
-    return axios.post('api/comment/add',post)
+    return axios.post('/api/comment/add',post)
     .then((res)=> {
       dispatch({type: COMMENT_ADD_SUCCESS, comment: res.data.comment});
     }).catch((err)=>{
@@ -30,7 +30,7 @@ export function addComment(comment){
 export function listComment(comment, postID){
   return (dispatch) => {
     dispatch({type: COMMENT_LIST});
-    var url = `api/comment/list/${postID}`;
+    var url = `/api/comment/list/${postID}`;
     return axios.get(url)
     .then((res)=> {
       dispatch({type: COMMENT_LIST_SUCCESS, comments: res.data.comments});
@@ -43,7 +43,7 @@ export function listComment(comment, postID){
 export function updateComment(comment){
   return (dispatch) => {
     dispatch({type: COMMENT_UPDATE});
-    return axios.post('api/comment/update',comment)
+    return axios.post('/api/comment/update',comment)
     .then((res)=> {
       dispatch({type: COMMENT_UPDATE_SUCCESS, comment: res.data.comment});
     }).catch((err)=>{
@@ -55,7 +55,7 @@ export function updateComment(comment){
 export function deleteComment(commentID){
   return (dispatch) => {
     dispatch({type: COMMENT_DELETE});
-    return axios.post('api/comment/delete',{id: commentID})
+    return axios.post('/api/comment/delete',{id: commentID})
     .then((res)=> {
       dispatch({type: COMMENT_DELETE_SUCCESS, comment: res.data.comment});
     }).catch((err)=>{
