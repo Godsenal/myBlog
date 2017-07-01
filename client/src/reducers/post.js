@@ -14,6 +14,18 @@ const initialState = {
     err: 'ERROR',
     errCode: -1,
   },
+  prev: {
+    status: 'INIT',
+    post: {},
+    err: 'ERROR',
+    errCode: -1,
+  },
+  next: {
+    status: 'INIT',
+    post: {},
+    err: 'ERROR',
+    errCode: -1,
+  },
   list: {
     status: 'INIT',
     category: '',
@@ -95,6 +107,52 @@ export default function post(state, action){
     case types.POST_GET_FAILURE:
       return update(state, {
         get: {
+          status: {$set: 'FAILURE'},
+          err: {$set: action.err},
+          errCode: {$set: action.errCode}
+        }
+      });
+
+    /* GET PREV POST */
+    case types.POST_PREV_GET:
+      return update(state, {
+        prev: {
+          status: {$set: 'WAITING'}
+        }
+      });
+    case types.POST_PREV_GET_SUCCESS:
+      return update(state, {
+        prev: {
+          post: {$set: action.post},
+          status: {$set: 'SUCCESS'}
+        }
+      });
+    case types.POST_PREV_GET_FAILURE:
+      return update(state, {
+        prev: {
+          status: {$set: 'FAILURE'},
+          err: {$set: action.err},
+          errCode: {$set: action.errCode}
+        }
+      });
+
+    /* GET NEXT POST */
+    case types.POST_NEXT_GET:
+      return update(state, {
+        next: {
+          status: {$set: 'WAITING'}
+        }
+      });
+    case types.POST_NEXT_GET_SUCCESS:
+      return update(state, {
+        next: {
+          post: {$set: action.post},
+          status: {$set: 'SUCCESS'}
+        }
+      });
+    case types.POST_NEXT_GET_FAILURE:
+      return update(state, {
+        next: {
           status: {$set: 'FAILURE'},
           err: {$set: action.err},
           errCode: {$set: action.errCode}

@@ -47,6 +47,55 @@ router.get('/get/:postID', function(req, res) {
   });
 });
 
+// GET PREV POST
+router.get('/get/prev/:postID', function(req, res) {
+  Posts.findOne({_id: {$lt: req.params.postID}})
+    .sort({_id:-1})
+    .limit(1)
+    .exec(function(err, prevPost) {
+      if(err) {
+        console.log(err);
+        return res.status(500).json({error: 'internal server error', code: 1});
+      }
+      let post = {};
+      console.log(prevPost);
+      if(prevPost){
+        post = {
+          _id: prevPost._id,
+          title: prevPost.title,
+        };
+        res.json({post});
+      }
+      else{
+        res.json({post});
+      }
+    });
+});
+
+// GET NEXT POST
+router.get('/get/next/:postID', function(req, res) {
+  Posts.findOne({_id: {$gt: req.params.postID}})
+    .sort({_id:1})
+    .limit(1)
+    .exec(function(err, nextPost) {
+      if(err) {
+        console.log(err);
+        return res.status(500).json({error: 'internal server error', code: 1});
+      }
+      let post = {};
+      if(nextPost){
+        post = {
+          _id: nextPost._id,
+          title: nextPost.title,
+        };
+        res.json({post});
+      }
+      else{
+        res.json({post});
+      }
+    });
+});
+
 
 //GET PAGE COUNT
 router.get('/count/:category',function(req,res){

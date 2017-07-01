@@ -5,6 +5,12 @@ import {
   POST_GET,
   POST_GET_SUCCESS,
   POST_GET_FAILURE,
+  POST_PREV_GET,
+  POST_PREV_GET_SUCCESS,
+  POST_PREV_GET_FAILURE,
+  POST_NEXT_GET,
+  POST_NEXT_GET_SUCCESS,
+  POST_NEXT_GET_FAILURE,
   POST_LIST,
   POST_LIST_SUCCESS,
   POST_LIST_FAILURE,
@@ -48,6 +54,33 @@ export function getPost(postID){
       });
   };
 }
+
+export function getPrevPost(postID){
+  return (dispatch) => {
+    dispatch({type: POST_PREV_GET});
+    var url = `/api/post/get/prev/${postID}`;
+    return axios.get(url)
+      .then((res)=>{
+        dispatch({type: POST_PREV_GET_SUCCESS, post: res.data.post});
+      }).catch((err)=>{
+        dispatch({type: POST_PREV_GET_FAILURE, err: err.response.data.err, errCode: err.response.data.errCode});
+      });
+  };
+}
+
+export function getNextPost(postID){
+  return (dispatch) => {
+    dispatch({type: POST_NEXT_GET});
+    var url = `/api/post/get/next/${postID}`;
+    return axios.get(url)
+      .then((res)=>{
+        dispatch({type: POST_NEXT_GET_SUCCESS, post: res.data.post});
+      }).catch((err)=>{
+        dispatch({type: POST_NEXT_GET_FAILURE, err: err.response.data.err, errCode: err.response.data.errCode});
+      });
+  };
+}
+
 export function listPost(category, number){
   return (dispatch) => {
     dispatch({type: POST_LIST});

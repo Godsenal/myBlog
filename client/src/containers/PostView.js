@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import ReactQuill from 'react-quill';
 
-
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -16,10 +15,11 @@ import MdRemoveRedEye from 'react-icons/md/remove-red-eye';
 import MdDateRange from 'react-icons/md/date-range';
 import MdComment from 'react-icons/md/comment';
 import FaStar from 'react-icons/fa/star';
+import FaAngleDoublerLeft from 'react-icons/fa/angle-double-left';
 
 /*Replace with disqus*/
 //import {Comment} from '../components';
-import {getPost} from '../actions/post';
+import {getPost, getPrevPost, getNextPost} from '../actions/post';
 import styles from '../../../style/main.css';
 
 import { DiscussionEmbed, CommentCount } from '../disqus';
@@ -35,10 +35,55 @@ class PostView extends Component {
   componentDidMount(){
     var {postID}= this.props.params;
     if(postID){
-      this.props.getPost(postID);
+      this.loadPost(postID);
     }
   }
-  componentDidUpdate(prevProps, prevState) {
+  isEmpty(obj) {
+    for(var key in obj) {
+      if(obj.hasOwnProperty(key))
+        return false;
+    }
+    return true;
+  }
+  loadPost = (postID) => {
+    this.props.getPost(postID)
+      .then(()=>{
+        this.props.getPrevPost(postID);
+        this.props.getNextPost(postID);
+      });
+  }
+  renderPrevNext = () => {
+    var buttons = [];
+    if(this.props.prev.status === 'SUCCESS'){
+      if(!this.isEmpty(this.props.prev.post)){
+        buttons.push(
+          <RaisedButton
+            key={0}
+            onTouchTap={()=>this.loadPost(this.props.prev.post._id)}
+            label={this.props.prev.post.title}
+            labelStyle={{'color':'#A7FFEB'}}
+            style={{'float':'left'}}
+            secondary={true}>
+            <span style={{'color':'white'}}>&nbsp;{'< 이전 글'}</span>
+          </RaisedButton>);
+      }
+    }
+    if(this.props.next.status === 'SUCCESS'){
+      if(!this.isEmpty(this.props.next.post)){
+        buttons.push(
+          <RaisedButton
+            key={1}
+            onTouchTap={()=>this.loadPost(this.props.next.post._id)}
+            label={this.props.next.post.title}
+            labelStyle={{'color':'#A7FFEB'}}
+            labelPosition='before'
+            style={{'float':'right'}}
+            secondary={true}>
+            <span style={{'color':'white'}}>{'다음 글 >'}&nbsp;</span>
+          </RaisedButton>);
+      }
+    }
+    return buttons;
   }
   renderPost = (post) => {
     const disqusShortname = 'godsenal';
@@ -78,11 +123,7 @@ class PostView extends Component {
         </ReactQuill>
         <Divider style={{'marginTop':'3rem','marginBottom':'3rem'}}/>
         <div style={{'overflow':'hidden'}}>
-          <RaisedButton label="< 이전 글" style={{'float':'left'}} secondary={true}/>
-          <RaisedButton label="다음 글 >" style={{'float':'right'}} secondary={true}/>
-        </div>
-        <div style={{'overflow':'hidden','marginTop':'3rem'}}>
-          <RaisedButton label="추천" style={{'float':'right'}} primary={true} icon={<FaStar/>}/>
+          {this.renderPrevNext()}
         </div>
         <div style={{'marginTop':'2rem'}}>
           <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
@@ -120,22 +161,38 @@ class PostView extends Component {
 PostView.defaultProps ={
   params: {},
   get: {},
+  prev: {},
+  next: {},
   getPost : () => {console.log('PostView props Error');},
+  getPrevPost : () => {console.log('PostView props Error');},
+  getNextPost : () => {console.log('PostView props Error');},
 };
 PostView.propTypes = {
   params: PropTypes.object.isRequired,
   get: PropTypes.object.isRequired,
+  prev: PropTypes.object.isRequired,
+  next: PropTypes.object.isRequired,
   getPost: PropTypes.func.isRequired,
+  getPrevPost: PropTypes.func.isRequired,
+  getNextPost: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => {
   return {
     get: state.post.get,
+    prev: state.post.prev,
+    next: state.post.next,
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
     getPost: (postID) => {
       return dispatch(getPost(postID));
+    },
+    getPrevPost: (postID) => {
+      return dispatch(getPrevPost(postID));
+    },
+    getNextPost: (postID) => {
+      return dispatch(getNextPost(postID));
     },
   };
 };
