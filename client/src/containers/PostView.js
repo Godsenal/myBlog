@@ -14,13 +14,15 @@ import moment from 'moment';
 
 import MdRemoveRedEye from 'react-icons/md/remove-red-eye';
 import MdDateRange from 'react-icons/md/date-range';
+import MdComment from 'react-icons/md/comment';
 import FaStar from 'react-icons/fa/star';
 
-import {Comment} from '../components';
+/*Replace with disqus*/
+//import {Comment} from '../components';
 import {getPost} from '../actions/post';
 import styles from '../../../style/main.css';
 
-
+import { DiscussionEmbed, CommentCount } from '../disqus';
 
 const modules={
   toolbar: false,
@@ -31,27 +33,22 @@ class PostView extends Component {
     super();
   }
   componentDidMount(){
-    //comment count update
-    if(window.DISQUSWIDGETS){
-      DISQUSWIDGETS.getCount({reset:true});
-    }
     var {postID}= this.props.params;
     if(postID){
       this.props.getPost(postID);
     }
   }
   componentDidUpdate(prevProps, prevState) {
-    if(window.DISQUSWIDGETS){
-      DISQUSWIDGETS.getCount({reset:true});
-    }
-  }
-  handleNewComment = () => {
-    DISQUSWIDGETS.getCount({reset:true});
   }
   renderPost = (post) => {
+    const disqusShortname = 'godsenal';
+    const disqusConfig = {
+      //url: `http://www.godsenal.com/#${disqusShortname}`,
+      identifier: post._id,
+      title: post.title,
+    };
     return(
       <div className={styles.postContainer}>
-        <Paper zDepth={2} className={styles.paperContainer}>
         <div style={{'textAlign': 'center'}}>
             <img src="/assets/images/back.jpg" style={{'width':'100%','maxHeight':300}} alt="" />
           <h1>{post.title}</h1>
@@ -65,7 +62,12 @@ class PostView extends Component {
               <MdRemoveRedEye/>
               {post.viewer}
             </span>&nbsp;
-            <span className="disqus-comment-count" data-disqus-identifier={post._id}>0 Comments</span>
+            <span>
+              <MdComment/>
+              <CommentCount shortname={disqusShortname} config={disqusConfig}>
+                0
+              </CommentCount>
+            </span>
           </Subheader>
 
         </div>
@@ -83,9 +85,8 @@ class PostView extends Component {
           <RaisedButton label="추천" style={{'float':'right'}} primary={true} icon={<FaStar/>}/>
         </div>
         <div style={{'marginTop':'2rem'}}>
-          <Comment postID={post._id} />
+          <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
         </div>
-        </Paper>
       </div>
     );
   }
