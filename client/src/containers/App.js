@@ -54,6 +54,9 @@ class App extends Component{
       open: !this.state.open
     });
   }
+  handleHeaderClick = () => {
+    browserHistory.push('/');
+  }
   render(){
     const {screenHeight, screenWidth} = this.props.environment;
     const {open} = this.state;
@@ -65,13 +68,17 @@ class App extends Component{
           <div className={styles.mainContainer}>
             {isMobile?
             <AppBar
-              title='이태희의 블로그'
+              className={styles.header}
+              title="LTH's Blog"
               style={{'backgroundColor':'#ECF0F1'}}
               titleStyle={{'color':'#2C3E50'}}
+              onTouchTap={this.handleHeaderClick}
               showMenuIconButton={false}
               iconElementRight={<FlatButton style={{'color':'#2C3E50'}} label="메뉴" onTouchTap={()=>this.toggleSidebar()}/>}
             />:null}
-            {this.props.children}
+            {this.props.children && React.cloneElement(this.props.children, {
+              isMobile
+            })}
           </div>
           <div className={sidebarStyle}>
             <Sidebar isMobile={isMobile} open={open} toggleSidebar={this.toggleSidebar}/>

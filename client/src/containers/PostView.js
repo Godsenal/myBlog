@@ -6,19 +6,18 @@ import ReactQuill from 'react-quill';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import CircularProgress from 'material-ui/CircularProgress';
-import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
+import Paper from 'material-ui/Paper';
 import moment from 'moment';
 
 import MdRemoveRedEye from 'react-icons/md/remove-red-eye';
 import MdDateRange from 'react-icons/md/date-range';
 import MdComment from 'react-icons/md/comment';
-import FaStar from 'react-icons/fa/star';
-import FaAngleDoublerLeft from 'react-icons/fa/angle-double-left';
 
 /*Replace with disqus*/
 //import {Comment} from '../components';
+import 'react-quill/dist/quill.bubble.css';
 import {getPost, getPrevPost, getNextPost} from '../actions/post';
 import styles from '../../../style/main.css';
 
@@ -56,30 +55,36 @@ class PostView extends Component {
     var buttons = [];
     if(this.props.prev.status === 'SUCCESS'){
       if(!this.isEmpty(this.props.prev.post)){
+        let title = this.props.prev.post.title.length > 6 ?
+                    this.props.prev.post.title.substr(0,6) + '...' :
+                    this.props.prev.post.title;
         buttons.push(
           <RaisedButton
             key={0}
             onTouchTap={()=>this.loadPost(this.props.prev.post._id)}
-            label={this.props.prev.post.title}
+            label={title}
             labelStyle={{'color':'#A7FFEB'}}
             style={{'float':'left'}}
             secondary={true}>
-            <span style={{'color':'white'}}>&nbsp;{'< 이전 글'}</span>
+            <span style={{'color':'white'}}>&nbsp;{'< Prev'}</span>
           </RaisedButton>);
       }
     }
     if(this.props.next.status === 'SUCCESS'){
       if(!this.isEmpty(this.props.next.post)){
+        let title = this.props.next.post.title.length > 6 ?
+                    this.props.next.post.title.substr(0,6) + '...' :
+                    this.props.next.post.title;
         buttons.push(
           <RaisedButton
             key={1}
             onTouchTap={()=>this.loadPost(this.props.next.post._id)}
-            label={this.props.next.post.title}
+            label={title}
             labelStyle={{'color':'#A7FFEB'}}
             labelPosition='before'
             style={{'float':'right'}}
             secondary={true}>
-            <span style={{'color':'white'}}>{'다음 글 >'}&nbsp;</span>
+            <span style={{'color':'white'}}>{'Next >'}&nbsp;</span>
           </RaisedButton>);
       }
     }
@@ -93,41 +98,45 @@ class PostView extends Component {
       title: post.title,
     };
     return(
-      <div className={styles.postContainer}>
-        <div style={{'textAlign': 'center'}}>
-            <img src="/assets/images/back.jpg" style={{'width':'100%','maxHeight':300}} alt="" />
-          <h1>{post.title}</h1>
-          <Subheader style={{'textAlign': 'right'}}>
-            <h3><Avatar>{post.author.substr(0,1).toUpperCase()}</Avatar>&nbsp;{post.author}</h3>
-            <span>
-              <MdDateRange/>
-              {moment(post.created).format('LL')}
-            </span>&nbsp;
-            <span>
-              <MdRemoveRedEye/>
-              {post.viewer}
-            </span>&nbsp;
-            <span>
-              <MdComment/>
-              <CommentCount shortname={disqusShortname} config={disqusConfig}>
-                0
-              </CommentCount>
-            </span>
-          </Subheader>
+      <div className={this.props.isMobile?null:styles.postContainer}>
+        <Paper className={styles.paperContainer} zDepth={3} >
+          <div style={{'textAlign': 'center'}}>
+            {/*<img src="/assets/images/back.jpg" style={{'width':'100%','maxHeight':300}} alt="" />*/}
+            <h1>{post.title}</h1>
+            <Subheader style={{'textAlign': 'right'}}>
+              <h3><Avatar>{post.author.substr(0,1).toUpperCase()}</Avatar>&nbsp;{post.author}</h3>
+              <span>
+                <MdDateRange/>
+                {moment(post.created).format('LL')}
+              </span>&nbsp;
+              <span>
+                <MdRemoveRedEye/>
+                {post.viewer}
+              </span>&nbsp;
+              <span>
+                <MdComment/>
+                <CommentCount shortname={disqusShortname} config={disqusConfig}>
+                  0
+                </CommentCount>
+              </span>
+            </Subheader>
 
-        </div>
-        <ReactQuill
-          modules={modules}
-          readOnly={true}
-          value={post.content}>
-        </ReactQuill>
-        <Divider style={{'marginTop':'3rem','marginBottom':'3rem'}}/>
-        <div style={{'overflow':'hidden'}}>
-          {this.renderPrevNext()}
-        </div>
-        <div style={{'marginTop':'2rem'}}>
-          <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
-        </div>
+          </div>
+          <Divider/>
+          <ReactQuill
+            theme='bubble'
+            modules={modules}
+            readOnly={true}
+            value={post.content}>
+          </ReactQuill>
+          <Divider style={{'marginTop':'3rem','marginBottom':'3rem'}}/>
+          <div style={{'overflow':'hidden'}}>
+            {this.renderPrevNext()}
+          </div>
+          <div style={{'marginTop':'2rem'}}>
+            <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
+          </div>
+        </Paper>
       </div>
     );
   }
@@ -166,6 +175,7 @@ PostView.defaultProps ={
   getPost : () => {console.log('PostView props Error');},
   getPrevPost : () => {console.log('PostView props Error');},
   getNextPost : () => {console.log('PostView props Error');},
+  isMobile : false,
 };
 PostView.propTypes = {
   params: PropTypes.object.isRequired,
@@ -175,6 +185,7 @@ PostView.propTypes = {
   getPost: PropTypes.func.isRequired,
   getPrevPost: PropTypes.func.isRequired,
   getNextPost: PropTypes.func.isRequired,
+  isMobile: PropTypes.bool.isRequired,
 };
 const mapStateToProps = (state) => {
   return {

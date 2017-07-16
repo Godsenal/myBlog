@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {browserHistory} from 'react-router';
+import {Link, browserHistory} from 'react-router';
 
 import Drawer from 'material-ui/Drawer';
 import {ListItem} from 'material-ui/List';
@@ -14,6 +14,8 @@ import TextField from 'material-ui/TextField';
 import MdAddCircleOutline from 'react-icons/md/add-circle-outline';
 
 import {addCategory, listCategory, updateCategory, deleteCategory} from '../actions/category';
+
+import styles from '../../../style/main.css';
 
 class Sidebar extends Component{
   constructor(props) {
@@ -180,6 +182,9 @@ class Sidebar extends Component{
       this.props.toggleSidebar();
     }
   }
+  handleHeaderClick = () => {
+    browserHistory.push('/');
+  }
   render(){
     const {list} = this.props.category;
     return(
@@ -192,7 +197,7 @@ class Sidebar extends Component{
         containerStyle={{'backgroundColor':'#ECF0F1'}}
         style={{'textAlign':'center'}}>
         <div style={{'fontSize':'2em','margin':'3rem','textAlign':'center','display':'block'}}>
-          <span>이태희의 블로그</span>
+          <span className={styles.header} onClick={this.handleHeaderClick}>LTH's Blog</span>
         </div>
         <Divider inset={true} style={{'margin':'3rem'}} />
         {list.categories.map((category,i)=>{

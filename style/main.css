@@ -13,6 +13,21 @@
   src: url(/assets/fonts/NanumGothic.ttf);
 }
 
+@font-face {
+  font-family: 'RobotoLight';
+  src: url(/assets/fonts/Roboto-Light.ttf);
+}
+
+@font-face {
+  font-family: 'RobotoRegular';
+  src: url(/assets/fonts/Roboto-Regular.ttf);
+}
+
+@font-face {
+  font-family: 'RobotoBlack';
+  src: url(/assets/fonts/Roboto-Black.ttf);
+}
+
 body {
   margin: 0;
   font-family: 'NanumGothicExtraBold', cursive;
@@ -26,7 +41,7 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
   font-size: 2em;
-  margin: 3rem;
+  margin: 1.5rem;
 }
 
 span {
@@ -135,7 +150,8 @@ span {
 }
 
 .category {
-  font-family: 'NanumGothicExtraBold', cursive;
+  font-size: 1.5em;
+  font-family: 'RobotoBlack', 'NanumGothicExtraBold', cursive;
 }
 
 .centerContainer {
@@ -148,4 +164,9 @@ span {
 .divider {
   margin-top: 3rem;
   margin-bottom: 3rem;
+}
+
+.header {
+  cursor: pointer;
+  font-family: 'RobotoBlack', cursive;
 }

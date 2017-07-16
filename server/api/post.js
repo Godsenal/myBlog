@@ -58,7 +58,6 @@ router.get('/get/prev/:postID', function(req, res) {
         return res.status(500).json({error: 'internal server error', code: 1});
       }
       let post = {};
-      console.log(prevPost);
       if(prevPost){
         post = {
           _id: prevPost._id,
