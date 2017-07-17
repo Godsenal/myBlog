@@ -85,9 +85,11 @@ export function listPost(category, number){
   return (dispatch) => {
     dispatch({type: POST_LIST});
     var url = `/api/post/list/${category}`;
-
+    if(!category){
+      url = '/api/post/list/all';
+    }
     if(number){
-      url = `/api/post/list/${category}/${number}`;
+      url += `/${number}`;
     }
 
     return axios.get(url)
@@ -127,6 +129,9 @@ export function countPost(category){
   return (dispatch) => {
     dispatch({type: POST_COUNT});
     var url = `/api/post/count/${category}`;
+    if(!category){
+      url = '/api/post/count/all';
+    }
     return axios.get(url)
       .then((res)=>{
         dispatch({type: POST_COUNT_SUCCESS, count: res.data.count});

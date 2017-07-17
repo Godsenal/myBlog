@@ -14,7 +14,7 @@ ReactDOM.render(
   <Provider store={store}>
       <Router history={browserHistory}>
         <Route path="/" component={App} >
-          <IndexRoute component={Home} />
+          <IndexRoute component={Post} />
           <Route path="category" component={Post} >
             <Route path=":category" component={Post}/>
           </Route>

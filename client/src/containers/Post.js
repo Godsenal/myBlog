@@ -46,8 +46,9 @@ class Post extends Component{
   }
   componentDidMount(){
     window.scrollTo(0, 0);
-    this.props.listPost(this.props.params.category,1);
+    this.props.listPost(this.props.params.category,1); // 1 means page number.
     this.props.countPost(this.props.params.category);
+
   }
   componentWillReceiveProps(nextProps) {
     window.scrollTo(0, 0);
@@ -72,7 +73,7 @@ class Post extends Component{
         zIndex: 1,
       },
       style:{
-        scale: spring(this.state.isHover===index ? 1.1 : 1),
+        scale: spring(this.state.isHover===index ? 1.2 : 1),
         marginTop: spring(0),
         zIndex: spring(this.state.isHover===index ? 2 : 1),
       },
@@ -117,13 +118,14 @@ class Post extends Component{
   }
   render(){
     const {list, count} = this.props.post;
-    const {screenHeight, screenWidth} = this.props.environment;
+    const {screenWidth} = this.props.environment;
     const isMobile = screenWidth < 1000;
+    const category = this.props.params.category?this.props.params.category:'최근 글';
     const disqusShortname = 'godsenal';
     return(
       <div className={styles.listContainer}>
         <div>
-          <span className={styles.category}><FaArchive/>&nbsp;{this.props.params.category}</span>
+          <span className={styles.category}><FaArchive/>&nbsp;{category}</span>
         </div>
         <Divider inset={true} style={{'margin':'3rem'}} />
         <GridList
@@ -148,10 +150,9 @@ class Post extends Component{
                   <Link to={`/post/${post._id}`} style={{'textDecoration':'none'}}>
                     <GridTile>
                       <Card
-                        style={style}
                         onMouseOver={()=>{this.handleHover(i);}}
                         onMouseOut={()=>{this.handleHover(false);}}>
-                        <CardMedia>
+                        <CardMedia style={style}>
                           <img src="/assets/images/back.jpg" style={{'height':'200px'}} alt="" />
                         </CardMedia>
                         <CardTitle title={post.title}/>

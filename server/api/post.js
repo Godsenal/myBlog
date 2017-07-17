@@ -1,11 +1,42 @@
 import Posts from '../models/Posts';
+import Categories from '../models/Categories';
 import express from 'express';
 const router = express.Router();
 
 
-// GET ALL POST
-router.get('/list/:category', function(req, res) {
+// GET ALL POST WITHOUT CATEGORY
+router.get('/list/all', function(req, res) {
+  Posts.find({})
+    .sort({_id:-1})
+    .exec(function(err, posts) {
+      if(err) {
+        console.log(err);
+        return res.status(500).json({error: 'internal server error', code: 1});
+      }
 
+      res.json({posts});
+    });
+});
+
+// GET PAGE POST WITHOUT CATEGORY
+router.get('/list/all/:number', function(req, res) {
+  var skip = (req.params.number - 1) * 10; // skip할 페이지
+  var query = Posts.find({})
+    .sort({_id:-1})
+    .limit(10)
+    .skip(skip);
+  query.exec(function(err, posts) {
+    if(err) {
+      console.log(err);
+      return res.status(500).json({error: 'internal server error', code: 1});
+    }
+
+    res.json({posts});
+  });
+});
+
+// GET ALL POST WITH CATEGORY
+router.get('/list/:category', function(req, res) {
   Posts.find({category: req.params.category})
     .sort({_id:-1})
     .exec(function(err, posts) {
@@ -20,6 +51,15 @@ router.get('/list/:category', function(req, res) {
 
 // GET PAGE POST
 router.get('/list/:category/:number', function(req, res) {
+  Categories.find({parent: req.params.category},{name: 1})
+    .exec(function(err, categories){
+      if(err){
+        console.log(err);
+        return res.status(500).json({error: 'internal server error', code: 1});
+      }
+      console.log(categories);
+    });
+  
   var skip = (req.params.number - 1) * 10; // skip할 페이지
   var query = Posts.find({category: req.params.category})
     .sort({_id:-1})
@@ -99,6 +139,20 @@ router.get('/get/next/:postID', function(req, res) {
 //GET PAGE COUNT
 router.get('/count/:category',function(req,res){
   Posts.find({category:req.params.category})
+    .count()
+    .exec(function(err,count){
+      if(err){
+        console.log(err);
+        return res.status(400).json({error: 'internal server error', code: 1});
+      }
+      res.json({count});
+    });
+
+});
+
+//GET PAGE COUNT WITHOUT CATEGORY
+router.get('/count/all',function(req,res){
+  Posts.find({})
     .count()
     .exec(function(err,count){
       if(err){
