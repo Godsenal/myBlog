@@ -14,11 +14,13 @@ import moment from 'moment';
 import MdRemoveRedEye from 'react-icons/md/remove-red-eye';
 import MdDateRange from 'react-icons/md/date-range';
 import MdComment from 'react-icons/md/comment';
+import FaArchive from 'react-icons/fa/archive';
 
 /*Replace with disqus*/
 //import {Comment} from '../components';
 import 'react-quill/dist/quill.bubble.css';
 import {getPost, getPrevPost, getNextPost} from '../actions/post';
+import {getCategory} from '../actions/category';
 import styles from '../../../style/main.css';
 
 import { DiscussionEmbed, CommentCount } from '../disqus';
@@ -47,8 +49,9 @@ class PostView extends Component {
   loadPost = (postID) => {
     this.props.getPost(postID)
       .then(()=>{
-        this.props.getPrevPost(postID);
-        this.props.getNextPost(postID);
+        this.props.getCategory(this.props.get.post.category);
+        this.props.getPrevPost(postID, this.props.get.post.category);
+        this.props.getNextPost(postID, this.props.get.post.category);
       });
   }
   renderPrevNext = () => {
@@ -97,6 +100,8 @@ class PostView extends Component {
       identifier: post._id,
       title: post.title,
     };
+    var category = this.props.categoryGet.category;
+    var path = !this.isEmpty(category) && category.path ?category.path.replace(new RegExp(',', 'g'), '/') + category.name:null;
     return(
       <div className={this.props.isMobile?null:styles.postContainer}>
         <Paper className={styles.paperContainer} zDepth={3} >
@@ -105,6 +110,11 @@ class PostView extends Component {
             <h1>{post.title}</h1>
             <Subheader style={{'textAlign': 'right'}}>
               <h3><Avatar>{post.author.substr(0,1).toUpperCase()}</Avatar>&nbsp;{post.author}</h3>
+              <span style={!this.props.isMobile?{'float':'left'}:null}>
+                <FaArchive/>
+                {path}
+              </span>
+              {this.props.isMobile?<br/>:null}
               <span>
                 <MdDateRange/>
                 {moment(post.created).format('LL')}
@@ -172,9 +182,11 @@ PostView.defaultProps ={
   get: {},
   prev: {},
   next: {},
+  categoryGet: {},
   getPost : () => {console.log('PostView props Error');},
   getPrevPost : () => {console.log('PostView props Error');},
   getNextPost : () => {console.log('PostView props Error');},
+  getCategory : () => {console.log('PostView props Error');},
   isMobile : false,
 };
 PostView.propTypes = {
@@ -182,16 +194,20 @@ PostView.propTypes = {
   get: PropTypes.object.isRequired,
   prev: PropTypes.object.isRequired,
   next: PropTypes.object.isRequired,
+  categoryGet: PropTypes.object.isRequired,
   getPost: PropTypes.func.isRequired,
   getPrevPost: PropTypes.func.isRequired,
   getNextPost: PropTypes.func.isRequired,
+  getCategory: PropTypes.func.isRequired,
   isMobile: PropTypes.bool.isRequired,
 };
 const mapStateToProps = (state) => {
   return {
+    activeCategory: state.category.activeCategory,
     get: state.post.get,
     prev: state.post.prev,
     next: state.post.next,
+    categoryGet: state.category.get,
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -199,11 +215,14 @@ const mapDispatchToProps = (dispatch) => {
     getPost: (postID) => {
       return dispatch(getPost(postID));
     },
-    getPrevPost: (postID) => {
-      return dispatch(getPrevPost(postID));
+    getPrevPost: (postID, categoryName) => {
+      return dispatch(getPrevPost(postID, categoryName));
     },
-    getNextPost: (postID) => {
-      return dispatch(getNextPost(postID));
+    getNextPost: (postID, categoryName) => {
+      return dispatch(getNextPost(postID, categoryName));
+    },
+    getCategory: (categoryName) => {
+      return dispatch(getCategory(categoryName));
     },
   };
 };

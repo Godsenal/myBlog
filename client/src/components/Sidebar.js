@@ -13,7 +13,7 @@ import TextField from 'material-ui/TextField';
 
 import MdAddCircleOutline from 'react-icons/md/add-circle-outline';
 
-import {addCategory, listCategory, updateCategory, deleteCategory} from '../actions/category';
+import {changeActiveCategory, addCategory, listCategory, updateCategory, deleteCategory} from '../actions/category';
 
 import styles from '../../../style/main.css';
 
@@ -22,7 +22,7 @@ class Sidebar extends Component{
     super(props);
     this.state = {
       categoryName: '',
-      parentName: '',
+      parentCategory: {},
       modalOpen: false,
       snackOpen: false,
       snackMessage: '',
@@ -66,11 +66,13 @@ class Sidebar extends Component{
 
     var nestedItems = list.categories.map((subCategory,i)=>{
       //sub Category의 parent가 자신과 같은 자신의 nestedItems로 render
-      if(subCategory.parent && subCategory.parent == category.name){
+      var re = new RegExp(','+category.name+',$');
+      var isMatch = re.test(subCategory.path);
+      if(subCategory.path && isMatch){
         return (
           <ListItem
             key={i}
-            onTouchTap={()=>{this.handleSelectCategory(subCategory.name);}}
+            onTouchTap={()=>{this.handleSelectCategory(subCategory);}}
             nestedItems={
               this.handleNestedItems(list,subCategory)
             }>{subCategory.name}
@@ -82,7 +84,7 @@ class Sidebar extends Component{
     nestedItems.push(
       <ListItem
         key={list.categories.length}
-        onTouchTap={() => {this.handleOpenModal(category.name);}}><MdAddCircleOutline/>
+        onTouchTap={() => {this.handleOpenModal(category);}}><MdAddCircleOutline/>
       </ListItem>
     );
     nestedItems = nestedItems.filter(Boolean); // undefined 제거
@@ -94,17 +96,17 @@ class Sidebar extends Component{
       categoryName: e.target.value,
     });
   }
-  handleOpenModal = (parentName) => {
+  handleOpenModal = (parentCategory) => {
     this.setState({
       categoryName: '',
-      parentName,
+      parentCategory,
       modalOpen: true,
     });
   }
   handleCloseModal = () => {
     this.setState({
       categoryName: '',
-      parentName: '',
+      parentCategory: {},
       modalOpen: false,
     });
   }
@@ -116,7 +118,7 @@ class Sidebar extends Component{
   }
   /* Add Category */
   handleAddCategory = () => {
-    var {categoryName, parentName} = this.state;
+    var {categoryName, parentCategory} = this.state;
     if(categoryName.length == 0 || !categoryName.trim()){
       this.setState({
         snackOpen: true,
@@ -126,8 +128,16 @@ class Sidebar extends Component{
       this.handleCloseModal();
       var category = {
         name: categoryName,
-        parent: parentName,
       };
+
+      if(parentCategory){
+        if(parentCategory.path){
+          category.path = parentCategory.path + parentCategory.name + ',';
+        }
+        else{
+          category.path = ',' + parentCategory.name + ',';
+        }
+      }
       this.props.addCategory(category)
         .then(()=>{
           if(this.props.category.add.status == 'SUCCESS'){
@@ -176,14 +186,17 @@ class Sidebar extends Component{
     );
   }
   /*Select Category*/
-  handleSelectCategory(categoryName){
-    browserHistory.push('/category/'+categoryName);
+  handleSelectCategory(category){
+    browserHistory.push('/category/'+category.name);
     if(this.props.isMobile){
       this.props.toggleSidebar();
     }
   }
   handleHeaderClick = () => {
     browserHistory.push('/');
+    if(this.props.isMobile){
+      this.props.toggleSidebar();
+    }
   }
   render(){
     const {list} = this.props.category;
@@ -201,11 +214,11 @@ class Sidebar extends Component{
         </div>
         <Divider inset={true} style={{'margin':'3rem'}} />
         {list.categories.map((category,i)=>{
-          if(!category.parent){
+          if(!category.path){
             return (
               <ListItem
                 key={i}
-                onTouchTap={()=>{this.handleSelectCategory(category.name); }}
+                onTouchTap={()=>{this.handleSelectCategory(category); }}
                 nestedItems={
                   this.handleNestedItems(list,category)
                 }><span>{category.name}</span>
@@ -233,6 +246,7 @@ Sidebar.defaultProps ={
   toggleSidebar : () => {console.log('Sidebar props Error');},
   params: {},
   category: {},
+  changeActiveCategory : () => {console.log('Sidebar props Error');},
   addCategory : () => {console.log('Sidebar props Error');},
   listCategory : () => {console.log('Sidebar props Error');},
   updateCategory : () => {console.log('Sidebar props Error');},
@@ -244,6 +258,7 @@ Sidebar.propTypes = {
   toggleSidebar : PropTypes.func.isRequired,
   params: PropTypes.object.isRequired,
   category: PropTypes.object.isRequired,
+  changeActiveCategory: PropTypes.func.isRequired,
   addCategory: PropTypes.func.isRequired,
   listCategory: PropTypes.func.isRequired,
   updateCategory: PropTypes.func.isRequired,
@@ -256,6 +271,9 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
+    changeActiveCategory: (category) => {
+      return dispatch(changeActiveCategory(category));
+    },
     addCategory: (category) => {
       return dispatch(addCategory(category));
     },

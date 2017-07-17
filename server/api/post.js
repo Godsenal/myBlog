@@ -51,28 +51,34 @@ router.get('/list/:category', function(req, res) {
 
 // GET PAGE POST
 router.get('/list/:category/:number', function(req, res) {
-  Categories.find({parent: req.params.category},{name: 1})
+  var re = ','+req.params.category+',';
+  var subCategories = [];
+  Categories.find({path: {$regex:re}},{name: 1})
     .exec(function(err, categories){
       if(err){
         console.log(err);
         return res.status(500).json({error: 'internal server error', code: 1});
       }
-      console.log(categories);
-    });
-  
-  var skip = (req.params.number - 1) * 10; // skip할 페이지
-  var query = Posts.find({category: req.params.category})
-    .sort({_id:-1})
-    .limit(10)
-    .skip(skip);
-  query.exec(function(err, posts) {
-    if(err) {
-      console.log(err);
-      return res.status(500).json({error: 'internal server error', code: 1});
-    }
+      /* Get All SubCategories' posts */
+      subCategories = categories.map((category)=>{
+        return category.name;
+      });
+      subCategories.push(req.params.category);
 
-    res.json({posts});
-  });
+      var skip = (req.params.number - 1) * 10; // skip할 페이지
+      var query = Posts.find({category: {$in: subCategories}})
+        .sort({_id:-1})
+        .limit(10)
+        .skip(skip);
+      query.exec(function(err, posts) {
+        if(err) {
+          console.log(err);
+          return res.status(500).json({error: 'internal server error', code: 1});
+        }
+
+        res.json({posts});
+      });
+    });
 });
 
 // GET ONE POST
@@ -88,50 +94,78 @@ router.get('/get/:postID', function(req, res) {
 });
 
 // GET PREV POST
-router.get('/get/prev/:postID', function(req, res) {
-  Posts.findOne({_id: {$lt: req.params.postID}})
-    .sort({_id:-1})
-    .limit(1)
-    .exec(function(err, prevPost) {
-      if(err) {
+router.get('/get/prev/:postID/:category', function(req, res) {
+  var re = ','+req.params.category+',';
+  var subCategories = [];
+  Categories.find({path: {$regex:re}},{name: 1})
+    .exec(function(err, categories){
+      if(err){
         console.log(err);
         return res.status(500).json({error: 'internal server error', code: 1});
       }
-      let post = {};
-      if(prevPost){
-        post = {
-          _id: prevPost._id,
-          title: prevPost.title,
-        };
-        res.json({post});
-      }
-      else{
-        res.json({post});
-      }
+      /* Get All SubCategories' posts */
+      subCategories = categories.map((category)=>{
+        return category.name;
+      });
+      subCategories.push(req.params.category);
+      Posts.findOne({_id: {$lt: req.params.postID},category: {$in: subCategories}})
+        .sort({_id:-1})
+        .limit(1)
+        .exec(function(err, prevPost) {
+          if(err) {
+            console.log(err);
+            return res.status(500).json({error: 'internal server error', code: 1});
+          }
+          let post = {};
+          if(prevPost){
+            post = {
+              _id: prevPost._id,
+              title: prevPost.title,
+            };
+            res.json({post});
+          }
+          else{
+            res.json({post});
+          }
+        });
     });
 });
 
 // GET NEXT POST
-router.get('/get/next/:postID', function(req, res) {
-  Posts.findOne({_id: {$gt: req.params.postID}})
-    .sort({_id:1})
-    .limit(1)
-    .exec(function(err, nextPost) {
-      if(err) {
+router.get('/get/next/:postID/:category', function(req, res) {
+  var re = ','+req.params.category+',';
+  var subCategories = [];
+  Categories.find({path: {$regex:re}},{name: 1})
+    .exec(function(err, categories){
+      if(err){
         console.log(err);
         return res.status(500).json({error: 'internal server error', code: 1});
       }
-      let post = {};
-      if(nextPost){
-        post = {
-          _id: nextPost._id,
-          title: nextPost.title,
-        };
-        res.json({post});
-      }
-      else{
-        res.json({post});
-      }
+      /* Get All SubCategories' posts */
+      subCategories = categories.map((category)=>{
+        return category.name;
+      });
+      subCategories.push(req.params.category);
+      Posts.findOne({_id: {$gt: req.params.postID}, category: {$in: subCategories}})
+        .sort({_id:1})
+        .limit(1)
+        .exec(function(err, nextPost) {
+          if(err) {
+            console.log(err);
+            return res.status(500).json({error: 'internal server error', code: 1});
+          }
+          let post = {};
+          if(nextPost){
+            post = {
+              _id: nextPost._id,
+              title: nextPost.title,
+            };
+            res.json({post});
+          }
+          else{
+            res.json({post});
+          }
+        });
     });
 });
 

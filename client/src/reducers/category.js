@@ -2,6 +2,9 @@ import * as types from '../actions/ActionTypes';
 import update from 'react-addons-update';
 
 const initialState = {
+  activeCategory: {
+
+  },
   add: {
     status: 'INIT',
     category: {},
@@ -25,8 +28,14 @@ const initialState = {
     category: {},
     err: 'ERROR',
     errCode: -1,
+  },
+  get:{
+    status: 'INIT',
+    category: {},
+    err: 'ERROR',
+    errCode: -1,
   }
-}
+};
 
 export default function category(state, action){
   if(typeof state === 'undefined'){
@@ -35,6 +44,11 @@ export default function category(state, action){
 
   switch (action.type) {
 
+    /* SWITCH ACTIVE(CURRENT) CATEGORY */
+    case types.CATEGORY_ACTIVE_CHANGE:
+      return update(state,{
+        activeCategory: {$set: action.category}
+      });
     /* ADD CATEGORY */
     case types.CATEGORY_ADD:
       return update(state, {
@@ -70,6 +84,7 @@ export default function category(state, action){
     case types.CATEGORY_LIST_SUCCESS:
       return update(state, {
         list:{
+          status: {$set: 'SUCCESS'},
           categories: {$set: action.categories}
         }
       });
@@ -128,12 +143,36 @@ export default function category(state, action){
     case types.CATEGORY_DELETE_SUCCESS:
       return update(state, {
         delete:{
+          status: {$set: 'SUCCESS'},
           category: {$set: action.category}
         }
       });
     case types.CATEGORY_DELETE_FAILURE:
       return update(state, {
         delete: {
+          status: {$set: 'FAILURE'},
+          err: {$set: action.err},
+          errCode: {$set: action.errCode}
+        }
+      });
+
+    /* GET CATEGORY */
+    case types.CATEGORY_GET:
+      return update(state, {
+        get: {
+          status: {$set: 'WAITING'}
+        }
+      });
+    case types.CATEGORY_GET_SUCCESS:
+      return update(state, {
+        get:{
+          status: {$set: 'SUCCESS'},
+          category: {$set: action.category}
+        }
+      });
+    case types.CATEGORY_GET_FAILURE:
+      return update(state, {
+        get: {
           status: {$set: 'FAILURE'},
           err: {$set: action.err},
           errCode: {$set: action.errCode}

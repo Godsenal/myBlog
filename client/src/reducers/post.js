@@ -169,6 +169,7 @@ export default function post(state, action){
     case types.POST_LIST_SUCCESS:
       return update(state, {
         list:{
+          status: {$set: 'SUCCESS'},
           category: {$set: action.category},
           posts: {$set: action.posts}
         }
@@ -206,6 +207,7 @@ export default function post(state, action){
       }
       return update(state, {
         update:{
+          status: {$set: 'SUCCESS'},
           post: {$set: action.post}
         }
       });
@@ -228,6 +230,7 @@ export default function post(state, action){
     case types.POST_DELETE_SUCCESS:
       return update(state, {
         delete:{
+          status: {$set: 'SUCCESS'},
           post: {$set: action.post}
         }
       });

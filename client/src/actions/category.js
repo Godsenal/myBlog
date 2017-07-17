@@ -1,4 +1,5 @@
 import {
+  CATEGORY_ACTIVE_CHANGE,
   CATEGORY_ADD,
   CATEGORY_ADD_SUCCESS,
   CATEGORY_ADD_FAILURE,
@@ -11,9 +12,18 @@ import {
   CATEGORY_DELETE,
   CATEGORY_DELETE_SUCCESS,
   CATEGORY_DELETE_FAILURE,
+  CATEGORY_GET,
+  CATEGORY_GET_SUCCESS,
+  CATEGORY_GET_FAILURE,
 } from './ActionTypes';
 
 import axios from 'axios';
+
+export function changeActiveCategory(category){
+  return (dispatch) => {
+    dispatch({type: CATEGORY_ACTIVE_CHANGE, category});
+  };
+}
 
 export function addCategory(category){
   return (dispatch) => {
@@ -59,6 +69,18 @@ export function deleteCategory(categoryID){
       dispatch({type: CATEGORY_DELETE_SUCCESS, category: res.data.category});
     }).catch((err)=>{
       dispatch({type: CATEGORY_DELETE_FAILURE, err: err.response.data.err, errCode: err.response.data.errCode});
+    });
+  };
+}
+
+export function getCategory(categoryName){
+  return (dispatch) => {
+    dispatch({type: CATEGORY_GET});
+    return axios.get(`/api/category/get/${categoryName}`)
+    .then((res)=> {
+      dispatch({type: CATEGORY_GET_SUCCESS, category: res.data.category});
+    }).catch((err)=>{
+      dispatch({type: CATEGORY_GET_FAILURE, err: err.response.data.err, errCode: err.response.data.errCode});
     });
   };
 }

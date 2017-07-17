@@ -55,10 +55,10 @@ export function getPost(postID){
   };
 }
 
-export function getPrevPost(postID){
+export function getPrevPost(postID, categoryName){
   return (dispatch) => {
     dispatch({type: POST_PREV_GET});
-    var url = `/api/post/get/prev/${postID}`;
+    var url = `/api/post/get/prev/${postID}/${categoryName}`;
     return axios.get(url)
       .then((res)=>{
         dispatch({type: POST_PREV_GET_SUCCESS, post: res.data.post});
@@ -68,10 +68,10 @@ export function getPrevPost(postID){
   };
 }
 
-export function getNextPost(postID){
+export function getNextPost(postID, categoryName){
   return (dispatch) => {
     dispatch({type: POST_NEXT_GET});
-    var url = `/api/post/get/next/${postID}`;
+    var url = `/api/post/get/next/${postID}/${categoryName}`;
     return axios.get(url)
       .then((res)=>{
         dispatch({type: POST_NEXT_GET_SUCCESS, post: res.data.post});
