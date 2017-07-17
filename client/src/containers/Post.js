@@ -20,6 +20,8 @@ import CircularProgress from 'material-ui/CircularProgress';
 import { CommentCount } from '../disqus';
 import {addPost, listPost, updatePost, deletePost, countPost} from '../actions/post';
 import {getCategory} from '../actions/category';
+import {getStatusRequest} from '../actions/authentication';
+
 import styles from '../../../style/main.css';
 
 const inlineStyles = {
@@ -142,7 +144,13 @@ class Post extends Component{
     this.props.listPost(this.props.params.category,number);
   }
   handlePostEdit = () => {
-    browserHistory.push(`/post/new/${this.props.params.category}`);
+    var token = localStorage.getItem('token');
+    this.props.getStatusRequest(token)
+      .then(()=>{
+        if(this.props.status.valid){
+          browserHistory.push(`/post/new/${this.props.params.category}`);
+        }
+      });
   }
   renderProgress = () =>{
     return(
@@ -229,7 +237,8 @@ class Post extends Component{
                 onChange = { number => this.handlePagination(number) }
               />
             </div>
-            <RaisedButton label="새글 추가" fullWidth={true} onTouchTap={this.handlePostEdit} />
+            {this.props.status.valid?
+              <RaisedButton label="새글 추가" fullWidth={true} onTouchTap={this.handlePostEdit} />:null}
           </div>:this.renderProgress()}
         </div>
 
@@ -242,12 +251,14 @@ Post.defaultProps ={
   environment: {},
   post: {},
   category: {},
+  status: {},
   addPost : () => {console.log('Post props Error');},
   listPost : () => {console.log('Post props Error');},
   updatePost : () => {console.log('Post props Error');},
   deletePost : () => {console.log('Post props Error');},
   countPost : () => {console.log('Post props Error');},
   getCategory : () => {console.log('Post props Error');},
+  getStatusRequest : () => {console.log('Post props Error');},
 };
 Post.propTypes = {
   params: PropTypes.object.isRequired,
@@ -260,12 +271,15 @@ Post.propTypes = {
   deletePost: PropTypes.func.isRequired,
   countPost: PropTypes.func.isRequired,
   getCategory: PropTypes.func.isRequired,
+  status: PropTypes.object.isRequired,
+  getStatusRequest: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => {
   return {
     post: state.post,
     category: state.category.get.category,
     environment: state.environment,
+    status: state.authentication.status,
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -287,6 +301,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     getCategory: (categoryName) => {
       return dispatch(getCategory(categoryName));
+    },
+    getStatusRequest: (token) => {
+      return dispatch(getStatusRequest(token));
     },
   };
 };

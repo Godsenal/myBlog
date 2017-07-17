@@ -26,13 +26,13 @@ mongoose.connect(config.dbUrl);
 
 const app = express();
 
+const localSigninStrategy = require('./passport/local-signin');
+passport.use('local-signin', localSigninStrategy);
 /*
 const localSignupStrategy = require('./passport/local-signup');
-const localSigninStrategy = require('./passport/local-signin');
 const facebookSigninStrategy = require('./passport/facebook-signin');
 const otherSignupStrategy = require('./passport/other-signup');
 passport.use('local-signup', localSignupStrategy);
-passport.use('local-signin', localSigninStrategy);
 passport.use('facebook-signin', facebookSigninStrategy);
 passport.use('other-signup', otherSignupStrategy);
 */

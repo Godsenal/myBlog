@@ -12,9 +12,10 @@ import Snackbar from 'material-ui/Snackbar';
 import TextField from 'material-ui/TextField';
 
 import MdAddCircleOutline from 'react-icons/md/add-circle-outline';
+import FaSignOut from 'react-icons/fa/sign-out';
 
 import {changeActiveCategory, addCategory, listCategory, updateCategory, deleteCategory} from '../actions/category';
-
+import {getStatusRequest, signoutRequest} from '../actions/authentication';
 import styles from '../../../style/main.css';
 
 class Sidebar extends Component{
@@ -81,12 +82,12 @@ class Sidebar extends Component{
     });
 
     /* Need Authentication */
-    nestedItems.push(
+    this.props.status.valid?nestedItems.push(
       <ListItem
         key={list.categories.length}
         onTouchTap={() => {this.handleOpenModal(category);}}><MdAddCircleOutline/>
       </ListItem>
-    );
+    ):null;
     nestedItems = nestedItems.filter(Boolean); // undefined 제거
 
     return nestedItems;
@@ -138,19 +139,25 @@ class Sidebar extends Component{
           category.path = ',' + parentCategory.name + ',';
         }
       }
-      this.props.addCategory(category)
+      var token = localStorage.getItem('token');
+      this.props.getStatusRequest(token)
         .then(()=>{
-          if(this.props.category.add.status == 'SUCCESS'){
-            this.setState({
-              snackOpen: true,
-              snackMessage: '정상적으로 등록되었습니다.',
-            });
-          }
-          else{
-            this.setState({
-              snackOpen: true,
-              snackMessage: '등록에 실패하였습니다.',
-            });
+          if(this.props.status.valid){
+            this.props.addCategory(category)
+              .then(()=>{
+                if(this.props.category.add.status == 'SUCCESS'){
+                  this.setState({
+                    snackOpen: true,
+                    snackMessage: '정상적으로 등록되었습니다.',
+                  });
+                }
+                else{
+                  this.setState({
+                    snackOpen: true,
+                    snackMessage: '등록에 실패하였습니다.',
+                  });
+                }
+              });
           }
         });
     }
@@ -198,6 +205,9 @@ class Sidebar extends Component{
       this.props.toggleSidebar();
     }
   }
+  handleSignout = () => {
+    this.props.signoutRequest();
+  }
   render(){
     const {list} = this.props.category;
     return(
@@ -225,9 +235,13 @@ class Sidebar extends Component{
               </ListItem>);
           }
         })}
-        <ListItem
-          onTouchTap={() => {this.handleOpenModal();}}><MdAddCircleOutline/>
-        </ListItem>
+        {this.props.status.valid?
+          <ListItem
+            onTouchTap={() => {this.handleOpenModal();}}><MdAddCircleOutline/>
+          </ListItem>:null}
+        {this.props.status.valid?
+          <FaSignOut
+            onClick={this.handleSignout}/>:null}
         <Snackbar
           open={this.state.snackOpen}
           message={this.state.snackMessage}
@@ -246,13 +260,17 @@ Sidebar.defaultProps ={
   toggleSidebar : () => {console.log('Sidebar props Error');},
   params: {},
   category: {},
+  status: {},
   changeActiveCategory : () => {console.log('Sidebar props Error');},
   addCategory : () => {console.log('Sidebar props Error');},
   listCategory : () => {console.log('Sidebar props Error');},
   updateCategory : () => {console.log('Sidebar props Error');},
   deleteCategory : () => {console.log('Sidebar props Error');},
+  getStatusRequest : () => {console.log('Sidebar props Error');},
+  signoutRequest : () => {console.log('Sidebar props Error');},
 };
 Sidebar.propTypes = {
+  status: PropTypes.object.isRequired,
   isMobile: PropTypes.bool.isRequired,
   open: PropTypes.bool.isRequired,
   toggleSidebar : PropTypes.func.isRequired,
@@ -263,10 +281,13 @@ Sidebar.propTypes = {
   listCategory: PropTypes.func.isRequired,
   updateCategory: PropTypes.func.isRequired,
   deleteCategory: PropTypes.func.isRequired,
+  getStatusRequest: PropTypes.func.isRequired,
+  signoutRequest : PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => {
   return {
     category: state.category,
+    status: state.authentication.status,
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -286,6 +307,13 @@ const mapDispatchToProps = (dispatch) => {
     deleteCategory: (category) => {
       return dispatch(deleteCategory(category));
     },
+    signoutRequest: () => {
+      return dispatch(signoutRequest());
+    },
+    getStatusRequest: (token) => {
+      return dispatch(getStatusRequest(token));
+    },
+
   };
 };
 

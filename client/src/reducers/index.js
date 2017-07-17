@@ -1,4 +1,4 @@
-//import authentication from './authentication';
+import authentication from './authentication';
 import category from './category';
 import post from './post';
 import comment from './comment';
@@ -7,7 +7,7 @@ import environment from './environment';
 import { combineReducers } from 'redux';
 
 const appReducers = combineReducers({
-  category, post, comment, environment
+  authentication, category, post, comment, environment
 });
 
 const rootReducer = (state, action) => {

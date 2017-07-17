@@ -12,6 +12,7 @@ import AppBar from 'material-ui/AppBar';
 
 import { Sidebar } from '../components';
 import { initEnvironment} from '../actions/environment';
+import { getStatusRequest} from '../actions/authentication';
 import styles from '../../../style/main.css';
 import Bluebird from 'bluebird';
 
@@ -38,6 +39,8 @@ class App extends Component{
     this.handleWindowSizeChange();
     window.onpopstate = this.onBackButtonEvent;
     window.addEventListener('resize', this.handleWindowSizeChange);
+    var token = localStorage.getItem('token');
+    this.props.getStatusRequest(token);
 
   }
 
@@ -92,15 +95,20 @@ class App extends Component{
 
 App.defaultProps ={
   initEnvironment : () => {console.log('App props Error');},
+  getStatusRequest : () => {console.log('App props Error');},
   environment : {},
+  status: {},
 };
 App.propTypes = {
   environment : PropTypes.object.isRequired,
+  status: PropTypes.object.isRequired,
   initEnvironment : PropTypes.func.isRequired,
+  getStatusRequest: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => {
   return {
     environment: state.environment,
+    status: state.authentication.status,
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -108,6 +116,9 @@ const mapDispatchToProps = (dispatch) => {
     initEnvironment: () => {
       return dispatch(initEnvironment());
     },
+    getStatusRequest: (token) => {
+      return dispatch(getStatusRequest(token));
+    }
   };
 };
 

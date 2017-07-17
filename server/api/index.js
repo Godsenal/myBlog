@@ -19,7 +19,7 @@ router.use('/*', (req, res, next) => {
 
 
 
-//router.use('/account', account);
+router.use('/account', account);
 router.use('/post', post);
 router.use('/category', category);
 router.use('/comment', comment);

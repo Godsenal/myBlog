@@ -161,6 +161,11 @@ span {
   margin-top: 10%;
 }
 
+.centering {
+  text-align: center;
+  margin: 20% auto;
+}
+
 .divider {
   margin-top: 3rem;
   margin-bottom: 3rem;
