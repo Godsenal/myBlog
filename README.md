@@ -1,3 +1,3 @@
 My First Blog
--[] Image
--[] Search
+-[ ] Image
+-[ ] Search
