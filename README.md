@@ -1,3 +1,8 @@
 My First Blog
--[ ] Image
--[ ] Search
+
+### TODO
+- [ ] Representative Image
+- [ ] Insert image with editor
+- [ ] Search
+- [ ] Tag
+- [ ] Motion
