@@ -1,4 +1,5 @@
 # My First Blog
+LTH's First Blog
 
 ## TODO
 - [ ] Representative Image
@@ -6,3 +7,4 @@
 - [ ] Search
 - [ ] Tag
 - [ ] Motion
+- [ ] Hosting
