@@ -1,6 +1,6 @@
-My First Blog
+# My First Blog
 
-### TODO
+## TODO
 - [ ] Representative Image
 - [ ] Insert image with editor
 - [ ] Search
