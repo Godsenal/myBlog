@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 const PostSchema = new Schema({
   author: String,
   title: String,
-  content: String,
+  content: String, // html
+  text: String, // only TEXT
   category: String,
   comments: {type: Array, default: []},
   rating: {type: Number, default: 0},

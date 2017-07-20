@@ -44,16 +44,31 @@ class PostEdit extends Component {
       type: 'view',
       title: '',
       content: '',
+      text: '',
       open: false,
       message: '',
       snackOpen: false,
       snackMessage: '',
     };
+    this.quillRef = null;      // Quill instance
+    this.reactQuillRef = null; // ReactQuill component
+  }
+  attachQuillRefs = () => {
+    if (typeof this.reactQuillRef.getEditor !== 'function') return;
+    this.quillRef = this.reactQuillRef.getEditor();
   }
   componentDidMount() {
+    this.attachQuillRefs();
   }
-  handleContentChange = (value) => {
-    this.setState({ content: value });
+
+  componentDidUpdate() {
+    this.attachQuillRefs();
+  }
+  handleContentChange = (value, delta, source, editor) => {
+    this.setState({
+      content: value,
+      text: editor.getText()
+    });
   }
 
   handleTitleChange = (e) => {
@@ -82,6 +97,7 @@ class PostEdit extends Component {
       author: 'godsenal',
       title: this.state.title,
       content: this.state.content,
+      text: this.state.text,
       category: this.props.params.category,
     };
     this.props.addPost(post)
@@ -131,6 +147,7 @@ class PostEdit extends Component {
           <h2>Content</h2>
           <ReactQuill
             theme='snow'
+            ref={(el) => { this.reactQuillRef = el; }}
             modules={modules}
             formats={formats}
             value={this.state.content}

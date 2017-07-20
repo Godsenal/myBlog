@@ -1,112 +1,31 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {browserHistory, Link} from 'react-router';
+import {browserHistory} from 'react-router';
 import PropTypes from 'prop-types';
-import moment from 'moment';
-import {Motion, spring} from 'react-motion';
-
-import {Card, CardHeader, CardActions, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import {GridList, GridTile} from 'material-ui/GridList';
 import Divider from 'material-ui/Divider';
-import Pagination from 'material-ui-pagination';
-import MdRemoveRedEye from 'react-icons/md/remove-red-eye';
-import MdDateRange from 'react-icons/md/date-range';
-import MdComment from 'react-icons/md/comment';
 import RaisedButton from 'material-ui/RaisedButton';
 import FaArchive from 'react-icons/fa/archive';
 import CircularProgress from 'material-ui/CircularProgress';
+import Pagination from 'material-ui-pagination';
 
-
-import { CommentCount } from '../disqus';
+import {Searchbar, PostList} from '../components';
 import {addPost, listPost, updatePost, deletePost, countPost} from '../actions/post';
 import {getCategory} from '../actions/category';
 import {getStatusRequest} from '../actions/authentication';
 
 import styles from '../../../style/main.css';
 
-const inlineStyles = {
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
-  gridList: {
-    overflowY: 'auto',
-  },
-};
 
 class Post extends Component{
   constructor(){
     super();
     this.setTotal = this.setTotal.bind(this);
     this.setDisplay = this.setDisplay.bind(this);
+    this.handlePagination = this.handlePagination.bind(this);
     this.state = {
       display: 7,
       number: 1,
-      isHover: false,
       isReset: false,
-    };
-  }
-  componentDidMount(){
-    window.scrollTo(0, 0);
-    if(this.props.params.category){
-      this.props.getCategory(this.props.params.category)
-        .then(()=>{
-          if(Object.keys(this.props.category).length){
-            this.props.listPost(this.props.params.category,1);// 1 means page number.
-            this.props.countPost(this.props.params.category);
-          }
-          else{
-            browserHistory.push('/NotFound');
-          }
-        });
-    }
-    else{
-      this.props.listPost(this.props.params.category,1);// 1 means page number.
-      this.props.countPost(this.props.params.category);
-    }
-  }
-  componentWillReceiveProps(nextProps) {
-    window.scrollTo(0, 0);
-    if(this.props.params.category !== nextProps.params.category){
-      if(this.props.params.category){
-        this.props.getCategory(this.props.params.category)
-          .then(()=>{
-            if(Object.keys(this.props.category).length){
-              this.props.listPost(this.props.params.category,1);// 1 means page number.
-              this.props.countPost(this.props.params.category);
-            }
-            else{
-              browserHistory.push('/NotFound');
-            }
-          });
-      }
-      else{
-        this.props.listPost(this.props.params.category,1);// 1 means page number.
-        this.props.countPost(this.props.params.category);
-      }
-      this.setState({
-        number: 1,
-        isReset: false
-      });
-
-    }
-  }
-  handleHover = (active) => {
-    this.setState({isHover: active});
-  }
-  getPostSpringProps = (index) => {
-    return {
-      defaultStyle: {
-        scale: 1,
-        marginTop: 300,
-        zIndex: 1,
-      },
-      style:{
-        scale: spring(this.state.isHover===index ? 1.2 : 1),
-        marginTop: spring(0),
-        zIndex: spring(this.state.isHover===index ? 2 : 1),
-      },
     };
   }
   setTotal(event, total) {
@@ -137,11 +56,51 @@ class Post extends Component{
       this.setState({ display });
     }
   }
-  handlePagination(number){
-    this.setState({
-      number: number
-    });
-    this.props.listPost(this.props.params.category,number);
+
+  componentDidMount(){
+    window.scrollTo(0, 0);
+    if(this.props.params.category){
+      this.props.getCategory(this.props.params.category)
+        .then(()=>{
+          if(Object.keys(this.props.category).length){
+            this.props.listPost(this.props.params.category,1);// 1 means page number.
+            this.props.countPost(this.props.params.category);
+          }
+          else{
+            browserHistory.push('/NotFound');
+          }
+        });
+    }
+    else{
+      this.props.listPost(this.props.params.category,1);// 1 means page number.
+      this.props.countPost(this.props.params.category);
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    window.scrollTo(0, 0);
+    if(this.props.params.category !== nextProps.params.category){
+      if(nextProps.params.category){
+        this.props.getCategory(nextProps.params.category)
+          .then(()=>{
+            if(Object.keys(this.props.category).length){
+              this.props.listPost(this.props.params.category,1);// 1 means page number.
+              this.props.countPost(this.props.params.category);
+            }
+            else{
+              browserHistory.push('/NotFound');
+            }
+          });
+      }
+      else{
+        this.props.listPost(nextProps.params.category,1);// 1 means page number.
+        this.props.countPost(nextProps.params.category);
+      }
+
+      this.setState({
+        number: 1,
+        isReset: false,
+      });
+    }
   }
   handlePostEdit = () => {
     var token = localStorage.getItem('token');
@@ -159,87 +118,41 @@ class Post extends Component{
       <CircularProgress size={100} thickness={7} />
     </div>);
   }
+  handlePagination = (number) => {
+    this.setState({
+      number
+    });
+    this.props.listPost(this.props.params.category, number);
+  }
   render(){
     const {list, count} = this.props.post;
+    const {number, display} = this.state;
     const {screenWidth} = this.props.environment;
     const isMobile = screenWidth < 1000;
     const category = this.props.params.category?this.props.params.category:'최근 글';
-    const disqusShortname = 'godsenal';
     return(
         <div className={styles.listContainer}>
           {list.status === 'SUCCESS'?
           <div>
             <div>
-              <span className={styles.category}><FaArchive/>&nbsp;{category}</span>
+              <span style={{'textAlign':'left'}} className={styles.category}><FaArchive/>&nbsp;{category}</span>
+              <div style={{'textAlign':'right'}}><Searchbar /></div>
             </div>
             <Divider inset={true} style={{'margin':'3rem'}} />
-            <GridList
-              cols={isMobile?1:2}
-              cellHeight={450}
-              padding={10}
-              style={inlineStyles.gridList}>
-            {list.posts.map((post, i)=>{
-              var disqusConfig = {
-                //url: `http://www.godsenal.com/#${disqusShortname}`,
-                identifier: post._id,
-                title: post.title,
-              };
-              return (
-                <Motion key={i} {...this.getPostSpringProps(i)}>
-                  {interpolatingStyle => {
-                    let style = {
-                      transform: 'scale(' + interpolatingStyle.scale + ')',
-                      marginTop: interpolatingStyle.marginTop,
-                    };
-                    return(
-                      <Link to={`/post/${post._id}`} style={{'textDecoration':'none'}}>
-                        <GridTile>
-                          <Card
-                            onMouseOver={()=>{this.handleHover(i);}}
-                            onMouseOut={()=>{this.handleHover(false);}}>
-                            <CardMedia style={style}>
-                              <img src="/assets/images/back.jpg" style={{'height':'200px'}} alt="" />
-                            </CardMedia>
-                            <CardTitle title={post.title}/>
-                              <CardHeader
-                                title={post.author}
-                                subtitle="Subtitle"
-                                avatar="/assets/images/profile.jpg"
-                              />
-                            <CardText style={{'textAlign':'right'}}>
-                              <h5>
-                                <MdDateRange/>
-                                {moment(post.created).format('LL')}
-                              </h5>&nbsp;
-                              <span>
-                                <MdRemoveRedEye/>
-                                {post.viewer}
-                              </span>&nbsp;
-                              <span>
-                                <MdComment/>
-                                  <CommentCount shortname={disqusShortname} config={disqusConfig}>
-                                    0
-                                  </CommentCount>
-                              </span>
-                            </CardText>
-                          </Card>
-                        </GridTile>
-                      </Link>);
-                  }}
-                </Motion>);
-            })}
-            </GridList>
+            <PostList
+              isMobile={isMobile}
+              posts={list.posts}/>
             <div style={{'textAlign':'center'}}>
               <Pagination
                 total = { parseInt((count.count-1) / 10 + 1) }
-                current = { this.state.number }
-                display = { this.state.display }
+                current = { number }
+                display = { display }
                 onChange = { number => this.handlePagination(number) }
               />
             </div>
             {this.props.status.valid?
               <RaisedButton label="새글 추가" fullWidth={true} onTouchTap={this.handlePostEdit} />:null}
-          </div>:this.renderProgress()}
+          </div>:null}
         </div>
 
     );

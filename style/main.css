@@ -175,3 +175,7 @@ span {
   cursor: pointer;
   font-family: 'RobotoBlack', cursive;
 }
+
+.searchbar {
+  width: 5%;
+}

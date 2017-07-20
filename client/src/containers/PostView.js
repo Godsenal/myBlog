@@ -170,8 +170,7 @@ class PostView extends Component {
         {get.status === 'SUCCESS'?
           this.renderPost(get.post)
           : get.status === 'FAILURE'?
-          this.renderFail()
-          :this.renderProgress()}
+          this.renderFail():null}
       </div>
     );
   }

@@ -26,6 +26,9 @@ import {
   POST_RATE,
   POST_RATE_SUCCESS,
   POST_RATE_FAILURE,
+  POST_SEARCH,
+  POST_SEARCH_SUCCESS,
+  POST_SEARCH_FAILURE,
 } from './ActionTypes';
 
 import axios from 'axios';
@@ -149,6 +152,21 @@ export function ratePost(postID){
         dispatch({type: POST_RATE_SUCCESS, rating: res.data.rating});
       }).catch((err)=>{
         dispatch({type: POST_RATE_FAILURE, err: err.response.data.err, errCode: err.response.data.errCode});
+      });
+  };
+}
+
+export function searchPost(type, category, word){
+  return (dispatch) => {
+    dispatch({type: POST_SEARCH});
+    let search = {
+      type, category, word,
+    };
+    return axios.post('/api/post/search',search)
+      .then((res)=>{
+        dispatch({type: POST_SEARCH_SUCCESS, result: res.data.result});
+      }).catch((err)=>{
+        dispatch({type: POST_SEARCH_FAILURE, err: err.response.data.err, errCode: err.response.data.errCode});
       });
   };
 }
