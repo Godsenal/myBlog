@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import {Card, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import {GridList, GridTile} from 'material-ui/GridList';
+import Avatar from 'material-ui/Avatar';
 import MdRemoveRedEye from 'react-icons/md/remove-red-eye';
 import MdDateRange from 'react-icons/md/date-range';
 import MdComment from 'react-icons/md/comment';
@@ -82,12 +83,10 @@ class PostList extends Component{
                         <img src="/assets/images/back.jpg" style={{'height':'200px'}} alt="" />
                       </CardMedia>
                       <CardTitle title={post.title}/>
-                        <CardHeader
-                          title={post.author}
-                          subtitle="Subtitle"
-                          avatar="/assets/images/profile.jpg"
-                        />
                       <CardText style={{'textAlign':'right'}}>
+                        <h3 style={{'float':'left','display':'inline'}}>
+                          <Avatar backgroundColor={'#32FAE2'}>{post.author.substr(0,1).toUpperCase()}</Avatar>&nbsp;{post.author}
+                        </h3>
                         <h5>
                           <MdDateRange/>
                           {moment(post.created).format('LL')}

@@ -5,11 +5,12 @@ import PropTypes from 'prop-types';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import FaArchive from 'react-icons/fa/archive';
+import FaFrownO from 'react-icons/fa/frown-o';
 import CircularProgress from 'material-ui/CircularProgress';
 import Pagination from 'material-ui-pagination';
 
 import {Searchbar, PostList} from '../components';
-import {addPost, listPost, updatePost, deletePost, countPost} from '../actions/post';
+import {addPost, listPost, updatePost, deletePost, countPost, searchPost, searchCountPost} from '../actions/post';
 import {getCategory} from '../actions/category';
 import {getStatusRequest} from '../actions/authentication';
 
@@ -23,6 +24,9 @@ class Post extends Component{
     this.setDisplay = this.setDisplay.bind(this);
     this.handlePagination = this.handlePagination.bind(this);
     this.state = {
+      word: '',
+      type: '',
+      isSearch: false,
       display: 7,
       number: 1,
       isReset: false,
@@ -56,7 +60,6 @@ class Post extends Component{
       this.setState({ display });
     }
   }
-
   componentDidMount(){
     window.scrollTo(0, 0);
     if(this.props.params.category){
@@ -97,12 +100,14 @@ class Post extends Component{
       }
 
       this.setState({
+        word:'',
+        isSearch: false,
         number: 1,
         isReset: false,
       });
     }
   }
-  handlePostEdit = () => {
+  handleEditPost = () => {
     var token = localStorage.getItem('token');
     this.props.getStatusRequest(token)
       .then(()=>{
@@ -110,6 +115,31 @@ class Post extends Component{
           browserHistory.push(`/post/new/${this.props.params.category}`);
         }
       });
+  }
+  handleSearchPost = (word, type) => {
+    if(!word){
+      this.setState({
+        word: '',
+        type: '',
+        isSearch: false,
+        number: 1,
+        isReset: false,
+      });
+    }else{
+      this.props.searchPost(word, 1, type, this.props.params.category)
+        .then(()=>{
+          this.props.searchCountPost(word, type, this.props.params.category)
+            .then(()=>{
+              this.setState({
+                word,
+                type,
+                isSearch: true,
+                number: 1,
+                isReset: false,
+              });
+            });
+        });
+    }
   }
   renderProgress = () =>{
     return(
@@ -122,36 +152,70 @@ class Post extends Component{
     this.setState({
       number
     });
-    this.props.listPost(this.props.params.category, number);
+    if(this.state.isSearch){
+      this.props.searchPost(this.state.word, number, this.state.type, this.props.params.category);
+    }else{
+      this.props.listPost(this.props.params.category, number);
+    }
+
+  }
+  handleHeaderClick = () => {
+    if(this.props.params.category){
+      this.props.listPost(this.props.params.category,1)
+        .then(()=>{
+          this.props.countPost(this.props.params.category);
+          this.setState({
+            word:'',
+            isSearch: false,
+            number: 1,
+            isReset: false,
+          });
+        });
+    }
   }
   render(){
-    const {list, count} = this.props.post;
-    const {number, display} = this.state;
+    const {list, count, search, searchCount} = this.props.post;
+    const {number, display, isSearch, word} = this.state;
     const {screenWidth} = this.props.environment;
     const isMobile = screenWidth < 1000;
     const category = this.props.params.category?this.props.params.category:'최근 글';
+
+    const header = isSearch?
+      <span>
+        <span style={{'color':'#329FFF'}}>{word}</span>에 대한 검색결과 in&nbsp;
+        <span style={{'color':'#323CAA','cursor':'pointer'}} onClick={this.handleHeaderClick}>{category}</span>
+      </span>:category;
+    const total = parseInt(((isSearch?searchCount.count:count.count)-1) / 10 + 1);
+    const posts = isSearch?search.results:list.posts;
     return(
         <div className={styles.listContainer}>
           {list.status === 'SUCCESS'?
           <div>
             <div>
-              <span style={{'textAlign':'left'}} className={styles.category}><FaArchive/>&nbsp;{category}</span>
-              <div style={{'textAlign':'right'}}><Searchbar /></div>
+              <span style={{'textAlign':'left'}} className={styles.category}>
+                <FaArchive/>&nbsp;{header}
+              </span>
+              {this.props.params.category?<Searchbar handleSearchPost={this.handleSearchPost}/>:null}
             </div>
-            <Divider inset={true} style={{'margin':'3rem'}} />
-            <PostList
-              isMobile={isMobile}
-              posts={list.posts}/>
+            <Divider style={{'marginTop':'1.5rem', 'marginBottom':'1.5rem'}} />
+            {posts.length>0?
+              <PostList
+                isMobile={isMobile}
+                posts={posts}/>:
+                <div style={{'textAlign':'center','fontSize':'3vw'}}>
+                  <FaFrownO style={{'fontSize':'10vw'}}/>
+                  <h1 >결과가 없습니다.</h1>
+                </div>}
             <div style={{'textAlign':'center'}}>
               <Pagination
-                total = { parseInt((count.count-1) / 10 + 1) }
+                total = { total }
                 current = { number }
                 display = { display }
                 onChange = { number => this.handlePagination(number) }
               />
             </div>
             {this.props.status.valid?
-              <RaisedButton label="새글 추가" fullWidth={true} onTouchTap={this.handlePostEdit} />:null}
+              <RaisedButton label="새글 추가" fullWidth={true} onTouchTap={this.handleEditPost} />:null}
           </div>:null}
         </div>
 
@@ -183,6 +247,8 @@ Post.propTypes = {
   updatePost: PropTypes.func.isRequired,
   deletePost: PropTypes.func.isRequired,
   countPost: PropTypes.func.isRequired,
+  searchPost: PropTypes.func.isRequired,
+  searchCountPost: PropTypes.func.isRequired,
   getCategory: PropTypes.func.isRequired,
   status: PropTypes.object.isRequired,
   getStatusRequest: PropTypes.func.isRequired,
@@ -211,6 +277,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     countPost: (category) => {
       return dispatch(countPost(category));
+    },
+    searchPost: (word, number, type, category ) => {
+      return dispatch(searchPost(word, number, type, category ));
+    },
+    searchCountPost: (word, type, category) => {
+      return dispatch(searchCountPost(word, type, category));
     },
     getCategory: (categoryName) => {
       return dispatch(getCategory(categoryName));
