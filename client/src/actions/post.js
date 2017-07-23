@@ -37,11 +37,6 @@ import {
 
 import axios from 'axios';
 
-export function setPostHistory(history){
-  return (dispatch) => {
-    dispatch({type: RAW_POST_HISTORY, history});
-  };
-}
 
 export function addPost(post){
   return (dispatch) => {
