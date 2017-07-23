@@ -30,13 +30,8 @@
 
 body {
   margin: 0;
-  font-family: 'NanumGothicExtraBold', cursive;
+  font-family: 'RobotoRegular', 'NanumGothicExtraBold', cursive;
   background-color: #EFEFEF;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  margin: 0;
-  font-family: 'NanumGothicExtraBold', cursive;
 }
 
 h1 {
@@ -44,8 +39,8 @@ h1 {
   margin: 1.5rem;
 }
 
-span {
-  font-family: 'NanumGothic', cursive;
+.font {
+  font-family: 'RobotoRegular', 'NanumGothicExtraBold', cursive;
 }
 
 .appContainer {
@@ -174,4 +169,8 @@ span {
 .header {
   cursor: pointer;
   font-family: 'RobotoBlack', cursive;
+}
+
+.searchbar {
+  width: 5%;
 }

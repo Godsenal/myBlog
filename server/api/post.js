@@ -64,7 +64,6 @@ router.get('/list/:category/:number', function(req, res) {
         return category.name;
       });
       subCategories.push(req.params.category);
-
       var skip = (req.params.number - 1) * 10; // skip할 페이지
       var query = Posts.find({category: {$in: subCategories}})
         .sort({_id:-1})
@@ -75,7 +74,6 @@ router.get('/list/:category/:number', function(req, res) {
           console.log(err);
           return res.status(500).json({error: 'internal server error', code: 1});
         }
-
         res.json({posts});
       });
     });
@@ -169,21 +167,6 @@ router.get('/get/next/:postID/:category', function(req, res) {
     });
 });
 
-
-//GET PAGE COUNT
-router.get('/count/:category',function(req,res){
-  Posts.find({category:req.params.category})
-    .count()
-    .exec(function(err,count){
-      if(err){
-        console.log(err);
-        return res.status(400).json({error: 'internal server error', code: 1});
-      }
-      res.json({count});
-    });
-
-});
-
 //GET PAGE COUNT WITHOUT CATEGORY
 router.get('/count/all',function(req,res){
   Posts.find({})
@@ -197,6 +180,36 @@ router.get('/count/all',function(req,res){
     });
 
 });
+
+//GET PAGE COUNT
+router.get('/count/:category',function(req,res){
+  var re = ','+req.params.category+',';
+  var subCategories = [];
+  Categories.find({path: {$regex:re}},{name: 1})
+    .exec(function(err, categories){
+      if(err){
+        console.log(err);
+        return res.status(500).json({error: 'internal server error', code: 1});
+      }
+      /* Get All SubCategories' posts */
+      subCategories = categories.map((category)=>{
+        return category.name;
+      });
+      subCategories.push(req.params.category);
+      Posts.find({category: {$in: subCategories}})
+        .count()
+        .exec(function(err,count){
+          if(err){
+            console.log(err);
+            return res.status(400).json({error: 'internal server error', code: 1});
+          }
+          res.json({count});
+        });
+    });
+
+});
+
+
 
 // ADD POST
 router.post('/add', function(req, res) {
@@ -256,5 +269,136 @@ router.post('/increase/viewer',function(req,res){
 });
 
 
+
+//SEARCH COUNT ALL
+router.get('/search/count/:word/:type',function(req,res){
+  var searchReg = '.*'+req.params.word +'.*';
+  Posts.find({[req.params.type]: {$regex: searchReg, $options: 'i'}})
+    .count()
+    .exec(function(err,count){
+      if(err){
+        console.log(err);
+        return res.status(400).json({error: 'internal server error', code: 1});
+      }
+      res.json({count});
+    });
+});
+//SEARCH COUNT IN CATEGORY
+router.get('/search/count/:word/:type/:category',function(req,res){
+  var re = ','+req.params.category+',';
+  var subCategories = [];
+  Categories.find({path: {$regex:re}},{name: 1})
+    .exec(function(err, categories){
+      if(err){
+        console.log(err);
+        return res.status(500).json({error: 'internal server error', code: 1});
+      }
+      /* Get All SubCategories' posts */
+      subCategories = categories.map((category)=>{
+        return category.name;
+      });
+      subCategories.push(req.params.category);
+
+      var searchReg = '.*'+req.params.word +'.*';
+      Posts.find({category: {$in: subCategories}, [req.params.type]: {$regex: searchReg, $options: 'i'}})
+        .count()
+        .exec(function(err,count){
+          if(err){
+            console.log(err);
+            return res.status(400).json({error: 'internal server error', code: 1});
+          }
+          res.json({count});
+        });
+    });
+});
+
+//SEARCH ALL POSTS
+router.get('/search/:word/:type/:number',function(req,res){
+  var skip = (req.params.number - 1) * 10; // skip할 페이지
+  var searchReg = '.*'+req.params.word +'.*';
+
+  var query = Posts.find({[req.params.type]: {$regex: searchReg, $options: 'i'}})
+    .sort({_id:-1})
+    .limit(10)
+    .skip(skip);
+      //search for title + contents
+  if(req.params.type == 'all'){
+    query = Posts.find({$or:[{title: {$regex: searchReg, $options: 'i'}},{text: {$regex: searchReg, $options: 'i'}}]})
+      .sort({_id:-1})
+      .limit(10)
+      .skip(skip);
+  }
+  query.exec(function(err, results) {
+    if(err) {
+      console.log(err);
+      return res.status(500).json({error: 'internal server error', code: 1});
+    }
+    res.json({results});
+  });
+});
+
+//SEARCH IN CATEGORY
+router.get('/search/:word/:type/:number/:category',function(req,res){
+  var re = ','+req.params.category+',';
+  var subCategories = [];
+  Categories.find({path: {$regex:re}},{name: 1})
+    .exec(function(err, categories){
+      if(err){
+        console.log(err);
+        return res.status(500).json({error: 'internal server error', code: 1});
+      }
+      /* Get All SubCategories' posts */
+      subCategories = categories.map((category)=>{
+        return category.name;
+      });
+      subCategories.push(req.params.category);
+      var skip = (req.params.number - 1) * 10; // skip할 페이지
+      var searchReg = '.*'+req.params.word +'.*';
+
+      var query = Posts.find({category: {$in: subCategories}, [req.params.type]: {$regex: searchReg, $options: 'i'}})
+        .sort({_id:-1})
+        .limit(10)
+        .skip(skip);
+        //search for title + contents
+      if(req.params.type == 'all'){
+        query = Posts.find({category: {$in: subCategories}, $or:[{title: {$regex: searchReg, $options: 'i'}},{text: {$regex: searchReg, $options: 'i'}}]})
+          .sort({_id:-1})
+          .limit(10)
+          .skip(skip);
+      }
+      query.exec(function(err, results) {
+        if(err) {
+          console.log(err);
+          return res.status(500).json({error: 'internal server error', code: 1});
+        }
+        res.json({results});
+      });
+    });
+});
+
+//SEARCH BY TYPE
+router.post('/search/content',function(req,res){
+  //content는 html이므로 text로 검색.
+  Posts.find({text: req.body.word},function(err, results){
+    if(err){
+      console.log(err);
+      return res.status(400).json({error: 'internal server error', code: 1});
+    }
+    res.json({results});
+  });
+});
+
+//COUNT SEARCH
+router.post('/search/count',function(req,res){
+  Posts.find({category: req.body.category, title: req.body.word})
+    .count()
+    .exec(function(err, count){
+      if(err){
+        console.log(err);
+        return res.status(400).json({error: 'internal server error', code: 1});
+      }
+      res.json({count});
+    });
+});
 
 export default router;

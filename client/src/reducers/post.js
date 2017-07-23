@@ -47,7 +47,7 @@ const initialState = {
   },
   count: {
     status: 'INIT',
-    count: 100,
+    count: 0,
     err: 'ERROR',
     errCode: -1,
   },
@@ -55,6 +55,22 @@ const initialState = {
     status: 'INIT',
     err: 'ERROR',
     errCode: -1,
+  },
+  search:{
+    status: 'INIT',
+    results: [],
+    err: 'ERROR',
+    errCode: -1,
+  },
+  searchCount:{
+    status: 'INIT',
+    count: 0,
+    err: 'ERROR',
+    errCode: -1,
+  },
+  history:{
+    isBack: false,
+    number: 1,
   }
 };
 
@@ -64,7 +80,10 @@ export default function post(state, action){
   }
 
   switch (action.type) {
-
+    case types.RAW_POST_HISTORY:
+      return update(state, {
+        history: {$set:action.history}
+      });
     /* ADD POST */
     case types.POST_ADD:
       return update(state, {
@@ -284,6 +303,52 @@ export default function post(state, action){
     case types.POST_RATE_FAILURE:
       return update(state, {
         rate: {
+          status: {$set: 'FAILURE'},
+          err: {$set: action.err},
+          errCode: {$set: action.errCode}
+        }
+      });
+
+    /* SEARCH POST */
+    case types.POST_SEARCH:
+      return update(state, {
+        search: {
+          status: {$set: 'WAITING'}
+        }
+      });
+    case types.POST_SEARCH_SUCCESS:
+      return update(state, {
+        search:{
+          results:{$set: action.results},
+          status:{$set: 'SUCCESS'}
+        },
+      });
+    case types.POST_SEARCH_FAILURE:
+      return update(state, {
+        search: {
+          status: {$set: 'FAILURE'},
+          err: {$set: action.err},
+          errCode: {$set: action.errCode}
+        }
+      });
+
+    /* SEARCH POST COUNT*/
+    case types.POST_SEARCH_COUNT:
+      return update(state, {
+        searchCount: {
+          status: {$set: 'WAITING'}
+        }
+      });
+    case types.POST_SEARCH_COUNT_SUCCESS:
+      return update(state, {
+        searchCount:{
+          count:{$set: action.count},
+          status:{$set: 'SUCCESS'}
+        },
+      });
+    case types.POST_SEARCH_COUNT_FAILURE:
+      return update(state, {
+        searchCount: {
           status: {$set: 'FAILURE'},
           err: {$set: action.err},
           errCode: {$set: action.errCode}

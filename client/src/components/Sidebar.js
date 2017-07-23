@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {Link, browserHistory} from 'react-router';
+import {browserHistory} from 'react-router';
 
 import Drawer from 'material-ui/Drawer';
 import {ListItem} from 'material-ui/List';
@@ -14,6 +14,7 @@ import TextField from 'material-ui/TextField';
 import MdAddCircleOutline from 'react-icons/md/add-circle-outline';
 import FaSignOut from 'react-icons/fa/sign-out';
 
+import {Searchbar} from './';
 import {changeActiveCategory, addCategory, listCategory, updateCategory, deleteCategory} from '../actions/category';
 import {getStatusRequest, signoutRequest} from '../actions/authentication';
 import styles from '../../../style/main.css';
@@ -212,6 +213,7 @@ class Sidebar extends Component{
     const {list} = this.props.category;
     return(
       <Drawer
+        containerClassName={styles.font}
         width={400}
         docked={!this.props.isMobile}
         onRequestChange={this.props.isMobile? this.props.toggleSidebar:null}
@@ -235,6 +237,9 @@ class Sidebar extends Component{
               </ListItem>);
           }
         })}
+        <div style={{'marginTop':'2rem'}}>
+          <Searchbar />
+        </div>
         {this.props.status.valid?
           <ListItem
             onTouchTap={() => {this.handleOpenModal();}}><MdAddCircleOutline/>

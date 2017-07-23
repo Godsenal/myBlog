@@ -1,4 +1,5 @@
 import {
+  RAW_POST_HISTORY,
   POST_ADD,
   POST_ADD_SUCCESS,
   POST_ADD_FAILURE,
@@ -26,9 +27,21 @@ import {
   POST_RATE,
   POST_RATE_SUCCESS,
   POST_RATE_FAILURE,
+  POST_SEARCH,
+  POST_SEARCH_SUCCESS,
+  POST_SEARCH_FAILURE,
+  POST_SEARCH_COUNT,
+  POST_SEARCH_COUNT_SUCCESS,
+  POST_SEARCH_COUNT_FAILURE,
 } from './ActionTypes';
 
 import axios from 'axios';
+
+export function setPostHistory(history){
+  return (dispatch) => {
+    dispatch({type: RAW_POST_HISTORY, history});
+  };
+}
 
 export function addPost(post){
   return (dispatch) => {
@@ -149,6 +162,40 @@ export function ratePost(postID){
         dispatch({type: POST_RATE_SUCCESS, rating: res.data.rating});
       }).catch((err)=>{
         dispatch({type: POST_RATE_FAILURE, err: err.response.data.err, errCode: err.response.data.errCode});
+      });
+  };
+}
+
+export function searchPost(word, number = 1, type, category ){
+  return (dispatch) => {
+    dispatch({type: POST_SEARCH});
+    let url = `/api/post/search/${word}/${type}/${number}`;
+
+    if(category){
+      url += `/${category}`;
+    }
+    return axios.get(url)
+      .then((res)=>{
+        dispatch({type: POST_SEARCH_SUCCESS, results: res.data.results});
+      }).catch((err)=>{
+        dispatch({type: POST_SEARCH_FAILURE, err: err.response.data.err, errCode: err.response.data.errCode});
+      });
+  };
+}
+
+export function searchCountPost(word, type, category ){
+  return (dispatch) => {
+    dispatch({type: POST_SEARCH_COUNT});
+    let url = `/api/post/search/count/${word}/${type}`;
+
+    if(category){
+      url += `/${category}`;
+    }
+    return axios.get(url)
+      .then((res)=>{
+        dispatch({type: POST_SEARCH_COUNT_SUCCESS, count: res.data.count});
+      }).catch((err)=>{
+        dispatch({type: POST_SEARCH_COUNT_FAILURE, err: err.response.data.err, errCode: err.response.data.errCode});
       });
   };
 }
