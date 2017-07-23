@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router';
+import {browserHistory} from 'react-router';
 import {Motion, spring} from 'react-motion';
 import moment from 'moment';
 
@@ -31,7 +31,10 @@ class PostList extends Component{
       isHover: false,
     };
   }
-
+  handlePostClick = (postID) => {
+    this.props.handlePostClick();
+    browserHistory.push(`/post/${postID}`);
+  }
   handleHover = (active) => {
     this.setState({isHover: active});
   }
@@ -74,8 +77,8 @@ class PostList extends Component{
                 marginTop: interpolatingStyle.marginTop,
               };
               return(
-                <Link to={`/post/${post._id}`} style={{'textDecoration':'none'}}>
-                  <GridTile>
+
+                  <GridTile style={{'cursor': 'pointer'}} onTouchTap={ () => this.handlePostClick(post._id)}>
                     <Card
                       onMouseOver={()=>{this.handleHover(i);}}
                       onMouseOut={()=>{this.handleHover(false);}}>
@@ -103,8 +106,7 @@ class PostList extends Component{
                         </span>
                       </CardText>
                     </Card>
-                  </GridTile>
-                </Link>);
+                  </GridTile>);
             }}
           </Motion>);
       })}
@@ -116,5 +118,6 @@ class PostList extends Component{
 PostList.propTypes = {
   posts: PropTypes.array.isRequired,
   isMobile: PropTypes.bool.isRequired,
+  handlePostClick : PropTypes.func.isRequired,
 };
 export default PostList;

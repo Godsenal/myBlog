@@ -67,6 +67,10 @@ const initialState = {
     count: 0,
     err: 'ERROR',
     errCode: -1,
+  },
+  history:{
+    isBack: false,
+    number: 1,
   }
 };
 
@@ -76,7 +80,10 @@ export default function post(state, action){
   }
 
   switch (action.type) {
-
+    case types.RAW_POST_HISTORY:
+      return update(state, {
+        history: {$set:action.history}
+      });
     /* ADD POST */
     case types.POST_ADD:
       return update(state, {

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {browserHistory} from 'react-router';
 import ReactQuill from 'react-quill';
 
 import Subheader from 'material-ui/Subheader';
@@ -34,9 +35,15 @@ class PostView extends Component {
     super();
   }
   componentDidMount(){
+
     var {postID}= this.props.params;
     if(postID){
       this.loadPost(postID);
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if(this.props.params.postID !== nextProps.params.postID){
+      this.loadPost(nextProps.params.postID);
     }
   }
   isEmpty(obj) {
@@ -64,7 +71,7 @@ class PostView extends Component {
         buttons.push(
           <RaisedButton
             key={0}
-            onTouchTap={()=>this.loadPost(this.props.prev.post._id)}
+            onTouchTap={()=>browserHistory.push(`/post/${this.props.prev.post._id}`)}
             label={title}
             labelStyle={{'color':'#A7FFEB'}}
             style={{'float':'left'}}
@@ -81,7 +88,7 @@ class PostView extends Component {
         buttons.push(
           <RaisedButton
             key={1}
-            onTouchTap={()=>this.loadPost(this.props.next.post._id)}
+            onTouchTap={()=>browserHistory.push(`/post/${this.props.next.post._id}`)}
             label={title}
             labelStyle={{'color':'#A7FFEB'}}
             labelPosition='before'

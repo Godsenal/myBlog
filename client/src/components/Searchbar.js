@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {browserHistory} from 'react-router';
 
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
@@ -58,7 +59,7 @@ class Searchbar extends Component{
   handleKeyPress = (e) => {
     if(e.key === 'Enter'){
       e.preventDefault();
-      this.props.handleSearchPost(this.state.word, this.state.type);
+      browserHistory.push(`/search/${this.state.type}/${this.state.word}/${this.props.category}`);
       this.handleClose();
     }
   }
@@ -76,7 +77,7 @@ class Searchbar extends Component{
   render(){
     const {word, open} = this.state;
     return(
-      <div style={{'display':'inline','float':'right'}}>
+      <div style={{'display':'inline'}}>
         <FaSearch onClick={this.handleOpen} style={styles.iconStyle}/>
           <Dialog
             modal={false}
@@ -115,9 +116,9 @@ class Searchbar extends Component{
 }
 
 Searchbar.defaultProps = {
-  handleSearchPost: ()=> {console.log('Searchbar Props Error');}
+  category: '',
 };
 Searchbar.propTypes = {
-  handleSearchPost: PropTypes.func.isRequired,
+  category: PropTypes.string.isRequired,
 };
 export default Searchbar;

@@ -268,6 +268,50 @@ router.post('/increase/viewer',function(req,res){
   });
 });
 
+
+
+//SEARCH COUNT ALL
+router.get('/search/count/:word/:type',function(req,res){
+  var searchReg = '.*'+req.params.word +'.*';
+  Posts.find({[req.params.type]: {$regex: searchReg, $options: 'i'}})
+    .count()
+    .exec(function(err,count){
+      if(err){
+        console.log(err);
+        return res.status(400).json({error: 'internal server error', code: 1});
+      }
+      res.json({count});
+    });
+});
+//SEARCH COUNT IN CATEGORY
+router.get('/search/count/:word/:type/:category',function(req,res){
+  var re = ','+req.params.category+',';
+  var subCategories = [];
+  Categories.find({path: {$regex:re}},{name: 1})
+    .exec(function(err, categories){
+      if(err){
+        console.log(err);
+        return res.status(500).json({error: 'internal server error', code: 1});
+      }
+      /* Get All SubCategories' posts */
+      subCategories = categories.map((category)=>{
+        return category.name;
+      });
+      subCategories.push(req.params.category);
+
+      var searchReg = '.*'+req.params.word +'.*';
+      Posts.find({category: {$in: subCategories}, [req.params.type]: {$regex: searchReg, $options: 'i'}})
+        .count()
+        .exec(function(err,count){
+          if(err){
+            console.log(err);
+            return res.status(400).json({error: 'internal server error', code: 1});
+          }
+          res.json({count});
+        });
+    });
+});
+
 //SEARCH ALL POSTS
 router.get('/search/:word/:type/:number',function(req,res){
   var skip = (req.params.number - 1) * 10; // skip할 페이지
@@ -291,20 +335,6 @@ router.get('/search/:word/:type/:number',function(req,res){
     }
     res.json({results});
   });
-});
-
-//SEARCH COUNT ALL
-router.get('/search/count/:word/:type',function(req,res){
-  var searchReg = '.*'+req.params.word +'.*';
-  Posts.find({[req.params.type]: {$regex: searchReg, $options: 'i'}})
-    .count()
-    .exec(function(err,count){
-      if(err){
-        console.log(err);
-        return res.status(400).json({error: 'internal server error', code: 1});
-      }
-      res.json({count});
-    });
 });
 
 //SEARCH IN CATEGORY
@@ -346,34 +376,6 @@ router.get('/search/:word/:type/:number/:category',function(req,res){
     });
 });
 
-//SEARCH COUNT IN CATEGORY
-router.get('/search/count/:word/:type/:category',function(req,res){
-  var re = ','+req.params.category+',';
-  var subCategories = [];
-  Categories.find({path: {$regex:re}},{name: 1})
-    .exec(function(err, categories){
-      if(err){
-        console.log(err);
-        return res.status(500).json({error: 'internal server error', code: 1});
-      }
-      /* Get All SubCategories' posts */
-      subCategories = categories.map((category)=>{
-        return category.name;
-      });
-      subCategories.push(req.params.category);
-
-      var searchReg = '.*'+req.params.word +'.*';
-      Posts.find({category: {$in: subCategories}, [req.params.type]: {$regex: searchReg, $options: 'i'}})
-        .count()
-        .exec(function(err,count){
-          if(err){
-            console.log(err);
-            return res.status(400).json({error: 'internal server error', code: 1});
-          }
-          res.json({count});
-        });
-    });
-});
 //SEARCH BY TYPE
 router.post('/search/content',function(req,res){
   //content는 html이므로 text로 검색.

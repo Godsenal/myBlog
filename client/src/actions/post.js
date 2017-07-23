@@ -1,4 +1,5 @@
 import {
+  RAW_POST_HISTORY,
   POST_ADD,
   POST_ADD_SUCCESS,
   POST_ADD_FAILURE,
@@ -35,6 +36,12 @@ import {
 } from './ActionTypes';
 
 import axios from 'axios';
+
+export function setPostHistory(history){
+  return (dispatch) => {
+    dispatch({type: RAW_POST_HISTORY, history});
+  };
+}
 
 export function addPost(post){
   return (dispatch) => {
@@ -184,7 +191,6 @@ export function searchCountPost(word, type, category ){
     if(category){
       url += `/${category}`;
     }
-
     return axios.get(url)
       .then((res)=>{
         dispatch({type: POST_SEARCH_COUNT_SUCCESS, count: res.data.count});

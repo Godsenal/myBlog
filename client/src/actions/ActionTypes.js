@@ -9,6 +9,8 @@ export const AUTH_GET_STATUS_FAILURE = 'AUTH_GET_STATUS_FAILURE';
 
 export const AUTH_SIGNOUT = 'AUTH_SIGNOUT';
 
+/* POST_RAW */
+export const RAW_POST_HISTORY = 'RAW_POST_HISTORY';
 /* POST */
 export const POST_ADD = 'POST_ADD';
 export const POST_ADD_SUCCESS = 'POST_ADD_SUCCESS';

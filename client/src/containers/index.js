@@ -4,5 +4,6 @@ import Post from './Post';
 import PostEdit from './PostEdit';
 import PostView from './PostView';
 import Signin from './Signin';
+import Search from './Search';
 import NotFound from './NotFound';
-export {App, Home, Post, PostEdit, PostView, Signin, NotFound};
+export {App, Home, Post, PostEdit, PostView, Signin, Search, NotFound};
