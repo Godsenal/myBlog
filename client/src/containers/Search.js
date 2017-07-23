@@ -122,13 +122,6 @@ class Search extends Component{
     browserHistory.push({pathname: path, state: {number: number}});
 
   }
-  handlePostClick = () => {
-    let history = {
-      isBack: false,
-      number: this.state.number,
-    };
-    this.props.setPostHistory(history);
-  }
   handleHeaderClick = (category) => {
     if(category){
       browserHistory.push(`/category/${category}`);
@@ -166,7 +159,6 @@ class Search extends Component{
             <Divider style={{'marginTop':'1.5rem', 'marginBottom':'1.5rem'}} />
             {posts.length>0?
               <PostList
-                handlePostClick={this.handlePostClick}
                 isMobile={isMobile}
                 posts={posts}/>:
                 <div style={{'textAlign':'center','fontSize':'3vw'}}>
@@ -208,7 +200,6 @@ Search.propTypes = {
   category: PropTypes.object.isRequired,
   searchPost: PropTypes.func.isRequired,
   searchCountPost: PropTypes.func.isRequired,
-  setPostHistory: PropTypes.func.isRequired,
   status: PropTypes.object.isRequired,
   getStatusRequest: PropTypes.func.isRequired,
 };

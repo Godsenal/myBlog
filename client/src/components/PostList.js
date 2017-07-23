@@ -32,7 +32,6 @@ class PostList extends Component{
     };
   }
   handlePostClick = (postID) => {
-    this.props.handlePostClick();
     browserHistory.push(`/post/${postID}`);
   }
   handleHover = (active) => {
@@ -118,6 +117,5 @@ class PostList extends Component{
 PostList.propTypes = {
   posts: PropTypes.array.isRequired,
   isMobile: PropTypes.bool.isRequired,
-  handlePostClick : PropTypes.func.isRequired,
 };
 export default PostList;
