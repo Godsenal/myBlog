@@ -10,7 +10,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import Pagination from 'material-ui-pagination';
 
 import {Searchbar, PostList} from '../components';
-import {addPost, listPost, updatePost, deletePost, countPost, searchPost, searchCountPost, setPostHistory} from '../actions/post';
+import {addPost, listPost, updatePost, deletePost, countPost} from '../actions/post';
 import {getCategory} from '../actions/category';
 import {getStatusRequest} from '../actions/authentication';
 
@@ -154,12 +154,6 @@ class Post extends Component{
         });
     }
   }
-  handlePostClick = () => {
-    let history = {
-      number: this.state.number,
-    };
-    this.props.setPostHistory(history);
-  }
   render(){
     const {list, count} = this.props.post;
     const {number, display} = this.state;
@@ -236,7 +230,6 @@ Post.propTypes = {
   updatePost: PropTypes.func.isRequired,
   deletePost: PropTypes.func.isRequired,
   countPost: PropTypes.func.isRequired,
-  setPostHistory: PropTypes.func.isRequired,
   getCategory: PropTypes.func.isRequired,
   status: PropTypes.object.isRequired,
   getStatusRequest: PropTypes.func.isRequired,
@@ -265,9 +258,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     countPost: (category) => {
       return dispatch(countPost(category));
-    },
-    setPostHistory: (history) => {
-      return dispatch(setPostHistory(history));
     },
     getCategory: (categoryName) => {
       return dispatch(getCategory(categoryName));
