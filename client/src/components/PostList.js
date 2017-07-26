@@ -13,6 +13,9 @@ import MdComment from 'react-icons/md/comment';
 
 import { CommentCount } from '../disqus';
 
+const thumbnailPath = '/assets/posts/thumbnails/';
+const DEFAULT_IMAGE = '/assets/images/back.jpg';
+
 const inlineStyles = {
   root: {
     display: 'flex',
@@ -82,7 +85,7 @@ class PostList extends Component{
                       onMouseOver={()=>{this.handleHover(i);}}
                       onMouseOut={()=>{this.handleHover(false);}}>
                       <CardMedia style={style}>
-                        <img src="/assets/images/back.jpg" style={{'height':'200px'}} alt="" />
+                        <img src={thumbnailPath + post.thumbnail} style={{'height':'200px'}} onError={(e)=>e.target.src = DEFAULT_IMAGE} />
                       </CardMedia>
                       <CardTitle title={post.title}/>
                       <CardText style={{'textAlign':'right'}}>

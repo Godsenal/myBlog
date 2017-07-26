@@ -130,6 +130,10 @@ class Post extends Component{
     </div>);
   }
   handlePagination = (number) => {
+    if(this.state.number == number){
+      return ;
+    }
+    
     this.setState({
       number
     });
