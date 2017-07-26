@@ -10,6 +10,7 @@ const PostSchema = new Schema({
   text: String, // only TEXT
   category: String,
   comments: {type: Array, default: []},
+  tags: {type: Array, default: []},
   rating: {type: Number, default: 0},
   viewer: {type: Number, default: 0},
   created: { type: Date, default: Date.now },

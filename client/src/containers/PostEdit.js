@@ -13,14 +13,21 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import Paper from 'material-ui/Paper';
+import Popover from 'material-ui/Popover';
+import Badge from 'material-ui/Badge';
+import IconButton from 'material-ui/IconButton';
 import FaFileImageO from 'react-icons/fa/file-image-o';
 import FaTag from 'react-icons/fa/tag';
+import FaClose from 'react-icons/fa/close';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
 
 import styles from '../../../style/main.css';
 import {addPost} from '../actions/post';
 
 const path = '/assets/posts/images/';
+const thumbnailPath = '/assets/posts/thumbnails/';
+
 
 class PostEdit extends Component {
 
@@ -33,10 +40,13 @@ class PostEdit extends Component {
       thumbnail: '',
       content: '',
       text: '',
+      tags: [],
+      tagString: '',
       open: false,
       message: '',
       thumbnailOpen : false,
       imageOpen : false,
+      tagOpen : false,
       file: '',
       files: [],
       snackOpen: false,
@@ -83,6 +93,7 @@ class PostEdit extends Component {
     this.attachQuillRefs();
   }
 
+  /* HANDLE THUMBNAIL */
   handleThumbnailChange = (e) => {
     e.preventDefault();
 
@@ -98,6 +109,71 @@ class PostEdit extends Component {
 
     reader.readAsDataURL(file);
   }
+  handleThumbnailUpload = () => {
+    let formData = new FormData();
+    formData.append('file', this.state.file);
+    axios.post('/api/image/thumbnail', formData)
+      .then((res)=>{
+        this.setState({
+          thumbnail: res.data.filename,
+        });
+        this.closeThumbnailDialog();
+      });
+
+  }
+  openThumbnailDialog = () => {
+    this.setState({
+      thumbnailOpen: true,
+    });
+  }
+  closeThumbnailDialog = () => {
+    this.setState({
+      thumbnailOpen: false,
+      thumbnailPreviewUrl: '',
+      file: '',
+    });
+  }
+  renderThumbnailPreview = () => {
+    let thumbnailPreview = null;
+    if (this.state.thumbnailPreviewUrl) {
+      thumbnailPreview = (
+        <div>
+          <img style={{'height':200}} src={this.state.thumbnailPreviewUrl} />
+          <FlatButton
+            label="선택"
+            fullWidth={true}
+            primary={true}
+            keyboardFocused={true}
+            onTouchTap={this.handleThumbnailUpload}
+          />
+        </div>);
+    } else {
+      thumbnailPreview = (<div>이미지를 먼저 선택해주세요.</div>);
+    }
+    return(
+      <div style={{'textAlign':'center'}}>
+        <h2>미리보기</h2>
+        {thumbnailPreview}
+      </div>
+    );
+  }
+  renderThumbnail = () => {
+    const {thumbnail} = this.state;
+    if(thumbnail){
+      return(
+        <div>
+          <img style={{'height':200}} src={thumbnailPath + thumbnail} />
+          <IconButton
+            onTouchTap={() => this.setState({thumbnail: ''})}
+            tooltip='지우기'>
+            <NavigationClose />
+          </IconButton>
+        </div>
+      );
+    }
+  }
+
+  /* HANDLE IMAGE */
   handleImageChange = (e) => {
     e.preventDefault();
     let files = [];
@@ -112,18 +188,7 @@ class PostEdit extends Component {
       imagePreviewUrl: urls,
     });
   }
-  handleThumbnailUpload = () => {
-    let formData = new FormData();
-    formData.append('file', this.state.file);
-    axios.post('/api/image/thumbnail', formData)
-      .then((res)=>{
-        this.setState({
-          thumbnail: res.data.filename,
-        });
-        this.closeThumbnailDialog();
-      });
 
-  }
   handleImageUpload = () => {
     let formData = new FormData();
     var range = this.quillRef.getSelection();
@@ -153,6 +218,40 @@ class PostEdit extends Component {
     }
     */
   }
+  closeImageDialog = () => {
+    this.setState({
+      imageOpen: false,
+      imagePreviewUrl: [],
+      files: [],
+    });
+  }
+  renderImagePreview = () => {
+    let imagePreview = null;
+    if (this.state.imagePreviewUrl.length) {
+      imagePreview = (
+        <div>
+          {this.state.imagePreviewUrl.map((url, i)=>{
+            return <img key= {i} style={{'width':150,'marginRight':30}} src={url} />;
+          })}
+          <FlatButton
+            label="업로드"
+            fullWidth={true}
+            primary={true}
+            keyboardFocused={true}
+            onTouchTap={this.handleImageUpload}
+          />
+        </div>);
+    } else {
+      imagePreview = (<div>이미지를 먼저 선택해주세요.</div>);
+    }
+    return(
+      <div style={{'textAlign':'center'}}>
+        <h2>미리보기</h2>
+        {imagePreview}
+      </div>
+    );
+  }
+  /* HANDLE NORMAL POST */
   handleContentChange = (value, delta, source, editor) => {
     this.setState({
       content: value,
@@ -188,6 +287,7 @@ class PostEdit extends Component {
       thumbnail: this.state.thumbnail,
       content: this.state.content,
       text: this.state.text,
+      tags: this.state.tags,
       category: this.props.params.category,
     };
     this.props.addPost(post)
@@ -205,85 +305,83 @@ class PostEdit extends Component {
         }
       });
   }
+  /* HANDLE TAG */
+  handleTagChange = (e) => {
+    this.setState({ tagString: e.target.value});
+  }
+  handleTagKeyPress = (e) => {
+    if(e.key == 'Enter'){
+      this.closeTagPopover();
+    }
+  }
+  handleRemoveTag = (rmTag) => {
+    this.setState((prevState) => ({
+      tags: prevState.tags.filter((tag) => tag != rmTag)
+    }));
 
+  }
+  openTagPopover = (e) => {
+    e.preventDefault();
+    this.setState({
+      tagOpen: true,
+      anchorEl: e.currentTarget,
+    });
+  }
+
+  closeTagPopover = () => {
+    let tagTmp = [];
+    if(this.state.tagString){
+      tagTmp = this.state.tagString.split(',').map((tag)=>{
+        return tag.trim();
+      }).filter(Boolean);
+    }
+    this.setState({
+      tagOpen: false,
+      tagString: '',
+      tags: this.state.tags.concat(tagTmp),
+    });
+  }
+
+  renderTag = () => {
+    const {tags} = this.state;
+    if(tags.length){
+      return(
+        <div style={{'display':'inline'}}>
+        <FaTag />
+        {tags.map((tag, i)=>{
+          return(
+            <Badge
+              key={i}
+              badgeContent={
+                <IconButton
+                  iconStyle={{'width':10,'height':10}}
+                  onTouchTap={() => this.handleRemoveTag(tag)}
+                  tooltip='지우기'>
+                  <NavigationClose />
+                </IconButton>}>
+              <span style={{'fontSize':'0.8em'}}>
+                {tag}
+              </span>
+            </Badge>);})
+          }
+        </div>
+      );
+    }
+  }
+
+  /* HANDLE ETC */
   handleClose = () =>{
     browserHistory.replace(`/category/${this.props.params.category}`);
   }
+
   /* Do i need this? */
   handleSnackClose = () => {
     this.setState({
       snackOpen: false,
     });
   }
-  openThumbnailDialog = () => {
-    this.setState({
-      thumbnailOpen: true,
-    });
-  }
-  closeThumbnailDialog = () => {
-    this.setState({
-      thumbnailOpen: false,
-      thumbnailPreviewUrl: '',
-      file: '',
-    });
-  }
-  closeImageDialog = () => {
-    this.setState({
-      imageOpen: false,
-      imagePreviewUrl: [],
-      files: [],
-    });
-  }
-  renderThumbnailPreview = () => {
-    let thumbnailPreview = null;
-    if (this.state.thumbnailPreviewUrl) {
-      thumbnailPreview = (
-        <div>
-          <img style={{'height':200}} src={this.state.thumbnailPreviewUrl} />
-          <FlatButton
-            label="선택"
-            fullWidth={true}
-            primary={true}
-            keyboardFocused={true}
-            onTouchTap={this.handleThumbnailUpload}
-          />
-        </div>);
-    } else {
-      thumbnailPreview = (<div>이미지를 먼저 선택해주세요.</div>);
-    }
-    return(
-      <div style={{'textAlign':'center'}}>
-        <h2>미리보기</h2>
-        {thumbnailPreview}
-      </div>
-    );
-  }
-  renderImagePreview = () => {
-    let imagePreview = null;
-    if (this.state.imagePreviewUrl) {
-      imagePreview = (
-        <div>
-          {this.state.imagePreviewUrl.map((url, i)=>{
-            return <img key= {i} style={{'width':150,'marginRight':30}} src={url} />;
-          })}
-          <FlatButton
-            label="업로드"
-            fullWidth={true}
-            primary={true}
-            keyboardFocused={true}
-            onTouchTap={this.handleImageUpload}
-          />
-        </div>);
-    } else {
-      imagePreview = (<div>이미지를 먼저 선택해주세요.</div>);
-    }
-    return(
-      <div style={{'textAlign':'center'}}>
-        <h2>미리보기</h2>
-        {imagePreview}
-      </div>
-    );
-  }
+
+
   render() {
     const actions = [
       <FlatButton
@@ -302,7 +400,15 @@ class PostEdit extends Component {
             multiLine={true}
             style={{'width':'100%'}}
             onChange={this.handleTitleChange}/>
-
+          <div>
+            {this.renderThumbnail()}
+            <FlatButton
+              label={this.state.thumbnail?'대표 이미지 변경':'대표 이미지 추가'}
+              secondary={true}
+              labelPosition={'before'}
+              icon={<FaFileImageO />}
+              onTouchTap={this.openThumbnailDialog}/>
+          </div>
           <ReactQuill
             theme='snow'
             ref={(el) => { this.reactQuillRef = el; }}
@@ -310,16 +416,31 @@ class PostEdit extends Component {
             formats={this.formats}
             value={this.state.content}
             onChange={this.handleContentChange} />
-          <div style={{'float': 'right'}}>
+          <div>
+            {this.renderTag()}
             <FlatButton
-              label={'대표 이미지'}
-              labelPosition={'before'}
-              icon={<FaFileImageO />}
-              onTouchTap={this.openThumbnailDialog}/>
-            <FlatButton
+              style={{'display':'inline'}}
+              secondary={true}
               label={'태그 추가'}
               labelPosition={'before'}
-              icon={<FaTag />}/>
+              icon={<FaTag />}
+              onTouchTap={this.openTagPopover}/>
+            <Popover
+              open={this.state.tagOpen}
+              anchorEl={this.state.anchorEl}
+              anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+              targetOrigin={{horizontal: 'left', vertical: 'top'}}
+              onRequestClose={this.closeTagPopover}>
+              <div style={{'padding':20}}>
+                <TextField
+                  id="text-field-default"
+                  hintText='쉼표로 태그 구분'
+                  floatingLabelText='태그'
+                  floatingLabelFixed={true}
+                  onKeyPress={this.handleTagKeyPress}
+                  onChange={this.handleTagChange}/>
+              </div>
+            </Popover>
           </div>
           <RaisedButton
             style={{'marginTop':'3rem'}}
@@ -336,7 +457,7 @@ class PostEdit extends Component {
             {this.state.message}
           </Dialog>
           <Dialog
-            title="대표이미지 등록"
+            title={this.state.thumbnail?'대표 이미지 변경':'대표 이미지 추가'}
             modal={false}
             open={this.state.thumbnailOpen}
             autoScrollBodyContent={true}
