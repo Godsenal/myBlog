@@ -48,7 +48,11 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+        exclude: [
+          /node_modules\/react-waypoint/, // to avoid add-module-exports error
+          /node_modules\/consolidated-events/ // to avoid airbnb error
+        ],
       },
       {
         test: /\.css$/,

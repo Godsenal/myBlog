@@ -24,6 +24,7 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
 import styles from '../../../style/main.css';
 import {addPost} from '../actions/post';
+import {getStatusRequest} from '../actions/authentication';
 
 const path = '/assets/posts/images/';
 const thumbnailPath = '/assets/posts/thumbnails/';
@@ -86,6 +87,14 @@ class PostEdit extends Component {
     this.quillRef = this.reactQuillRef.getEditor();
   }
   componentDidMount() {
+    let token = localStorage.getItem('token');
+    this.props.getStatusRequest(token)
+      .then(()=>{
+        let status = this.props.authentication.status;
+        if(!status.valid){
+          browserHistory.push('/');
+        }
+      });
     this.attachQuillRefs();
   }
 
@@ -290,19 +299,27 @@ class PostEdit extends Component {
       tags: this.state.tags,
       category: this.props.params.category,
     };
-    this.props.addPost(post)
+    let token = localStorage.getItem('token');
+    this.props.getStatusRequest(token)
       .then(()=>{
-        if(this.props.post.add.status == 'SUCCESS'){
-          this.setState({
-            open: true,
-            message: '글이 정상적으로 등록되었습니다.'
-          });
-        }else{
-          this.setState({
-            open: true,
-            message: '등록에 실패하였습니다.'
-          });
+        let status = this.props.authentication.status;
+        if(!status.valid){
+          browserHistory.push('/');
         }
+        this.props.addPost(post)
+          .then(()=>{
+            if(this.props.post.add.status == 'SUCCESS'){
+              this.setState({
+                open: true,
+                message: '글이 정상적으로 등록되었습니다.'
+              });
+            }else{
+              this.setState({
+                open: true,
+                message: '등록에 실패하였습니다.'
+              });
+            }
+          });
       });
   }
   /* HANDLE TAG */
@@ -494,17 +511,21 @@ class PostEdit extends Component {
 PostEdit.defaultProps ={
   params: {},
   post: {},
+  authentication: {},
   addPost : () => {console.log('Post props Error');},
 };
 PostEdit.propTypes = {
   params: PropTypes.object.isRequired,
+  authentication: PropTypes.object.isRequired,
   environment : PropTypes.object.isRequired,
   post: PropTypes.object.isRequired,
   addPost: PropTypes.func.isRequired,
+  getStatusRequest: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => {
   return {
     post: state.post,
+    authentication: state.authentication,
     environment: state.environment,
   };
 };
@@ -512,6 +533,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addPost: (post) => {
       return dispatch(addPost(post));
+    },
+    getStatusRequest: (token) => {
+      return dispatch(getStatusRequest(token));
     },
   };
 };

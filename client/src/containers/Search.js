@@ -160,10 +160,14 @@ class Search extends Component{
             {posts.length>0?
               <PostList
                 isMobile={isMobile}
+                screenWidth={screenWidth}
                 posts={posts}/>:
                 <div style={{'textAlign':'center','fontSize':'3vw'}}>
-                  <FaFrownO style={{'fontSize':'10vw'}}/>
-                  <h1 >결과가 없습니다.</h1>
+                  <FaFrownO style={{'fontSize':'10vw','margin':'2rem'}}/>
+                  <h2 >No Result for '{<span style={{'color':'#329FFF'}}>{word}</span>}'.</h2>
+                  <div style={{'margin':'2rem'}}>
+                    <Searchbar category={category}/>
+                  </div>
                 </div>}
             <div style={{'textAlign':'center'}}>
               <Pagination

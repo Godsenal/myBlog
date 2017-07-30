@@ -5,11 +5,13 @@ import {Motion, spring} from 'react-motion';
 import moment from 'moment';
 
 import {Card, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import {GridList, GridTile} from 'material-ui/GridList';
+import {GridTile} from 'material-ui/GridList';
+import Paper from 'material-ui/Paper';
 import Avatar from 'material-ui/Avatar';
 import MdRemoveRedEye from 'react-icons/md/remove-red-eye';
 import MdDateRange from 'react-icons/md/date-range';
 import MdComment from 'react-icons/md/comment';
+import StackGrid from 'react-stack-grid';
 
 import { CommentCount } from '../disqus';
 
@@ -34,6 +36,14 @@ class PostList extends Component{
       isHover: false,
     };
   }
+  componentDidMount() {
+    window.addEventListener('resize',this.handleResize);
+  }
+  handleResize = () => {
+    if(this.grid){
+      this.grid.updateLayout();
+    }
+  }
   handlePostClick = (postID) => {
     browserHistory.push(`/post/${postID}`);
   }
@@ -45,12 +55,10 @@ class PostList extends Component{
     return {
       defaultStyle: {
         scale: 1,
-        marginTop: 100,
         zIndex: 1,
       },
       style:{
         scale: spring(this.state.isHover===index ? 1.2 : 1),
-        marginTop: spring(0, {stiffness: 100, damping: 10}),
         zIndex: spring(this.state.isHover===index ? 2 : 1),
       },
     };
@@ -58,13 +66,17 @@ class PostList extends Component{
 
   render(){
     const disqusShortname = 'godsenal';
-    const {isMobile, posts} = this.props;
+    const {isMobile, posts, screenWidth} = this.props;
+    const columnWidth = screenWidth > 1500 ? '30%': screenWidth > 800 ? '50%' : '100%';
     return(
-      <GridList
-        cols={isMobile?1:2}
-        cellHeight={450}
-        padding={10}
-        style={inlineStyles.gridList}>
+      <StackGrid
+        columnWidth={columnWidth}
+        gridRef={grid => this.grid = grid}
+        gutterWidth={20}
+        gutterHeight={10}
+        monitorImagesLoaded={true}
+        duration={700}
+      >
       {posts.map((post, i)=>{
         var disqusConfig = {
           //url: `http://www.godsenal.com/#${disqusShortname}`,
@@ -76,21 +88,25 @@ class PostList extends Component{
             {interpolatingStyle => {
               let style = {
                 transform: 'scale(' + interpolatingStyle.scale + ')',
-                marginTop: interpolatingStyle.marginTop,
+                verticalAlign: 'middle',
               };
+              let text = post.text?post.text.length > 200 ? post.text.substr(0,200) + '...' : post.text : '';
               return(
-
-                  <GridTile style={{'cursor': 'pointer'}} onTouchTap={ () => this.handlePostClick(post._id)}>
+                <Paper zDepth={3} style={{'borderRadius': 10,marginTop: 10}}>
+                  <GridTile style={{'cursor': 'pointer', 'borderRadius':10}} onTouchTap={ () => this.handlePostClick(post._id)}>
                     <Card
-                      onMouseOver={()=>{this.handleHover(i);}}
-                      onMouseOut={()=>{this.handleHover(false);}}>
-                      <CardMedia style={style}>
-                        <img src={thumbnailPath + post.thumbnail} style={{'height':'200px'}} onError={(e)=>e.target.src = DEFAULT_IMAGE} />
+                      onMouseEnter={()=>{this.handleHover(i);}}
+                      onMouseLeave={()=>{this.handleHover(false);}}>
+                      <CardMedia style={{'display':'inline-block','overflow':'hidden'}}>
+                        <img style={style} src={post.thumbnail? thumbnailPath + post.thumbnail : null } onError={(e)=>e.target.src = DEFAULT_IMAGE} />
                       </CardMedia>
-                      <CardTitle title={post.title}/>
+                      <CardTitle style={{'lineHeight':'1.2','fontWeight':700,'fontSize':20}} title={post.title}/>
+                      <CardText style={{'fontSize':'0.8em','color':'rgba(0,0,0,.44)'}}>
+                        <span>{text}</span>
+                      </CardText>
                       <CardText style={{'textAlign':'right'}}>
                         <h3 style={{'float':'left','display':'inline'}}>
-                          <Avatar backgroundColor={'#32FAE2'}>{post.author.substr(0,1).toUpperCase()}</Avatar>&nbsp;{post.author}
+                          <Avatar backgroundColor={'#32FAE2'} size={16}>{post.author?post.author.substr(0,1).toUpperCase():''}</Avatar>&nbsp;{post.author}
                         </h3>
                         <h5>
                           <MdDateRange/>
@@ -108,11 +124,12 @@ class PostList extends Component{
                         </span>
                       </CardText>
                     </Card>
-                  </GridTile>);
+                  </GridTile>
+                </Paper>);
             }}
           </Motion>);
       })}
-      </GridList>
+    </StackGrid>
     );
   }
 }
@@ -120,5 +137,6 @@ class PostList extends Component{
 PostList.propTypes = {
   posts: PropTypes.array.isRequired,
   isMobile: PropTypes.bool.isRequired,
+  screenWidth: PropTypes.number.isRequired,
 };
 export default PostList;

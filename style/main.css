@@ -35,8 +35,18 @@ body {
 }
 
 h1 {
+  font-family: 'RobotoRegular', 'NanumGothic', cursive;
   font-size: 2em;
   margin: 1.5rem;
+}
+
+h2 {
+  font-family: 'NanumGothic';
+}
+
+span {
+  font-family: 'RobotoRegular', 'NanumGothic', cursive;
+  font-weight: 600;
 }
 
 .font {
@@ -50,6 +60,7 @@ h1 {
   display: -webkit-flex;
   display: flex;
   width: 100%;
+  overflow: hidden;
 }
 
 .mainContainer {
@@ -87,6 +98,13 @@ h1 {
 .listContainer {
   max-width: 100%;
   padding: 2rem;
+  overflow: hidden;
+}
+
+.mobileListContainer {
+  max-width: 100%;
+  padding: 0.5rem;
+  overflow: hidden;
 }
 
 .gridContainer {
@@ -132,20 +150,28 @@ h1 {
   -ms-flex: 0 0 70%;
   /* IE 10 */
   flex: 0 0 60%;
-  font-family: 'NanumGothic', cursive;
+  font-family: 'RobotoRegular', 'NanumGothic', cursive;
 }
 
 .postContainer {
-  padding: 10px;
   background-color: #EFEFEF;
 }
 
+.mobilePaperContainer {
+  padding: 1rem;
+}
+
 .paperContainer {
-  padding: 1.2rem;
+  padding: 1.2rem 20% 1.2rem 20%;
 }
 
 .category {
   font-size: 1.5em;
+  font-family: 'RobotoBlack', 'NanumGothic', cursive;
+  font-weight: 600;
+}
+
+.categoryList {
   font-family: 'RobotoBlack', 'NanumGothicExtraBold', cursive;
 }
 
@@ -159,6 +185,78 @@ h1 {
 .centering {
   text-align: center;
   margin: 20% auto;
+}
+
+.fixedSideMenu {
+  position: fixed;
+  top: 30%;
+  margin-left: 5%;
+  background-color: white;
+  font-size: 1.5em;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+}
+
+.fixedUpButton {
+  position: fixed;
+  bottom: 5%;
+  margin-left: 5%;
+  background-color: white;
+  font-size: 1.5em;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+}
+
+.fixedSideMenuItem {
+  cursor: pointer;
+}
+
+.fixedSideMenuItem:hover {
+  color: black;
+}
+
+.fixedFooter {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  padding: 10px 0px 10px 0px;
+  font-size: 1.5em;
+  background-color: white;
+  color: rgba(0, 0, 0, 0.4);
+  -webkit-box-shadow: -7px -5px 9px -6px rgba(0, 0, 0, 0.21);
+  -moz-box-shadow: -7px -5px 9px -6px rgba(0, 0, 0, 0.21);
+  box-shadow: -7px -5px 9px -6px rgba(0, 0, 0, 0.21);
+  z-index: 100;
+}
+
+.fixedFooterMenuItemLeft {
+  cursor: pointer;
+  float: left;
+  margin-left: 20px;
+}
+
+.fixedFooterMenuItemRight {
+  cursor: pointer;
+  float: right;
+  margin-right: 20px;
+}
+
+.fixedFooterMenuItemLeft:hover {
+  color: black;
+}
+
+.button {
+  text-align: center;
+  height: 50px;
+  line-height: 50px;
+  width: 50px;
+  border: solid 1px #fff;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .divider {

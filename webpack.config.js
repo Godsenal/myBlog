@@ -12,7 +12,11 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+        exclude: [
+          /node_modules\/react-waypoint/,
+          /node_modules\/consolidated-events/
+        ],
       },
       {
         test: /\.css$/,
