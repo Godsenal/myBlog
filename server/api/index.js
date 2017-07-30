@@ -4,6 +4,7 @@ import account from './account';
 import post from './post';
 import category from './category';
 import comment from './comment';
+import image from './image';
 
 
 const router = express.Router();
@@ -23,5 +24,6 @@ router.use('/account', account);
 router.use('/post', post);
 router.use('/category', category);
 router.use('/comment', comment);
+router.use('/image', image);
 
 export default router;

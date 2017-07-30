@@ -77,7 +77,7 @@ class Sidebar extends Component{
             onTouchTap={()=>{this.handleSelectCategory(subCategory);}}
             nestedItems={
               this.handleNestedItems(list,subCategory)
-            }>{subCategory.name}
+            }><span>{subCategory.name}</span>
           </ListItem>);
       }
     });

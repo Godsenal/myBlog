@@ -17,6 +17,7 @@ import styles from '../../../style/main.css';
 import Bluebird from 'bluebird';
 
 
+
 // Node
 global.Promise = Bluebird;
 // Browser
@@ -75,9 +76,9 @@ class App extends Component{
               title="LTH's Blog"
               style={{'backgroundColor':'#ECF0F1'}}
               titleStyle={{'color':'#2C3E50'}}
-              onTouchTap={this.handleHeaderClick}
+              onTitleTouchTap={this.handleHeaderClick}
               showMenuIconButton={false}
-              iconElementRight={<FlatButton style={{'color':'#2C3E50'}} label="메뉴" onTouchTap={()=>this.toggleSidebar()}/>}
+              iconElementRight={<FlatButton className={styles.button} style={{'color':'#2C3E50'}} label="메뉴" onTouchTap={()=>this.toggleSidebar()}/>}
             />:null}
             {this.props.children && React.cloneElement(this.props.children, {
               isMobile

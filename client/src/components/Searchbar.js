@@ -10,6 +10,7 @@ import MenuItem from 'material-ui/MenuItem';
 
 import FaSearch from 'react-icons/fa/search';
 
+
 const styles = {
   iconStyle: {
     cursor: 'pointer'
@@ -90,6 +91,9 @@ class Searchbar extends Component{
               />
             ]}
             onRequestClose={this.handleClose}>
+            <div>
+              <span><FaSearch />&nbsp; Search</span>
+            </div>
             <SelectField
               floatingLabelText='카테고리'
               value={this.state.type}

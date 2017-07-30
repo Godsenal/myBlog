@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
 import ReactQuill from 'react-quill';
-
+import Waypoint from 'react-waypoint';
+import Scroll,{Link, Element, Events, animateScroll as scroll, scrollSpy, scroller} from 'react-scroll';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -16,6 +17,10 @@ import MdRemoveRedEye from 'react-icons/md/remove-red-eye';
 import MdDateRange from 'react-icons/md/date-range';
 import MdComment from 'react-icons/md/comment';
 import FaArchive from 'react-icons/fa/archive';
+import FaCommentO from 'react-icons/lib/fa/comment-o';
+import FaHandODown from 'react-icons/lib/fa/hand-o-down';
+import FaAngleUp from 'react-icons/lib/fa/angle-up';
+import FaAngleDown from 'react-icons/lib/fa/angle-down';
 
 /*Replace with disqus*/
 //import {Comment} from '../components';
@@ -26,6 +31,9 @@ import styles from '../../../style/main.css';
 
 import { DiscussionEmbed, CommentCount } from '../disqus';
 
+const thumbnailPath = '/assets/posts/thumbnails/';
+const DEFAULT_IMAGE = '/assets/images/back.jpg';
+
 const modules={
   toolbar: false,
 };
@@ -33,9 +41,12 @@ const modules={
 class PostView extends Component {
   constructor(){
     super();
+    this.state={
+      isVisible: false,
+      isCommentVisible: false,
+    };
   }
   componentDidMount(){
-
     var {postID}= this.props.params;
     if(postID){
       this.loadPost(postID);
@@ -43,6 +54,10 @@ class PostView extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if(this.props.params.postID !== nextProps.params.postID){
+      this.setState({
+        isVisible: false,
+        isCommentVisible: false,
+      });
       this.loadPost(nextProps.params.postID);
     }
   }
@@ -53,6 +68,42 @@ class PostView extends Component {
     }
     return true;
   }
+  handleWaypointEnter = () => {
+    this.setState({
+      'isVisible': true,
+    });
+  }
+  handleWaypointLeave = () => {
+    this.setState({
+      'isVisible': false,
+    });
+  }
+  handleCommentWaypointEnter = () => {
+    this.setState({
+      'isCommentVisible': true,
+    });
+  }
+  handleCommentWaypointLeave = () => {
+    this.setState({
+      'isCommentVisible': false,
+    });
+  }
+  scrollToElement = (elName) => {
+    scroller.scrollTo(elName, {
+      duration: 1500,
+      delay: 100,
+      smooth: 'easeInOutQuint',
+    });
+
+  }
+  scrollToTop = () => {
+    scroll.scrollToTop();
+  }
+
+  scrollToBottom = () => {
+    scroll.scrollToBottom();
+  }
+
   loadPost = (postID) => {
     this.props.getPost(postID)
       .then(()=>{
@@ -107,53 +158,107 @@ class PostView extends Component {
       identifier: post._id,
       title: post.title,
     };
+    const {screenWidth} = this.props.environment;
+    const isMobile = screenWidth < 1000;
     var category = this.props.categoryGet.category;
     var path = !this.isEmpty(category) && category.path ?category.path.replace(new RegExp(',', 'g'), '/') + category.name:null;
     return(
-      <div className={this.props.isMobile?null:styles.postContainer}>
-        <Paper className={styles.paperContainer} zDepth={3} >
-          <div style={{'textAlign': 'center'}}>
-            {/*<img src="/assets/images/back.jpg" style={{'width':'100%','maxHeight':300}} alt="" />*/}
-            <h1>{post.title}</h1>
-            <Subheader style={{'textAlign': 'right'}}>
-              <h3><Avatar>{post.author.substr(0,1).toUpperCase()}</Avatar>&nbsp;{post.author}</h3>
-              <span style={!this.props.isMobile?{'float':'left'}:null}>
-                <FaArchive/>
-                {path}
-              </span>
-              {this.props.isMobile?<br/>:null}
-              <span>
-                <MdDateRange/>
-                {moment(post.created).format('LL')}
-              </span>&nbsp;
-              <span>
-                <MdRemoveRedEye/>
-                {post.viewer}
-              </span>&nbsp;
-              <span>
-                <MdComment/>
-                <CommentCount shortname={disqusShortname} config={disqusConfig}>
-                  0
-                </CommentCount>
-              </span>
-            </Subheader>
-
+      <div>
+        <div className={this.props.isMobile?null:styles.postContainer}>
+          <Paper className={this.props.isMobile?styles.mobilePaperContainer:styles.paperContainer} zDepth={3} >
+            <div style={{'textAlign': 'center'}}>
+              <h2 style={{'fontSize':'1.7em'}}>{post.title}</h2>
+              <Subheader style={{'textAlign': 'right','fontSize':'0.7em'}}>
+                <div style={{'color':'rgba(0, 0, 0, 0.4)','margin':0}}>
+                  <span>
+                    <FaArchive/>
+                    {path}
+                  </span>&nbsp;
+                  <span>
+                    <MdDateRange/>
+                    {moment(post.created).format('LL')}
+                  </span>&nbsp;
+                  <span>
+                    <MdRemoveRedEye/>
+                    {post.viewer}
+                  </span>&nbsp;
+                  <span>
+                    <MdComment/>
+                    <CommentCount shortname={disqusShortname} config={disqusConfig}>
+                      0
+                    </CommentCount>
+                  </span>
+                </div>
+              </Subheader>
+              <img
+                src={post.thumbnail? thumbnailPath + post.thumbnail : DEFAULT_IMAGE }
+                style={{'width':'100%'}}
+                onError={(e)=>e.target.src = DEFAULT_IMAGE} />
+            </div>
+            <div style={{'marginTop': '1rem'}}>
+              <Waypoint
+                onEnter={this.handleWaypointEnter}
+                onLeave={this.handleWaypointLeave}
+              />
+              <ReactQuill
+                theme='bubble'
+                modules={modules}
+                readOnly={true}
+                value={post.content}>
+              </ReactQuill>
+            </div>
+            <div style={{'marginTop':'3rem','textAlign':'right'}}>
+              <div style={{'float':'right'}}>
+                <Avatar style={{display: 'block'}} size={60} src='/assets/images/profile.jpg'/>
+              </div>
+              <div>
+                <span style={{marginRight: '0.7rem'}}>{post.author}</span><br/>
+                <span style={{marginRight: '0.7rem','fontSize':'0.8em','color':'rgba(0,0,0,.44)'}}>공익</span><br/>
+                <span style={{marginRight: '0.7rem','fontSize':'0.8em','color':'rgba(0,0,0,.44)'}}>컴퓨터 배우는 중</span><br/>
+              </div>
+            </div>
+            <Divider style={{'marginTop':'3rem','marginBottom':'3rem'}}/>
+            <div style={{'overflow':'hidden'}}>
+              {this.renderPrevNext()}
+            </div>
+            <div style={{'marginTop':'2rem'}}>
+              <Element name='disqusContainer'>
+                <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
+              </Element>
+            </div>
+            <Waypoint
+              onEnter={this.handleCommentWaypointEnter}
+              onLeave={this.handleCommentWaypointLeave}
+            />
+          </Paper>
+        </div>
+        {!isMobile?
+          this.state.isVisible?
+          <div className={styles.fixedSideMenu}>
+            <p><span style={{fontSize:'0.5em'}}>MOVE</span></p>
+            <p className={styles.fixedSideMenuItem}><FaAngleUp onClick={this.scrollToTop}/></p>
+            <Link className={styles.fixedSideMenuItem} to='disqusContainer' spy={true} smooth={true} offset={50} duration={500}>
+              <FaCommentO/>
+            </Link>
+            <p className={styles.fixedSideMenuItem}><FaAngleDown onClick={this.scrollToBottom}/></p>
           </div>
-          <Divider/>
-          <ReactQuill
-            theme='bubble'
-            modules={modules}
-            readOnly={true}
-            value={post.content}>
-          </ReactQuill>
-          <Divider style={{'marginTop':'3rem','marginBottom':'3rem'}}/>
-          <div style={{'overflow':'hidden'}}>
-            {this.renderPrevNext()}
+          :
+          <div className={styles.fixedUpButton}>
+            <p><span style={{fontSize:'0.5em'}}>MOVE</span></p>
+            <p className={styles.fixedSideMenuItem}><FaAngleUp onClick={this.scrollToTop}/></p>
           </div>
-          <div style={{'marginTop':'2rem'}}>
-            <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
-          </div>
-        </Paper>
+          :
+          !this.state.isCommentVisible?
+          <div className={styles.fixedFooter}>
+            <Link className={styles.fixedFooterMenuItemLeft} to='disqusContainer' spy={true} smooth={true} offset={50} duration={500}>
+              <FaCommentO/>
+            </Link>
+            <span className={styles.fixedFooterMenuItemRight} >
+              <FaAngleDown className={styles.fixedSideMenuItem} onClick={this.scrollToBottom}/>
+              <FaAngleUp className={styles.fixedSideMenuItem} onClick={this.scrollToTop}/>
+            </span>
+          </div>:null
+        }
       </div>
     );
   }
@@ -206,6 +311,7 @@ PostView.propTypes = {
   getNextPost: PropTypes.func.isRequired,
   getCategory: PropTypes.func.isRequired,
   isMobile: PropTypes.bool.isRequired,
+  environment: PropTypes.object.isRequired,
 };
 const mapStateToProps = (state) => {
   return {
@@ -214,6 +320,7 @@ const mapStateToProps = (state) => {
     prev: state.post.prev,
     next: state.post.next,
     categoryGet: state.category.get,
+    environment: state.environment,
   };
 };
 const mapDispatchToProps = (dispatch) => {

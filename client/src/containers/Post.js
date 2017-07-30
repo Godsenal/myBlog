@@ -130,6 +130,10 @@ class Post extends Component{
     </div>);
   }
   handlePagination = (number) => {
+    if(this.state.number == number){
+      return ;
+    }
+
     this.setState({
       number
     });
@@ -164,7 +168,7 @@ class Post extends Component{
     const total = parseInt(((count.count)-1) / 10 + 1);
     const posts = list.posts;
     return(
-        <div className={styles.listContainer}>
+        <div className={isMobile?styles.mobileListContainer:styles.listContainer}>
           {list.status === 'SUCCESS'?
           <div>
             <div>
@@ -181,6 +185,8 @@ class Post extends Component{
               <PostList
                 handlePostClick={this.handlePostClick}
                 isMobile={isMobile}
+                screenWidth={this.props.environment.screenWidth}
+                screenHeight={this.props.environment.screenHeight}
                 posts={posts}/>:
                 <div style={{'textAlign':'center','fontSize':'3vw'}}>
                   <FaFrownO style={{'fontSize':'10vw'}}/>
