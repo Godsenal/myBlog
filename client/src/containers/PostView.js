@@ -5,6 +5,8 @@ import {browserHistory} from 'react-router';
 import ReactQuill from 'react-quill';
 import Waypoint from 'react-waypoint';
 import Scroll,{Link, Element, Events, animateScroll as scroll, scrollSpy, scroller} from 'react-scroll';
+import {Motion, spring} from 'react-motion';
+
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -21,11 +23,12 @@ import FaCommentO from 'react-icons/lib/fa/comment-o';
 import FaHandODown from 'react-icons/lib/fa/hand-o-down';
 import FaAngleUp from 'react-icons/lib/fa/angle-up';
 import FaAngleDown from 'react-icons/lib/fa/angle-down';
+import FaTags from 'react-icons/lib/fa/tags';
 
 /*Replace with disqus*/
-//import {Comment} from '../components';
+import {RelatedList} from '../components';
 import 'react-quill/dist/quill.bubble.css';
-import {getPost, getPrevPost, getNextPost} from '../actions/post';
+import {getPost, getPrevPost, getNextPost, getRelatedTagsPost} from '../actions/post';
 import {getCategory} from '../actions/category';
 import styles from '../../../style/main.css';
 
@@ -43,11 +46,15 @@ class PostView extends Component {
     super();
     this.state={
       isVisible: false,
-      isCommentVisible: false,
+      isCommentVisible: true,
+      isScrollingTop: false,
     };
   }
   componentDidMount(){
+    //window.addEventListener('scroll',this.handleScroll);
     var {postID}= this.props.params;
+
+    scrollSpy.update();
     if(postID){
       this.loadPost(postID);
     }
@@ -68,6 +75,47 @@ class PostView extends Component {
     }
     return true;
   }
+
+  handleScroll = () =>{
+
+    /* Detect ScrollToTop
+    let body = document.body;
+    let value = body.scrollTop;
+    if(this.prevPos > value && !this.state.isScrollingTop){
+      console.log('ha');
+      this.setState({
+        isScrollingTop: true,
+      });
+    }
+    else if(this.prevPos < value && this.state.isScrollingTop){
+      this.setState({
+        isScrollingTop: false,
+      });
+    }
+    this.prevPos = value;
+    */
+  }
+
+  getFooterDefaultStyle = () => {
+    return {
+      defaultStyle: {
+        maxHeight: 0,
+      },
+      style:{
+        maxHeight: spring(this.state.isCommentVisible? 100 : 0),
+      },
+    };
+  }
+  getSideMenuDefaultStyle = () => {
+    return {
+      defaultStyle: {
+        translateY: 0,
+      },
+      style:{
+        translateY: spring(this.state.isVisible? 30 : 0),
+      },
+    };
+  }
   handleWaypointEnter = () => {
     this.setState({
       'isVisible': true,
@@ -83,10 +131,12 @@ class PostView extends Component {
       'isCommentVisible': true,
     });
   }
-  handleCommentWaypointLeave = () => {
-    this.setState({
-      'isCommentVisible': false,
-    });
+  handleCommentWaypointLeave = (position) => {
+    if(position.currentPosition != 'below'){
+      this.setState({
+        'isCommentVisible': false,
+      });
+    }
   }
   scrollToElement = (elName) => {
     scroller.scrollTo(elName, {
@@ -108,6 +158,7 @@ class PostView extends Component {
     this.props.getPost(postID)
       .then(()=>{
         this.props.getCategory(this.props.get.post.category);
+        this.props.getRelatedTagsPost(postID, this.props.get.post.tags);
         this.props.getPrevPost(postID, this.props.get.post.category);
         this.props.getNextPost(postID, this.props.get.post.category);
       });
@@ -165,9 +216,9 @@ class PostView extends Component {
     return(
       <div>
         <div className={this.props.isMobile?null:styles.postContainer}>
-          <Paper className={this.props.isMobile?styles.mobilePaperContainer:styles.paperContainer} zDepth={3} >
-            <div style={{'textAlign': 'center'}}>
-              <h2 style={{'fontSize':'1.7em'}}>{post.title}</h2>
+          <Paper className={this.props.isMobile?styles.mobilePaperContainer:styles.paperContainer} zDepth={0} >
+            <div style={{'textAlign': 'left'}}>
+              <h2 style={{'fontSize':'1.7em',color:'#454545'}}>{post.title}</h2>
               <Subheader style={{'textAlign': 'right','fontSize':'0.7em'}}>
                 <div style={{'color':'rgba(0, 0, 0, 0.4)','margin':0}}>
                   <span>
@@ -190,6 +241,7 @@ class PostView extends Component {
                   </span>
                 </div>
               </Subheader>
+              <Divider style={{'marginTop':'1.5rem','marginBottom':'1.5rem'}}/>
               <img
                 src={post.thumbnail? thumbnailPath + post.thumbnail : DEFAULT_IMAGE }
                 style={{'width':'100%'}}
@@ -217,7 +269,16 @@ class PostView extends Component {
                 <span style={{marginRight: '0.7rem','fontSize':'0.8em','color':'rgba(0,0,0,.44)'}}>컴퓨터 배우는 중</span><br/>
               </div>
             </div>
-            <Divider style={{'marginTop':'3rem','marginBottom':'3rem'}}/>
+
+            <div className={styles.tagContainer} >
+              <span><FaTags/></span>&nbsp;
+              {'tags' in post ?
+                post.tags.map((tag,i)=>{
+                  return <span key={i}>{tag}{i!=post.tags.length-1?'/':''}&nbsp;</span>;
+                }):null
+              }
+            </div>
+            <Divider style={{'marginTop':'1.5rem','marginBottom':'3rem'}}/>
             <div style={{'overflow':'hidden'}}>
               {this.renderPrevNext()}
             </div>
@@ -226,38 +287,63 @@ class PostView extends Component {
                 <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
               </Element>
             </div>
-            <Waypoint
-              onEnter={this.handleCommentWaypointEnter}
-              onLeave={this.handleCommentWaypointLeave}
-            />
           </Paper>
+          <Waypoint
+            onEnter={this.handleCommentWaypointEnter}
+            onLeave={this.handleCommentWaypointLeave}
+          />
+          {
+            (this.props.relatedTags.status === 'SUCCESS') && this.props.relatedTags.posts.length > 0 ?
+            <RelatedList
+              type='tags'
+              posts={this.props.relatedTags.posts}
+              isMobile={isMobile}
+            />:null
+          }
         </div>
         {!isMobile?
           this.state.isVisible?
-          <div className={styles.fixedSideMenu}>
+          <Motion {...this.getSideMenuDefaultStyle()}>
+            {interpolatedStyle =>{
+              let style={
+                transform: 'translateY(-'+interpolatedStyle.translateY+'%)',
+              };
+              return (<div className={styles.fixedSideMenu} style={style}>
             <p><span style={{fontSize:'0.5em'}}>MOVE</span></p>
             <p className={styles.fixedSideMenuItem}><FaAngleUp onClick={this.scrollToTop}/></p>
-            <Link className={styles.fixedSideMenuItem} to='disqusContainer' spy={true} smooth={true} offset={50} duration={500}>
-              <FaCommentO/>
+            <Link to='disqusContainer' spy={true} smooth={true} duration={500}>
+              <FaCommentO className={styles.fixedSideMenuItem}/>
             </Link>
             <p className={styles.fixedSideMenuItem}><FaAngleDown onClick={this.scrollToBottom}/></p>
-          </div>
-          :
+          </div>);
+            }
+            }
+          </Motion>
+          :null:null
+          /*
           <div className={styles.fixedUpButton}>
-            <p><span style={{fontSize:'0.5em'}}>MOVE</span></p>
-            <p className={styles.fixedSideMenuItem}><FaAngleUp onClick={this.scrollToTop}/></p>
-          </div>
-          :
-          !this.state.isCommentVisible?
-          <div className={styles.fixedFooter}>
-            <Link className={styles.fixedFooterMenuItemLeft} to='disqusContainer' spy={true} smooth={true} offset={50} duration={500}>
-              <FaCommentO/>
-            </Link>
-            <span className={styles.fixedFooterMenuItemRight} >
-              <FaAngleDown className={styles.fixedSideMenuItem} onClick={this.scrollToBottom}/>
-              <FaAngleUp className={styles.fixedSideMenuItem} onClick={this.scrollToTop}/>
-            </span>
-          </div>:null
+            <span className={styles.fixedSideMenuItem}><FaAngleUp onClick={this.scrollToTop}/></span>
+          </div>*/
+        }
+        {
+          isMobile&&this.state.isCommentVisible?
+          <Motion {...this.getFooterDefaultStyle()}>
+            {interpolatedStyle =>{
+              let style={
+                maxHeight: interpolatedStyle.maxHeight,
+              };
+              return (<div className={styles.fixedFooter} style={style}>
+                <Link to='disqusContainer' spy={true} smooth={true} duration={500}>
+                  <FaCommentO className={styles.fixedFooterMenuItemLeft}/>
+                </Link>
+                <span className={styles.fixedFooterMenuItemRight} >
+                  <FaAngleDown className={styles.fixedSideMenuItem} onClick={this.scrollToBottom}/>
+                  <FaAngleUp className={styles.fixedSideMenuItem} onClick={this.scrollToTop}/>
+                </span>
+              </div>);
+            }
+            }
+          </Motion>:null
         }
       </div>
     );
@@ -293,10 +379,12 @@ PostView.defaultProps ={
   get: {},
   prev: {},
   next: {},
+  relatedTags: {},
   categoryGet: {},
   getPost : () => {console.log('PostView props Error');},
   getPrevPost : () => {console.log('PostView props Error');},
   getNextPost : () => {console.log('PostView props Error');},
+  getRelatedTagsPost: () => {console.log('PostView props Error');},
   getCategory : () => {console.log('PostView props Error');},
   isMobile : false,
 };
@@ -305,10 +393,12 @@ PostView.propTypes = {
   get: PropTypes.object.isRequired,
   prev: PropTypes.object.isRequired,
   next: PropTypes.object.isRequired,
+  relatedTags: PropTypes.object.isRequired,
   categoryGet: PropTypes.object.isRequired,
   getPost: PropTypes.func.isRequired,
   getPrevPost: PropTypes.func.isRequired,
   getNextPost: PropTypes.func.isRequired,
+  getRelatedTagsPost: PropTypes.func.isRequired,
   getCategory: PropTypes.func.isRequired,
   isMobile: PropTypes.bool.isRequired,
   environment: PropTypes.object.isRequired,
@@ -319,6 +409,7 @@ const mapStateToProps = (state) => {
     get: state.post.get,
     prev: state.post.prev,
     next: state.post.next,
+    relatedTags: state.post.related.tags,
     categoryGet: state.category.get,
     environment: state.environment,
   };
@@ -333,6 +424,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     getNextPost: (postID, categoryName) => {
       return dispatch(getNextPost(postID, categoryName));
+    },
+    getRelatedTagsPost: (postID, tags) => {
+      return dispatch(getRelatedTagsPost(postID, tags));
     },
     getCategory: (categoryName) => {
       return dispatch(getCategory(categoryName));

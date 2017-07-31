@@ -154,7 +154,51 @@ span {
 }
 
 .postContainer {
-  background-color: #EFEFEF;
+  background-color: #fafafa;
+}
+
+.relatedListContainer {
+  background-color: #fafafa;
+  padding: 10% 5% 10% 5%;
+}
+
+.tileContainer {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  justify-content: space-around;
+  -webkit-justify-content: space-around;
+}
+
+.tileHeader {
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.cardProfile {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+.flex1 {
+  flex: 1 1 auto;
+}
+
+.flex0 {
+  flex: 0 0 auto;
+}
+
+.fontSmall {
+  font-size: 0.7em;
 }
 
 .mobilePaperContainer {
@@ -191,7 +235,7 @@ span {
   position: fixed;
   top: 30%;
   margin-left: 5%;
-  background-color: white;
+  background: transparent;
   font-size: 1.5em;
   text-align: center;
   color: rgba(0, 0, 0, 0.4);
@@ -200,9 +244,14 @@ span {
 
 .fixedUpButton {
   position: fixed;
-  bottom: 5%;
-  margin-left: 5%;
+  bottom: 3%;
+  left: 5%;
   background-color: white;
+  -webkit-box-shadow: -7px -5px 9px -6px rgba(0, 0, 0, 0.21);
+  -moz-box-shadow: -7px -5px 9px -6px rgba(0, 0, 0, 0.21);
+  box-shadow: -7px -5px 9px -6px rgba(0, 0, 0, 0.21);
+  border-radius: 999rem;
+  padding: 0.3rem;
   font-size: 1.5em;
   text-align: center;
   color: rgba(0, 0, 0, 0.4);
@@ -211,10 +260,14 @@ span {
 
 .fixedSideMenuItem {
   cursor: pointer;
+  transform: scale(1);
+  transition: transform 1000ms 0ms;
 }
 
 .fixedSideMenuItem:hover {
   color: black;
+  transform: scale(1.5);
+  transition: transform 1000ms 0ms;
 }
 
 .fixedFooter {
@@ -236,6 +289,8 @@ span {
   cursor: pointer;
   float: left;
   margin-left: 20px;
+  transform: scale(1);
+  transition: transform 1000ms 0ms;
 }
 
 .fixedFooterMenuItemRight {
@@ -246,17 +301,23 @@ span {
 
 .fixedFooterMenuItemLeft:hover {
   color: black;
+  transform: scale(1.5);
+  transition: transform 1000ms 0ms;
 }
 
 .button {
   text-align: center;
-  height: 50px;
-  line-height: 50px;
-  width: 50px;
-  border: solid 1px #fff;
-  color: #fff;
-  border-radius: 5px;
+  border: solid 1px #3B78B6;
+  background-color: #FFFFFF;
+  font-size: 16px;
+  padding: 5px 15px;
+  text-decoration: none;
+  border-radius: 999em;
   cursor: pointer;
+}
+
+.button:hover {
+  opacity: 0.5;
 }
 
 .divider {
@@ -267,6 +328,13 @@ span {
 .header {
   cursor: pointer;
   font-family: 'RobotoBlack', cursive;
+}
+
+.tagContainer {
+  margin-top: 1.5rem;
+  text-align: right;
+  font-size: 0.7em;
+  color: rgba(0, 0, 0, 0.4);
 }
 
 .searchbar {

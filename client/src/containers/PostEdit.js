@@ -23,7 +23,7 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
 
 import styles from '../../../style/main.css';
-import {addPost} from '../actions/post';
+import {addPost, getPost, updatePost} from '../actions/post';
 import {getStatusRequest} from '../actions/authentication';
 
 const path = '/assets/posts/images/';
@@ -32,11 +32,10 @@ const thumbnailPath = '/assets/posts/thumbnails/';
 
 class PostEdit extends Component {
 
-
   constructor(props) {
     super(props);
     this.state = {
-      type: 'view',
+      type: 'new',
       title: '',
       thumbnail: '',
       content: '',
@@ -54,6 +53,7 @@ class PostEdit extends Component {
       snackMessage: '',
       thumnailPreviewUrl: '',
       imagePreviewUrl: [],
+      isSaved: false,
     };
     this.quillRef = null;      // Quill instance
     this.reactQuillRef = null; // ReactQuill component
@@ -61,7 +61,8 @@ class PostEdit extends Component {
     this.modules = {
       toolbar: {
         container: [
-          [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+          [{ 'header': '1'}, {'header': '2'}],
+           [{font:['sans-serif','serif','monospace','NanumGothic']}],
           [{size: []}],
           ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block'],
           [{'list': 'ordered'}, {'list': 'bullet'},
@@ -87,6 +88,8 @@ class PostEdit extends Component {
     this.quillRef = this.reactQuillRef.getEditor();
   }
   componentDidMount() {
+    window.addEventListener('beforeunload',this.handleBackButton);
+    this.props.router.setRouteLeaveHook(this.props.route, this.handleLeave);
     let token = localStorage.getItem('token');
     this.props.getStatusRequest(token)
       .then(()=>{
@@ -94,14 +97,50 @@ class PostEdit extends Component {
         if(!status.valid){
           browserHistory.push('/');
         }
+
+        if(this.props.params.postID){
+          this.props.getPost(this.props.params.postID)
+            .then(()=>{
+              if(this.props.post.get.status === 'SUCCESS'){
+                let post = this.props.post.get.post;
+                this.setState({
+                  type: 'edit',
+                  title: post.title,
+                  thumbnail: post.thumbnail,
+                  content: post.content,
+                  text: post.text,
+                  tags: post.tags,
+                });
+              }
+              else if(this.props.post.get.status === 'FAILURE'){
+                browserHistory.push('/NotFound');
+              }
+            });
+        }
       });
     this.attachQuillRefs();
   }
-
+  componentWillUnmount(){
+    window.removeEventListener('beforeunload',this.handleBackButton);
+  }
   componentDidUpdate() {
     this.attachQuillRefs();
   }
+  handleLeave = (nextLocation)=>{
+    if(!this.state.isSaved)
+      return 'Your work is not saved! Are you sure you want to leave?';
+  }
+  handleBackButton = (e) => {
+    e = e || window.event;
 
+  // For IE<8 and Firefox prior to version 4
+    if (e && !this.isSaved) {
+      e.returnValue = 'Your work is not saved! Are you sure you want to leave?';
+    }
+
+    // For Chrome, Safari, IE8+ and Opera 12+
+    return 'Your work is not saved! Are you sure you want to leave?';
+  }
   /* HANDLE THUMBNAIL */
   handleThumbnailChange = (e) => {
     e.preventDefault();
@@ -311,12 +350,71 @@ class PostEdit extends Component {
             if(this.props.post.add.status == 'SUCCESS'){
               this.setState({
                 open: true,
+                isSaved: true,
                 message: '글이 정상적으로 등록되었습니다.'
               });
             }else{
               this.setState({
                 open: true,
                 message: '등록에 실패하였습니다.'
+              });
+            }
+          });
+      });
+  }
+  handleEditPost = () =>{
+    const {title, content, text, thumbnail, tags} = this.state;
+    const _id = this.props.params.postID;
+    if(title.length === 0 || !title.trim()){
+      this.setState({
+        snackOpen: true,
+        snackMessage: '제목을 입력하세요.',
+      });
+      return;
+    }
+
+    if(content.length === 0 || !content.trim()){
+      this.setState({
+        snackOpen: true,
+        snackMessage: '내용을 입력하세요.',
+      });
+      return;
+    }
+
+    if(!this.props.params.postID){
+      this.setState({
+        snackOpen: true,
+        snackMessage: '잘못된 접근입니다.',
+      });
+      return;
+    }
+    var post = {
+      _id,
+      title,
+      thumbnail,
+      content,
+      text,
+      tags,
+    };
+    let token = localStorage.getItem('token');
+    this.props.getStatusRequest(token)
+      .then(()=>{
+        let status = this.props.authentication.status;
+        if(!status.valid){
+          browserHistory.push('/');
+        }
+        this.props.updatePost(post)
+          .then(()=>{
+            if(this.props.post.update.status == 'SUCCESS'){
+              this.setState({
+                open: true,
+                isSaved: true,
+                message: '글이 정상적으로 수정되었습니다.'
+              });
+            }else{
+              this.setState({
+                open: true,
+                message: '수정에 실패하였습니다.'
               });
             }
           });
@@ -416,6 +514,7 @@ class PostEdit extends Component {
             id="text-field-default"
             multiLine={true}
             style={{'width':'100%'}}
+            value={this.state.title}
             onChange={this.handleTitleChange}/>
           <div>
             {this.renderThumbnail()}
@@ -462,11 +561,11 @@ class PostEdit extends Component {
           <RaisedButton
             style={{'marginTop':'3rem'}}
             primary
-            label="새 글 등록"
+            label={this.state.type==='edit'?'수정 완료':'새 글 등록'}
             fullWidth={true}
-            onTouchTap={this.handleAddPost}/>
+            onTouchTap={this.state.type==='edit'?this.handleEditPost:this.handleAddPost}/>
           <Dialog
-            title="새 글 등록"
+            title={this.state.type==='edit'?'수정 완료':'새 글 등록'}
             actions={actions}
             modal={false}
             open={this.state.open}
@@ -511,15 +610,23 @@ class PostEdit extends Component {
 PostEdit.defaultProps ={
   params: {},
   post: {},
+  router: {},
+  route: {},
   authentication: {},
   addPost : () => {console.log('Post props Error');},
+  getPost : () => {console.log('Post props Error');},
+  updatePost : () => {console.log('Post props Error');},
 };
 PostEdit.propTypes = {
   params: PropTypes.object.isRequired,
   authentication: PropTypes.object.isRequired,
   environment : PropTypes.object.isRequired,
+  router: PropTypes.object.isRequired,
+  route : PropTypes.object.isRequired,
   post: PropTypes.object.isRequired,
   addPost: PropTypes.func.isRequired,
+  getPost: PropTypes.func.isRequired,
+  updatePost: PropTypes.func.isRequired,
   getStatusRequest: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => {
@@ -533,6 +640,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addPost: (post) => {
       return dispatch(addPost(post));
+    },
+    getPost: (postID) => {
+      return dispatch(getPost(postID));
+    },
+    updatePost: (post) => {
+      return dispatch(updatePost(post));
     },
     getStatusRequest: (token) => {
       return dispatch(getStatusRequest(token));

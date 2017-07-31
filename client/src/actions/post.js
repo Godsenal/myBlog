@@ -1,5 +1,4 @@
 import {
-  RAW_POST_HISTORY,
   POST_ADD,
   POST_ADD_SUCCESS,
   POST_ADD_FAILURE,
@@ -12,6 +11,9 @@ import {
   POST_NEXT_GET,
   POST_NEXT_GET_SUCCESS,
   POST_NEXT_GET_FAILURE,
+  POST_RELATED_TAGS_GET,
+  POST_RELATED_TAGS_GET_SUCCESS,
+  POST_RELATED_TAGS_GET_FAILURE,
   POST_LIST,
   POST_LIST_SUCCESS,
   POST_LIST_FAILURE,
@@ -85,6 +87,19 @@ export function getNextPost(postID, categoryName){
         dispatch({type: POST_NEXT_GET_SUCCESS, post: res.data.post});
       }).catch((err)=>{
         dispatch({type: POST_NEXT_GET_FAILURE, err: err.response.data.err, errCode: err.response.data.errCode});
+      });
+  };
+}
+
+export function getRelatedTagsPost(postID, tags){
+  return (dispatch) => {
+    dispatch({type: POST_RELATED_TAGS_GET});
+    var url = '/api/post/get/related/tags';
+    return axios.post(url,{tags, postID})
+      .then((res)=>{
+        dispatch({type: POST_RELATED_TAGS_GET_SUCCESS, posts: res.data.posts});
+      }).catch((err)=>{
+        dispatch({type: POST_RELATED_TAGS_GET_FAILURE, err: err.response.data.err, errCode: err.response.data.errCode});
       });
   };
 }

@@ -26,6 +26,14 @@ const initialState = {
     err: 'ERROR',
     errCode: -1,
   },
+  related:{
+    tags:{
+      status: 'INIT',
+      posts: [],
+      err: 'ERROR',
+      errCode: -1,
+    },
+  },
   list: {
     status: 'INIT',
     category: '',
@@ -173,6 +181,34 @@ export default function post(state, action){
           errCode: {$set: action.errCode}
         }
       });
+    /* GET RELATED TAGS POST */
+    case types.POST_RELATED_TAGS_GET:
+      return update(state, {
+        related: {
+          tags:{
+            status: {$set: 'WAITING'}
+          }
+        }
+      });
+    case types.POST_RELATED_TAGS_GET_SUCCESS:
+      return update(state, {
+        related: {
+          tags:{
+            posts: {$set: action.posts},
+            status: {$set: 'SUCCESS'}
+          }
+        }
+      });
+    case types.POST_RELATED_TAGS_GET_FAILURE:
+      return update(state, {
+        related: {
+          tags:{
+            status: {$set: 'FAILURE'},
+            err: {$set: action.err},
+            errCode: {$set: action.errCode}
+          }
+        }
+    });
 
     /* LIST POST */
     case types.POST_LIST:
@@ -206,20 +242,6 @@ export default function post(state, action){
         }
       });
     case types.POST_UPDATE_SUCCESS:
-      for(var i=0; i<state.list.posts.length; i++){
-        // UPDATE 시 list에 있는 것도 업데이트.
-        if(state.list.posts[i].id == action.post.id){
-          state = update(state, {
-            list:{
-              posts:{
-                [i]: {$set: action.post}
-              },
-            },
-          });
-
-          break;
-        }
-      }
       return update(state, {
         update:{
           status: {$set: 'SUCCESS'},

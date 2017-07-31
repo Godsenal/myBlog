@@ -167,6 +167,19 @@ router.get('/get/next/:postID/:category', function(req, res) {
     });
 });
 
+//GET SAME TAG POSTS
+router.post('/get/related/tags',function(req,res){
+  Posts.find({$and:[{tags:{ $in: req.body.tags }},{_id: { $ne: req.body.postID}}]},{title: 1, category: 1, author: 1, thumbnail: 1, tags: 1, viewer: 1})
+    .limit(3)
+    .exec(function(err, posts){
+      if(err){
+        console.log(err);
+        return res.status(400).json({error: 'internal server error', code: 1});
+      }
+      res.json({posts});
+    });
+});
+
 //GET PAGE COUNT WITHOUT CATEGORY
 router.get('/count/all',function(req,res){
   Posts.find({})
@@ -226,7 +239,7 @@ router.post('/add', function(req, res) {
 
 // UPDATE POST
 router.post('/update', function(req, res) {
-  Posts.findOneAndUpdate({id: req.body.id}, {$set:{title: req.body.title, content: req.body.content, created: req.body.created}},{new: true}, function(err, post){
+  Posts.findOneAndUpdate({_id: req.body._id}, {$set:{title: req.body.title, content: req.body.content, text:req.body.text, thumbnail: req.body.thumbnail, tags: req.body.tags}},{new: true}, function(err, post){
     if(err){
       console.log(err);
       return res.status(400).json({error: 'internal server error', code: 1});
@@ -237,7 +250,7 @@ router.post('/update', function(req, res) {
 
 // DELETE POST
 router.post('/delete', function(req,res){
-  Posts.remove({id:req.body.id},function(err, post){
+  Posts.remove({_id:req.body._id},function(err, post){
     if(err){
       console.log(err);
       return res.status(400).json({error: 'internal server error', code: 1});
@@ -400,5 +413,7 @@ router.post('/search/count',function(req,res){
       res.json({count});
     });
 });
+
+
 
 export default router;

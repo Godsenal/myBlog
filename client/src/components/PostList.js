@@ -100,7 +100,7 @@ class PostList extends Component{
                       <CardMedia style={{'display':'inline-block','overflow':'hidden'}}>
                         <img style={style} src={post.thumbnail? thumbnailPath + post.thumbnail : null } onError={(e)=>e.target.src = DEFAULT_IMAGE} />
                       </CardMedia>
-                      <CardTitle style={{'lineHeight':'1.2','fontWeight':700,'fontSize':20}} title={post.title}/>
+                      <CardTitle titleStyle={{'lineHeight':'1.2','fontWeight':700,'fontSize':20}} title={post.title}/>
                       <CardText style={{'fontSize':'0.8em','color':'rgba(0,0,0,.44)'}}>
                         <span>{text}</span>
                       </CardText>
