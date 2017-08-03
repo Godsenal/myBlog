@@ -14,9 +14,13 @@ import MdComment from 'react-icons/md/comment';
 import StackGrid from 'react-stack-grid';
 
 import { CommentCount } from '../disqus';
+import styles from '../../../style/main.css';
 
 const thumbnailPath = '/assets/posts/thumbnails/';
 const DEFAULT_IMAGE = '/assets/images/back.jpg';
+
+
+const disqusShortname = 'godsenal';
 
 const inlineStyles = {
   root: {
@@ -39,6 +43,9 @@ class PostList extends Component{
   componentDidMount() {
     window.addEventListener('resize',this.handleResize);
   }
+  componentWillUnmount() {
+    window.removeEventListener('resize',this.handleResize);
+  }
   handleResize = () => {
     if(this.grid){
       this.grid.updateLayout();
@@ -55,20 +62,18 @@ class PostList extends Component{
     return {
       defaultStyle: {
         scale: 1,
+        y: 100,
         zIndex: 1,
       },
       style:{
         scale: spring(this.state.isHover===index ? 1.2 : 1),
+        y: spring(0,{stiffness: 160, damping: 5}),
         zIndex: spring(this.state.isHover===index ? 2 : 1),
       },
     };
   }
-
-  render(){
-    const disqusShortname = 'godsenal';
-    const {isMobile, posts, screenWidth} = this.props;
-    const columnWidth = screenWidth > 1500 ? '30%': screenWidth > 800 ? '50%' : '100%';
-    return(
+  renderDesktop = (columnWidth, posts) => {
+    return (
       <StackGrid
         columnWidth={columnWidth}
         gridRef={grid => this.grid = grid}
@@ -98,11 +103,11 @@ class PostList extends Component{
                       onMouseEnter={()=>{this.handleHover(i);}}
                       onMouseLeave={()=>{this.handleHover(false);}}>
                       <CardMedia style={{'display':'inline-block','overflow':'hidden'}}>
-                        <img style={style} src={post.thumbnail? thumbnailPath + post.thumbnail : null } onError={(e)=>e.target.src = DEFAULT_IMAGE} />
+                        <img className={styles.postImage} style={style} src={post.thumbnail? thumbnailPath + post.thumbnail : null } onError={(e)=>e.target.src = DEFAULT_IMAGE} />
                       </CardMedia>
-                      <CardTitle style={{'lineHeight':'1.2','fontWeight':700,'fontSize':20}} title={post.title}/>
-                      <CardText style={{'fontSize':'0.8em','color':'rgba(0,0,0,.44)'}}>
-                        <span>{text}</span>
+                      <CardTitle><span className={styles.postCardTitle}>{post.title}</span></CardTitle>
+                      <CardText>
+                        <span className={styles.postText}>{text}</span>
                       </CardText>
                       <CardText style={{'textAlign':'right'}}>
                         <h3 style={{'float':'left','display':'inline'}}>
@@ -130,6 +135,79 @@ class PostList extends Component{
           </Motion>);
       })}
     </StackGrid>
+    );
+  }
+  renderMobile = (posts) => {
+    return (
+      <div style={{maxWidth:'100%'}}>
+      {posts.map((post, i)=>{
+        var disqusConfig = {
+          //url: `http://www.godsenal.com/#${disqusShortname}`,
+          identifier: post._id,
+          title: post.title,
+        };
+        return (
+          <Motion key={i} {...this.getPostSpringProps(i)}>
+            {interpolatingStyle => {
+              const {scale, y} = interpolatingStyle;
+              let style = {
+                transform: 'scale(' + scale + ')',
+                verticalAlign: 'middle',
+              };
+
+              let containerStyle = {
+                WebkitTransform: `translate3d(0, ${y}px, 0)`,
+                transform: `translate3d(0, ${y}px, 0)`,
+                borderRadius: 10,
+                marginTop: 10
+              };
+              let text = post.text?post.text.length > 200 ? post.text.substr(0,200) + '...' : post.text : '';
+              return(
+                <Paper zDepth={3} style={containerStyle}>
+                  <GridTile style={{'cursor': 'pointer', 'borderRadius':10}} onTouchTap={ () => this.handlePostClick(post._id)}>
+                    <Card
+                      onMouseEnter={()=>{this.handleHover(i);}}
+                      onMouseLeave={()=>{this.handleHover(false);}}>
+                      <CardMedia style={{'display':'inline-block','overflow':'hidden'}}>
+                        <img className={styles.postImage} style={style} src={post.thumbnail? thumbnailPath + post.thumbnail : null } onError={(e)=>e.target.src = DEFAULT_IMAGE} />
+                      </CardMedia>
+                      <CardTitle><span className={styles.postCardTitle}>{post.title}</span></CardTitle>
+                      <CardText >
+                        <span className={styles.postText}>{text}</span>
+                      </CardText>
+                      <CardText style={{'textAlign':'right'}}>
+                        <h3 style={{'float':'left','display':'inline'}}>
+                          <Avatar backgroundColor={'#32FAE2'} size={16}>{post.author?post.author.substr(0,1).toUpperCase():''}</Avatar>&nbsp;{post.author}
+                        </h3>
+                        <h5>
+                          <MdDateRange/>
+                          {moment(post.created).format('LL')}
+                        </h5>&nbsp;
+                        <span>
+                          <MdRemoveRedEye/>
+                          {post.viewer}
+                        </span>&nbsp;
+                        <span>
+                          <MdComment/>
+                            <CommentCount shortname={disqusShortname} config={disqusConfig}>
+                              0
+                            </CommentCount>
+                        </span>
+                      </CardText>
+                    </Card>
+                  </GridTile>
+                </Paper>);
+            }}
+          </Motion>);
+      })}
+    </div>
+    );
+  }
+  render(){
+    const {isMobile, posts, screenWidth} = this.props;
+    const columnWidth = screenWidth > 1500 ? '30%': screenWidth > 800 ? '50%' : '100%';
+    return(
+      screenWidth > 800 ? this.renderDesktop(columnWidth, posts):this.renderMobile(posts)
     );
   }
 }

@@ -2,6 +2,7 @@ import React,{Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
+import classNames from 'classNames/bind';
 
 import Drawer from 'material-ui/Drawer';
 import {ListItem} from 'material-ui/List';
@@ -12,6 +13,7 @@ import Snackbar from 'material-ui/Snackbar';
 import TextField from 'material-ui/TextField';
 
 import MdAddCircleOutline from 'react-icons/md/add-circle-outline';
+import MdArrowDropDown from 'react-icons/lib/md/arrow-drop-down';
 import FaSignOut from 'react-icons/fa/sign-out';
 
 import {Searchbar} from './';
@@ -19,6 +21,9 @@ import {changeActiveCategory, addCategory, listCategory, updateCategory, deleteC
 import {getStatusRequest, signoutRequest} from '../actions/authentication';
 import styles from '../../../style/main.css';
 
+const cx = classNames.bind(styles);
+
+const hoverColor='#3498DB';
 class Sidebar extends Component{
   constructor(props) {
     super(props);
@@ -75,9 +80,10 @@ class Sidebar extends Component{
           <ListItem
             key={i}
             onTouchTap={()=>{this.handleSelectCategory(subCategory);}}
+            hoverColor={hoverColor}
             nestedItems={
               this.handleNestedItems(list,subCategory)
-            }><span>{subCategory.name}</span>
+            }><span className={styles.categoryList}>{subCategory.name}</span>
           </ListItem>);
       }
     });
@@ -86,7 +92,8 @@ class Sidebar extends Component{
     this.props.status.valid?nestedItems.push(
       <ListItem
         key={list.categories.length}
-        onTouchTap={() => {this.handleOpenModal(category);}}><MdAddCircleOutline/>
+        hoverColor={hoverColor}
+        onTouchTap={() => {this.handleOpenModal(category);}}><MdAddCircleOutline className={styles.categoryList}/>
       </ListItem>
     ):null;
     nestedItems = nestedItems.filter(Boolean); // undefined 제거
@@ -214,15 +221,15 @@ class Sidebar extends Component{
     return(
       <Drawer
         containerClassName={styles.font}
-        width={400}
+        width={this.props.isMobile?300:400}
         docked={!this.props.isMobile}
         onRequestChange={this.props.isMobile? this.props.toggleSidebar:null}
         openSecondary={true}
         open={this.props.open || !this.props.isMobile}
-        containerStyle={{'backgroundColor':'#ECF0F1'}}
+        containerStyle={{'backgroundColor':'#333745'}}
         style={{'textAlign':'center'}}>
         <div style={{'fontSize':'2em','margin':'3rem','textAlign':'center','display':'block'}}>
-          <span className={styles.header} onClick={this.handleHeaderClick}>LTH's Blog</span>
+          <span className={cx('header','headerText')} onClick={this.handleHeaderClick}>{this.props.title}</span>
         </div>
         <Divider inset={true} style={{'margin':'3rem'}} />
         {list.categories.map((category,i)=>{
@@ -230,22 +237,24 @@ class Sidebar extends Component{
             return (
               <ListItem
                 key={i}
+                hoverColor={hoverColor}
                 onTouchTap={()=>{this.handleSelectCategory(category); }}
                 nestedItems={
                   this.handleNestedItems(list,category)
-                }><span>{category.name}</span>
+                }><span className={styles.categoryList}>{category.name}</span>
               </ListItem>);
           }
         })}
-        <div style={{'marginTop':'2rem'}}>
-          <Searchbar />
+        <div className={styles.categoryList} style={{'marginTop':'2rem'}}>
+          <span onTouchTap={this.props.isMobile? this.props.toggleSidebar:null}><Searchbar/></span>
         </div>
         {this.props.status.valid?
           <ListItem
-            onTouchTap={() => {this.handleOpenModal();}}><MdAddCircleOutline/>
+            onTouchTap={() => {this.handleOpenModal();}}><MdAddCircleOutline className={styles.categoryList}/>
           </ListItem>:null}
         {this.props.status.valid?
           <FaSignOut
+            className={styles.categoryList}
             onClick={this.handleSignout}/>:null}
         <Snackbar
           open={this.state.snackOpen}
@@ -260,6 +269,7 @@ class Sidebar extends Component{
 }
 
 Sidebar.defaultProps ={
+  title: '',
   isMobile: false,
   open: false,
   toggleSidebar : () => {console.log('Sidebar props Error');},
@@ -275,6 +285,7 @@ Sidebar.defaultProps ={
   signoutRequest : () => {console.log('Sidebar props Error');},
 };
 Sidebar.propTypes = {
+  title: PropTypes.string.isRequired,
   status: PropTypes.object.isRequired,
   isMobile: PropTypes.bool.isRequired,
   open: PropTypes.bool.isRequired,

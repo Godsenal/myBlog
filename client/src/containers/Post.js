@@ -8,12 +8,14 @@ import FaArchive from 'react-icons/fa/archive';
 import FaFrownO from 'react-icons/fa/frown-o';
 import CircularProgress from 'material-ui/CircularProgress';
 import Pagination from 'material-ui-pagination';
+import classNames from 'classNames/bind';
 
 import {Searchbar, PostList} from '../components';
 import {addPost, listPost, updatePost, deletePost, countPost} from '../actions/post';
 import {getCategory} from '../actions/category';
 import {getStatusRequest} from '../actions/authentication';
 
+const cx = classNames.bind(styles);
 import styles from '../../../style/main.css';
 
 
@@ -171,13 +173,13 @@ class Post extends Component{
         <div className={isMobile?styles.mobileListContainer:styles.listContainer}>
           {list.status === 'SUCCESS'?
           <div>
-            <div>
-              <span style={{'textAlign':'left'}} className={styles.category}>
+            <div className={cx('headerContainer', 'listHeaderContainer')}>
+              <span className={cx('headerLeft','category')}>
                 <FaArchive/>&nbsp;{category}
               </span>
               {this.props.params.category?
-                <div style={{'float':'right'}}>
-                  <Searchbar category={category} handleSearchPost={this.handleSearchPost}/>
+                <div className={cx('headerRight','category')}>
+                  <Searchbar className={cx('headerText')} category={category} handleSearchPost={this.handleSearchPost}/>
                 </div>:null}
             </div>
             <Divider style={{'marginTop':'1.5rem', 'marginBottom':'1.5rem'}} />
