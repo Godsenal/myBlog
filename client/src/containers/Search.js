@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
 import PropTypes from 'prop-types';
+import classNames from 'classNames/bind';
+
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import FaArchive from 'react-icons/fa/archive';
@@ -9,10 +11,12 @@ import FaFrownO from 'react-icons/fa/frown-o';
 import CircularProgress from 'material-ui/CircularProgress';
 import Pagination from 'material-ui-pagination';
 
+
 import {Searchbar, PostList} from '../components';
 import {searchPost, searchCountPost} from '../actions/post';
 import {getStatusRequest} from '../actions/authentication';
 
+const cx = classNames.bind(styles);
 import styles from '../../../style/main.css';
 
 
@@ -136,11 +140,15 @@ class Search extends Component{
     const category = this.props.params.category?this.props.params.category:'';
 
     const header =
-      <span>
-        <span style={{'color':'#329FFF'}}>{word}</span>에 대한 검색결과
-          {category?
-            <span style={{'color':'#323CAA','cursor':'pointer'}} onClick={() => this.handleHeaderClick(category)}>&nbsp;in&nbsp;{category}</span>
-            :null}
+      <span style={{lineHeight:'200%'}}>
+        {category?
+          <span>
+            <span style={{'cursor':'pointer', color: '#FFB03B' }} onClick={() => this.handleHeaderClick(category)}> {category}  </span>
+            <span >내</span>
+            <br/>
+          </span>
+          :null}
+        <span style={{'color':'#EFECCA'}}> '{word}' </span>에 대한 검색결과
       </span>;
     const total = parseInt(((searchCount.count)-1) / 10 + 1);
     const posts = search.results;
@@ -148,12 +156,12 @@ class Search extends Component{
         <div className={styles.listContainer}>
           {search.status === 'SUCCESS'?
           <div>
-            <div>
-              <span style={{'textAlign':'left'}} className={styles.category}>
+            <div className={cx('headerContainer', 'listHeaderContainer')}>
+              <span className={cx('headerLeft','category')}>
                 <FaArchive/>&nbsp;{header}
               </span>
-              <div style={{'float':'right'}}>
-                <Searchbar category={category}/>
+              <div className={cx('headerRight','category')}>
+                <Searchbar className={cx('headerText')} category={category}/>
               </div>
             </div>
             <Divider style={{'marginTop':'1.5rem', 'marginBottom':'1.5rem'}} />

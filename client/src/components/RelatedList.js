@@ -51,7 +51,7 @@ class RelatedList extends Component{
     const tileWidth = isMobile?'100%':'30%';
     return(
       <div className={styles.relatedListContainer}>
-        <div className={styles.tileHeader}><span >RELATED POSTS</span></div>
+        <div className={styles.tileHeader}><span >RELATED POST</span></div>
         <div className={styles.tileContainer}>
         {posts.map((post, i)=>{
           return (
@@ -72,7 +72,7 @@ class RelatedList extends Component{
                           style={{'display':'inline-block',height:'10%', 'overflow':'hidden'}}>
                           <img height='100%' style={style} src={post.thumbnail? thumbnailPath + post.thumbnail : DEFAULT_IMAGE } onError={(e)=>e.target.src = DEFAULT_IMAGE} />
                         </CardMedia>
-                        <CardTitle titleStyle={{'lineHeight':'1.2','fontWeight':700,'fontSize':16}} title={post.title}/>
+                        <CardTitle><span className={cx('postCardTitle')}>{post.title}</span></CardTitle>
                         <CardText className={styles.cardProfile}>
                           <span className={cx('flex1','fontSmall')}>
                             <Avatar backgroundColor={'#32FAE2'} size={12}>{post.author?post.author.substr(0,1).toUpperCase():''}</Avatar>{post.author}

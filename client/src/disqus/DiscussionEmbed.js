@@ -36,10 +36,12 @@ export class DiscussionEmbed extends React.Component {
 
     loadInstance() {
         if (DOC.getElementById('dsq-embed-scr')) {
-            window.DISQUS.reset({
-                reload: true,
-                config: this.getDisqusConfig(this.props.config),
-            });
+            if(window.DISQUS){ // DISQUS 존재 할 때만 Reset하도록 수정
+                window.DISQUS.reset({
+                    reload: true,
+                    config: this.getDisqusConfig(this.props.config),
+                });
+            }
         } else {
             window.disqus_config = this.getDisqusConfig(this.props.config);
             window.disqus_shortname = this.props.shortname;
@@ -49,7 +51,9 @@ export class DiscussionEmbed extends React.Component {
 
     cleanInstance() {
         removeScript('dsq-embed-scr', DOC.body);
-        window.DISQUS.reset({});
+        if(window.DISQUS){ // DISQUS 존재 할 때만 Reset하도록 수정
+            window.DISQUS.reset({});
+        }
         try {
             delete window.DISQUS;
         } catch (error) {

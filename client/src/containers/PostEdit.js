@@ -62,7 +62,7 @@ class PostEdit extends Component {
       toolbar: {
         container: [
           [{ 'header': '1'}, {'header': '2'}],
-           [{font:['sans-serif','serif','monospace','NanumGothic']}],
+           [{font:[]}],
           [{size: []}],
           ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block'],
           [{'list': 'ordered'}, {'list': 'bullet'},
@@ -531,7 +531,9 @@ class PostEdit extends Component {
             modules={this.modules}
             formats={this.formats}
             value={this.state.content}
-            onChange={this.handleContentChange} />
+            onChange={this.handleContentChange} >
+            <div className={styles.editorContainer}/>
+          </ReactQuill>
           <div>
             {this.renderTag()}
             <FlatButton

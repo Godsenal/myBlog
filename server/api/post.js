@@ -1,8 +1,16 @@
 import Posts from '../models/Posts';
 import Categories from '../models/Categories';
+import Counters from '../models/Counters';
 import express from 'express';
 const router = express.Router();
 
+/* AUTO_INCREMENT FOR POST ID */
+function getNextSequence(name) {
+  var count = Counters.findByIdAndUpdate({ _id: name },{ $inc: { seq: 1 } },{new: true},function(err, count){
+    return count.seq;
+  });
+  console.log(count);
+}
 
 // GET ALL POST WITHOUT CATEGORY
 router.get('/list/all', function(req, res) {
@@ -87,7 +95,8 @@ router.get('/get/:postID', function(req, res) {
       console.log(err);
       return res.status(500).json({error: 'internal server error', code: 1});
     }
-    res.json({post});
+    return res.json({post});
+
   });
 });
 

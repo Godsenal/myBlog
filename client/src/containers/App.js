@@ -2,13 +2,12 @@ import React,{Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
+import classNames from 'classNames/bind';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import FlatButton from 'material-ui/FlatButton';
-
-
-import AppBar from 'material-ui/AppBar';
+import MdMenu from 'react-icons/lib/md/menu';
+import Headroom from 'react-headroom';
 
 import { Sidebar } from '../components';
 import { initEnvironment} from '../actions/environment';
@@ -16,7 +15,7 @@ import { getStatusRequest} from '../actions/authentication';
 import styles from '../../../style/main.css';
 import Bluebird from 'bluebird';
 
-
+const cx = classNames.bind(styles);
 
 // Node
 global.Promise = Bluebird;
@@ -25,6 +24,14 @@ window.Promise = Bluebird;
 //Mui Setting
 injectTapEventPlugin();
 
+const inlineStyles = {
+  headroom:{
+    zIndex: '999',
+    backgroundColor: '#333745',
+    padding: 10,
+  }
+};
+const title = "LTH's Blog";
 class App extends Component{
   constructor(props){
     super(props);
@@ -71,21 +78,28 @@ class App extends Component{
         <div className={styles.appContainer} style={{'overflowX':'hidden', 'overflowY':'hidden', 'margin': 0, 'padding': 0}}>
           <div className={styles.mainContainer}>
             {isMobile?
-            <AppBar
-              className={styles.header}
-              title="LTH's Blog"
-              style={{'backgroundColor':'#ECF0F1'}}
-              titleStyle={{'color':'#2C3E50'}}
-              onTitleTouchTap={this.handleHeaderClick}
-              showMenuIconButton={false}
-              iconElementRight={<FlatButton className={styles.button} style={{'color':'#2C3E50'}} label="메뉴" onTouchTap={()=>this.toggleSidebar()}/>}
-            />:null}
+              <Headroom style={inlineStyles.headroom}>
+                <div className={cx('headerContainer')}>
+                  <div className={cx('header','headerLeft')} ><span className={cx('headerText')} onClick={this.handleHeaderClick}>{title}</span></div>
+                  <div className={cx('header','headerRight')}><span className={cx('headerText')} onClick={this.toggleSidebar}><MdMenu /></span></div>
+                </div>
+                {/*
+                <AppBar
+                  className={styles.header}
+                  title="LTH's Blog"
+                  titleStyle={{'color':'#FFFFFF'}}
+                  onTitleTouchTap={this.handleHeaderClick}
+                  showMenuIconButton={false}
+                  iconElementRight={<FlatButton className={styles.button} style={{'color':'#2C3E50'}} label="메뉴" onTouchTap={()=>this.toggleSidebar()}/>}
+                />*/}
+              </Headroom>:null
+            }
             {this.props.children && React.cloneElement(this.props.children, {
               isMobile
             })}
           </div>
           <div className={sidebarStyle}>
-            <Sidebar isMobile={isMobile} open={open} toggleSidebar={this.toggleSidebar}/>
+            <Sidebar isMobile={isMobile} open={open} toggleSidebar={this.toggleSidebar} title={title}/>
           </div>
         </div>
       </MuiThemeProvider>

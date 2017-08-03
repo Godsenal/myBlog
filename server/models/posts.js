@@ -1,8 +1,10 @@
 import mongoose from 'mongoose';
+import Counters from './Counters';
 
 const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
+  _id: String,
   author: String,
   title: String,
   thumbnail: {type: String, default: ''},
@@ -15,5 +17,14 @@ const PostSchema = new Schema({
   viewer: {type: Number, default: 0},
   created: { type: Date, default: Date.now },
 });
+
+PostSchema.pre('save',function(next){
+  var post = this;
+  Counters.findByIdAndUpdate({_id: 'postID'}, {$inc: { seq: 1} },{new: true},function(err, count) {
+    post._id = count.seq;
+    next();
+  });
+});
+
 var collectionName = 'Posts';
 export default mongoose.model('Post', PostSchema, collectionName);

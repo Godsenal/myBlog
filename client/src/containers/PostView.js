@@ -63,7 +63,7 @@ class PostView extends Component {
     if(this.props.params.postID !== nextProps.params.postID){
       this.setState({
         isVisible: false,
-        isCommentVisible: false,
+        isCommentVisible: true,
       });
       this.loadPost(nextProps.params.postID);
     }
@@ -156,11 +156,21 @@ class PostView extends Component {
 
   loadPost = (postID) => {
     this.props.getPost(postID)
-      .then(()=>{
-        this.props.getCategory(this.props.get.post.category);
-        this.props.getRelatedTagsPost(postID, this.props.get.post.tags);
-        this.props.getPrevPost(postID, this.props.get.post.category);
-        this.props.getNextPost(postID, this.props.get.post.category);
+      .then((res)=>{
+        const {status} = this.props.get;
+        if(status === 'SUCCESS'){
+          this.props.getCategory(this.props.get.post.category);
+          this.props.getRelatedTagsPost(postID, this.props.get.post.tags);
+          this.props.getPrevPost(postID, this.props.get.post.category);
+          this.props.getNextPost(postID, this.props.get.post.category);
+        }
+        else if(status === 'FAILURE'){
+          browserHistory.push('/NotFound');
+        }
+        return null;
+      })
+      .catch((err)=>{
+        browserHistory.push('/NotFound');
       });
   }
   renderPrevNext = () => {
@@ -218,9 +228,9 @@ class PostView extends Component {
         <div className={this.props.isMobile?null:styles.postContainer}>
           <Paper className={this.props.isMobile?styles.mobilePaperContainer:styles.paperContainer} zDepth={0} >
             <div style={{'textAlign': 'left'}}>
-              <h2 style={{'fontSize':'1.7em',color:'#454545'}}>{post.title}</h2>
-              <Subheader style={{'textAlign': 'right','fontSize':'0.7em'}}>
-                <div style={{'color':'rgba(0, 0, 0, 0.4)','margin':0}}>
+              <span className={styles.postTitle} style={{color:'#454545'}}>{post.title}</span>
+              <Subheader style={{'textAlign': 'right'}}>
+                <div style={{'color':'rgba(0, 0, 0, 0.4)','margin':0, fontSize:'0.85em'}}>
                   <span>
                     <FaArchive/>
                     {path}
@@ -248,10 +258,6 @@ class PostView extends Component {
                 onError={(e)=>e.target.src = DEFAULT_IMAGE} />
             </div>
             <div style={{'marginTop': '1rem'}}>
-              <Waypoint
-                onEnter={this.handleWaypointEnter}
-                onLeave={this.handleWaypointLeave}
-              />
               <ReactQuill
                 theme='bubble'
                 modules={modules}
@@ -265,8 +271,8 @@ class PostView extends Component {
               </div>
               <div>
                 <span style={{marginRight: '0.7rem'}}>{post.author}</span><br/>
-                <span style={{marginRight: '0.7rem','fontSize':'0.8em','color':'rgba(0,0,0,.44)'}}>공익</span><br/>
-                <span style={{marginRight: '0.7rem','fontSize':'0.8em','color':'rgba(0,0,0,.44)'}}>컴퓨터 배우는 중</span><br/>
+                <span style={{marginRight: '0.7rem',color:'rgba(0,0,0,.44)'}}>공익</span><br/>
+                <span style={{marginRight: '0.7rem','color':'rgba(0,0,0,.44)'}}>컴퓨터 배우는 중</span><br/>
               </div>
             </div>
 
@@ -288,10 +294,6 @@ class PostView extends Component {
               </Element>
             </div>
           </Paper>
-          <Waypoint
-            onEnter={this.handleCommentWaypointEnter}
-            onLeave={this.handleCommentWaypointLeave}
-          />
           {
             (this.props.relatedTags.status === 'SUCCESS') && this.props.relatedTags.posts.length > 0 ?
             <RelatedList
@@ -300,16 +302,24 @@ class PostView extends Component {
               isMobile={isMobile}
             />:null
           }
+          <Waypoint
+            onEnter={this.handleCommentWaypointEnter}
+            onLeave={this.handleCommentWaypointLeave}
+          />
         </div>
+        {isMobile?
+          <div className={styles.fixedPhantom} >
+            <FaCommentO className={styles.fixedFooterMenuItemLeft}/>
+          </div>:null}
         {!isMobile?
-          this.state.isVisible?
+          this.state.isCommentVisible?
           <Motion {...this.getSideMenuDefaultStyle()}>
             {interpolatedStyle =>{
               let style={
                 transform: 'translateY(-'+interpolatedStyle.translateY+'%)',
               };
               return (<div className={styles.fixedSideMenu} style={style}>
-            <p><span style={{fontSize:'0.5em'}}>MOVE</span></p>
+            <span style={{fontSize:'0.5em'}}>MOVE</span><br/>
             <p className={styles.fixedSideMenuItem}><FaAngleUp onClick={this.scrollToTop}/></p>
             <Link to='disqusContainer' spy={true} smooth={true} duration={500}>
               <FaCommentO className={styles.fixedSideMenuItem}/>
@@ -326,24 +336,16 @@ class PostView extends Component {
           </div>*/
         }
         {
-          isMobile&&this.state.isCommentVisible?
-          <Motion {...this.getFooterDefaultStyle()}>
-            {interpolatedStyle =>{
-              let style={
-                maxHeight: interpolatedStyle.maxHeight,
-              };
-              return (<div className={styles.fixedFooter} style={style}>
-                <Link to='disqusContainer' spy={true} smooth={true} duration={500}>
-                  <FaCommentO className={styles.fixedFooterMenuItemLeft}/>
-                </Link>
-                <span className={styles.fixedFooterMenuItemRight} >
-                  <FaAngleDown className={styles.fixedSideMenuItem} onClick={this.scrollToBottom}/>
-                  <FaAngleUp className={styles.fixedSideMenuItem} onClick={this.scrollToTop}/>
-                </span>
-              </div>);
-            }
-            }
-          </Motion>:null
+          isMobile?
+            <div className={styles.fixedFooter}>
+              <Link to='disqusContainer' spy={true} smooth={true} duration={500}>
+                <FaCommentO className={styles.fixedFooterMenuItemLeft}/>
+              </Link>
+              <span className={styles.fixedFooterMenuItemRight} >
+                <FaAngleDown className={styles.fixedSideMenuItem} onClick={this.scrollToBottom}/>
+                <FaAngleUp className={styles.fixedSideMenuItem} onClick={this.scrollToTop}/>
+              </span>
+            </div>:null
         }
       </div>
     );
@@ -365,7 +367,7 @@ class PostView extends Component {
     const {get} = this.props;
     return(
       <div>
-        {get.status === 'SUCCESS'?
+        {get.status === 'SUCCESS' && get.post?
           this.renderPost(get.post)
           : get.status === 'FAILURE'?
           this.renderFail():null}
