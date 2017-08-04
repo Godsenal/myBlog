@@ -6,6 +6,7 @@ import ReactQuill from 'react-quill';
 import Waypoint from 'react-waypoint';
 import Scroll,{Link, Element, Events, animateScroll as scroll, scrollSpy, scroller} from 'react-scroll';
 import {Motion, spring} from 'react-motion';
+import classNames from 'classNames/bind';
 
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
@@ -36,6 +37,7 @@ import { DiscussionEmbed, CommentCount } from '../disqus';
 
 const thumbnailPath = '/assets/posts/thumbnails/';
 const DEFAULT_IMAGE = '/assets/images/back.jpg';
+const cx = classNames.bind(styles);
 
 const modules={
   toolbar: false,
@@ -229,7 +231,7 @@ class PostView extends Component {
           <Paper className={this.props.isMobile?styles.mobilePaperContainer:styles.paperContainer} zDepth={0} >
             <div style={{'textAlign': 'left'}}>
               <span className={styles.postTitle} style={{color:'#454545'}}>{post.title}</span>
-              <Subheader style={{'textAlign': 'right'}}>
+              <Subheader className={cx('subHeader','textRight')}>
                 <div style={{'color':'rgba(0, 0, 0, 0.4)','margin':0, fontSize:'0.85em'}}>
                   <span>
                     <FaArchive/>

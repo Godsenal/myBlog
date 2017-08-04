@@ -10,19 +10,30 @@ import MenuItem from 'material-ui/MenuItem';
 
 import FaSearch from 'react-icons/fa/search';
 
+import styles from '../../../style/main.css';
 
-const styles = {
+const inlineStyles = {
   iconStyle: {
     cursor: 'pointer'
   },
   dialogStyle: {
     background: 'black',
   },
+  categoryStyle: {
+    width:'75%',
+    fontFamily: 'Work Sans, NanumGothic, sans-serif',
+    margin: 'auto'
+  },
   searchbarStyle: {
-    width:'100%'
+    width:'75%',
+    margin: 'auto'
   },
   hintStyle: {
     fontSize: 16,
+    fontFamily: 'Work Sans, NanumGothic, sans-serif',
+  },
+  listStyle: {
+    fontFamily: 'NanumGothic, sans-serif',
   }
 };
 class Searchbar extends Component{
@@ -38,7 +49,6 @@ class Searchbar extends Component{
   handleOpen = () => {
     this.setState({open: true});
   };
-
   handleClose = () => {
     this.setState({
       open: false,
@@ -78,8 +88,8 @@ class Searchbar extends Component{
   render(){
     const {word, open} = this.state;
     return(
-      <div style={{'display':'inline'}}>
-        <FaSearch onClick={this.handleOpen} style={styles.iconStyle}/>
+      <div style={{'display':'inline'}} >
+        <FaSearch onClick={this.handleOpen} style={inlineStyles.iconStyle}/>
           <Dialog
             modal={false}
             open={open}
@@ -91,28 +101,37 @@ class Searchbar extends Component{
               />
             ]}
             onRequestClose={this.handleClose}>
-            <div>
-              <span><FaSearch />&nbsp; Search</span>
+            <div className={styles.searchHeader}>
+              Search
             </div>
+          <div style={inlineStyles.categoryStyle}>
             <SelectField
+              fullWidth={true}
+              menuItemStyle={inlineStyles.listStyle}
+              selectedMenuItemStyle={inlineStyles.listStyle}
+              underlineStyle={inlineStyles.listStyle}
               floatingLabelText='카테고리'
               value={this.state.type}
-              onChange={this.handleTypeChange}
-              autoWidth={true}>
-              <MenuItem value={'title'} primaryText='제목' />
+              onChange={this.handleTypeChange}>
+              <MenuItem  value={'title'} primaryText='제목' />
               <MenuItem value={'text'} primaryText='내용' />
               <MenuItem value={'all'} primaryText='제목+내용' />
             </SelectField>
+          </div>
+          <div style={inlineStyles.searchbarStyle}>
             <TextField
-              style={styles.searchbarStyle}
+              autoFocus={true}
+              fullWidth={true}
               floatingLabelText='검색어'
               floatingLabelFixed
               hintText='검색어 입력 후 엔터'
-              hintStyle={styles.hintStyle}
+              hintStyle={inlineStyles.hintStyle}
+              inputStyle={inlineStyles.hintStyle}
               value={word}
               onChange={this.handleWordChange}
               onKeyPress={this.handleKeyPress}
             />
+          </div>
           </Dialog>
       </div>
     );
