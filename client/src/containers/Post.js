@@ -165,7 +165,7 @@ class Post extends Component{
     const {number, display} = this.state;
     const {screenWidth} = this.props.environment;
     const isMobile = screenWidth < 1000;
-    const category = this.props.params.category?this.props.params.category:'최근 글';
+    const category = this.props.params.category?this.props.params.category:'Recent Posts';
 
     const total = parseInt(((count.count)-1) / 10 + 1);
     const posts = list.posts;

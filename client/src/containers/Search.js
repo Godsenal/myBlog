@@ -148,7 +148,7 @@ class Search extends Component{
             <br/>
           </span>
           :null}
-        <span style={{'color':'#EFECCA'}}> '{word}' </span>에 대한 검색결과
+        {type?type.toUpperCase() + ' : ':null }<span style={{'color':'#FFBF00'}}> '{word}' </span>
       </span>;
     const total = parseInt(((searchCount.count)-1) / 10 + 1);
     const posts = search.results;
@@ -157,7 +157,7 @@ class Search extends Component{
           {search.status === 'SUCCESS'?
           <div>
             <div className={cx('headerContainer', 'listHeaderContainer')}>
-              <span className={cx('headerLeft','category')}>
+              <span className={cx('headerLeft','category','searchHeader')}>
                 <FaArchive/>&nbsp;{header}
               </span>
               <div className={cx('headerRight','category')}>

@@ -139,7 +139,7 @@ export function updatePost(post){
 export function deletePost(postID){
   return (dispatch) => {
     dispatch({type: POST_DELETE});
-    return axios.post('/api/post/delete',{id: postID})
+    return axios.delete(`/api/post/delete/${postID}`)
     .then((res)=> {
       dispatch({type: POST_DELETE_SUCCESS, post: res.data.post});
     }).catch((err)=>{

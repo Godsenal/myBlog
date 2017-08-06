@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import {browserHistory} from 'react-router';
 import {Motion, spring} from 'react-motion';
 import moment from 'moment';
+import classNames from 'classNames/bind';
 
-import {Card, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import {Card, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import {GridTile} from 'material-ui/GridList';
 import Paper from 'material-ui/Paper';
 import Avatar from 'material-ui/Avatar';
@@ -20,18 +21,11 @@ const thumbnailPath = '/assets/posts/thumbnails/';
 const DEFAULT_IMAGE = '/assets/images/back.jpg';
 
 
+const cx = classNames.bind(styles);
+
 const disqusShortname = 'godsenal';
 
-const inlineStyles = {
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
-  gridList: {
-    overflowY: 'auto',
-  },
-};
+
 
 class PostList extends Component{
   constructor(props){
@@ -109,24 +103,23 @@ class PostList extends Component{
                       <CardText>
                         <span className={styles.postText}>{text}</span>
                       </CardText>
-                      <CardText style={{'textAlign':'right'}}>
-                        <h3 style={{'float':'left','display':'inline'}}>
-                          <Avatar backgroundColor={'#32FAE2'} size={16}>{post.author?post.author.substr(0,1).toUpperCase():''}</Avatar>&nbsp;{post.author}
-                        </h3>
-                        <h5>
-                          <MdDateRange/>
-                          {moment(post.created).format('LL')}
-                        </h5>&nbsp;
-                        <span>
-                          <MdRemoveRedEye/>
-                          {post.viewer}
-                        </span>&nbsp;
-                        <span>
-                          <MdComment/>
-                            <CommentCount shortname={disqusShortname} config={disqusConfig}>
+                      <CardText>
+                        <div className={cx('postCardFooter')}>
+                          <div className={cx('flex0','postCardFooterLeft')}>
+                            <Avatar backgroundColor={'#32FAE2'} size={16}>{post.author?post.author.substr(0,1).toUpperCase():''}</Avatar>{post.author}
+                          </div>
+                          <div className={cx('flex1','postCardFooterRight')}>
+                            <MdDateRange/>
+                            {moment(post.created).format('LL')}
+                            <br/>
+                            <MdRemoveRedEye/>
+                            {post.viewer}
+                            <MdComment/>
+                            <CommentCount className={cx('disqusCount')} shortname={disqusShortname} config={disqusConfig}>
                               0
                             </CommentCount>
-                        </span>
+                          </div>
+                        </div>
                       </CardText>
                     </Card>
                   </GridTile>
@@ -175,24 +168,23 @@ class PostList extends Component{
                       <CardText >
                         <span className={styles.postText}>{text}</span>
                       </CardText>
-                      <CardText style={{'textAlign':'right'}}>
-                        <h3 style={{'float':'left','display':'inline'}}>
-                          <Avatar backgroundColor={'#32FAE2'} size={16}>{post.author?post.author.substr(0,1).toUpperCase():''}</Avatar>&nbsp;{post.author}
-                        </h3>
-                        <h5>
-                          <MdDateRange/>
-                          {moment(post.created).format('LL')}
-                        </h5>&nbsp;
-                        <span>
-                          <MdRemoveRedEye/>
-                          {post.viewer}
-                        </span>&nbsp;
-                        <span>
-                          <MdComment/>
-                            <CommentCount shortname={disqusShortname} config={disqusConfig}>
+                      <CardText>
+                        <div className={cx('postCardFooter')}>
+                          <div className={cx('flex0','postCardFooterLeft')}>
+                            <Avatar backgroundColor={'#32FAE2'} size={16}>{post.author?post.author.substr(0,1).toUpperCase():''}</Avatar>{post.author}
+                          </div>
+                          <div className={cx('flex1','postCardFooterRight')}>
+                            <MdDateRange/>
+                            {moment(post.created).format('LL')}
+                            <br/>
+                            <MdRemoveRedEye/>
+                            {post.viewer}
+                            <MdComment/>
+                            <CommentCount className={cx('disqusCount')} shortname={disqusShortname} config={disqusConfig}>
                               0
                             </CommentCount>
-                        </span>
+                          </div>
+                        </div>
                       </CardText>
                     </Card>
                   </GridTile>
@@ -204,7 +196,7 @@ class PostList extends Component{
     );
   }
   render(){
-    const {isMobile, posts, screenWidth} = this.props;
+    const {posts, screenWidth} = this.props;
     const columnWidth = screenWidth > 1500 ? '30%': screenWidth > 800 ? '50%' : '100%';
     return(
       screenWidth > 800 ? this.renderDesktop(columnWidth, posts):this.renderMobile(posts)

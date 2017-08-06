@@ -7,9 +7,9 @@ export { CommentEmbed };
 export { DiscussionEmbed };
 
 const Disqus = {
-    CommentCount,
-    CommentEmbed,
-    DiscussionEmbed,
+  CommentCount,
+  CommentEmbed,
+  DiscussionEmbed,
 };
 
 export default Disqus;

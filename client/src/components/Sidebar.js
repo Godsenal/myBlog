@@ -13,7 +13,6 @@ import Snackbar from 'material-ui/Snackbar';
 import TextField from 'material-ui/TextField';
 
 import MdAddCircleOutline from 'react-icons/md/add-circle-outline';
-import MdArrowDropDown from 'react-icons/lib/md/arrow-drop-down';
 import FaSignOut from 'react-icons/fa/sign-out';
 
 import {Searchbar} from './';
