@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {browserHistory} from 'react-router';
 import {Motion, spring} from 'react-motion';
 import moment from 'moment';
-import classNames from 'classNames/bind';
+import classNames from 'classnames/bind';
 
 import {Card,  CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import {GridTile} from 'material-ui/GridList';

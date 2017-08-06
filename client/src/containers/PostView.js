@@ -5,7 +5,7 @@ import {browserHistory} from 'react-router';
 import ReactQuill from 'react-quill';
 import Waypoint from 'react-waypoint';
 import {Element, animateScroll as scroll, scrollSpy, scroller} from 'react-scroll';
-import classNames from 'classNames/bind';
+import classNames from 'classnames/bind';
 
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
