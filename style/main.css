@@ -361,10 +361,6 @@ span {
   vertical-align: text-top;
 }
 
-.categoryList {
-  font-family: 'RobotoBlack', 'NanumGothicExtraBold', cursive;
-}
-
 .centerContainer {
   display: flex;
   justify-content: center;
@@ -564,6 +560,7 @@ span {
 }
 
 .categoryList {
+  text-align: center;
   font-family: 'Work Sans', 'NanumGothic', sans-serif;
   color: #ECF0F1;
 }

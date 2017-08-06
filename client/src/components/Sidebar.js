@@ -80,9 +80,10 @@ class Sidebar extends Component{
             key={i}
             onTouchTap={()=>{this.handleSelectCategory(subCategory);}}
             hoverColor={hoverColor}
+            innerDivStyle={{padding:'16px'}}
             nestedItems={
               this.handleNestedItems(list,subCategory)
-            }><span className='categoryList'>{subCategory.name}</span>
+            }><span className={styles.categoryList}>{subCategory.name}</span>
           </ListItem>);
       }
     });
@@ -92,6 +93,7 @@ class Sidebar extends Component{
       <ListItem
         key={list.categories.length}
         hoverColor={hoverColor}
+        innerDivStyle={{padding:'16px'}}
         onTouchTap={() => {this.handleOpenModal(category);}}><MdAddCircleOutline className={styles.categoryList}/>
       </ListItem>
     ):null;
@@ -237,6 +239,7 @@ class Sidebar extends Component{
               <ListItem
                 key={i}
                 hoverColor={hoverColor}
+                innerDivStyle={{padding:'16px'}}
                 onTouchTap={()=>{this.handleSelectCategory(category); }}
                 nestedItems={
                   this.handleNestedItems(list,category)
