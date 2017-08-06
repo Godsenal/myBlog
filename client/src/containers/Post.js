@@ -8,7 +8,7 @@ import FaArchive from 'react-icons/fa/archive';
 import FaFrownO from 'react-icons/fa/frown-o';
 import CircularProgress from 'material-ui/CircularProgress';
 import Pagination from 'material-ui-pagination';
-import classNames from 'classNames/bind';
+import classNames from 'classnames/bind';
 
 import {Searchbar, PostList} from '../components';
 import {addPost, listPost, updatePost, deletePost, countPost} from '../actions/post';

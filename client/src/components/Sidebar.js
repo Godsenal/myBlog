@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
-import classNames from 'classNames/bind';
+import classNames from 'classnames/bind';
 
 import Drawer from 'material-ui/Drawer';
 import {ListItem} from 'material-ui/List';

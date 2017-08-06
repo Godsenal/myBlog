@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classNames/bind';
+import classNames from 'classnames/bind';
 import {Link} from 'react-scroll';
 
 import styles from '../../../style/main.css';
