@@ -552,11 +552,13 @@ span {
   letter-spacing: -0.1em;
 }
 
-.headerText:hover {
-  color: #FFBF00;
-  -webkit-transition: color 0.5s;
-  /* Safari */
-  transition: color 0.5s;
+@media screen and (min-width: 999px) {
+  .headerText:hover {
+    color: #FFBF00;
+    -webkit-transition: color 0.5s;
+    /* Safari */
+    transition: color 0.5s;
+  }
 }
 
 .categoryList {
