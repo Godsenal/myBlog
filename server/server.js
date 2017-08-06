@@ -4,9 +4,16 @@ import api from './api';
 import path from 'path';
 import bodyParser from 'body-parser';
 import express from 'express';
+import http from 'http';
+import https from 'https';
+import fs from 'fs';
 
 const passport = require('passport');
 
+var credentials = {
+  key: fs.readFileSync(config.pathToKey,'utf8'),
+  cert: fs.readFileSync(config.pathToCert,'utf8'),
+};
 
 var db = mongoose.connection;
 db.on('error', console.error);
@@ -56,7 +63,13 @@ app.get('*', (req,res)=>{
 
 
 
+var httpServer = http.createServer(app);
+var httpsServer = https.createServer(credentials, app);
 
-var server = app.listen(config.port, () => {
-  console.info('Express listening on port', config.port);
+httpServer.listen(config.port, () => {
+  console.info('HTTP Express listening on port', config.port);
+});
+
+httpsServer.listen(config.portHttps, () => {
+  console.info('HTTPS Express listening on port', config.portHttps);
 });

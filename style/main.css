@@ -34,11 +34,18 @@ body {
   font-size: 80%;
 }
 
+body, span, div {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body, button, input, select, textarea {
   line-height: 1.5;
   font-family: 'Work sans', 'RobotoRegular', 'NanumGothic', sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1 {
@@ -53,7 +60,6 @@ h2 {
 }
 
 span {
-  font-family: 'RobotoRegular', 'NanumGothic', cursive;
   font-size: 1em;
   font-weight: 600;
 }
@@ -181,6 +187,8 @@ span {
   letter-spacing: -0.1em;
   font-size: 1.9em;
   font-weight: 600;
+  word-break: keep-all;
+  word-wrap: break-word;
 }
 
 .postCardFooter {
@@ -213,6 +221,8 @@ span {
   letter-spacing: -0.1em;
   font-size: 40px;
   font-weight: 900;
+  word-break: keep-all;
+  word-wrap: break-word;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
@@ -221,10 +231,13 @@ span {
   font-family: 'Merriweather', 'Work Sans', 'NanumGothic', sans-serif;
   letter-spacing: 0em;
   font-weight: 400;
-  font-size: 1em;
+  font-size: 0.85em;
+  color: rgba(0, 0, 0, 0.4);
   font-style: italic;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+  word-wrap: break-word;
 }
 
 .postContainer {
@@ -321,6 +334,24 @@ span {
   padding: 1.2rem 20% 1.2rem 20%;
 }
 
+.tags {
+  cursor: pointer;
+}
+
+.tags:hover {
+  color: black;
+  transition: color 1s;
+}
+
+.path {
+  cursor: pointer;
+}
+
+.path:hover {
+  color: black;
+  transition: color 1s;
+}
+
 .category {
   letter-spacing: -0.1em;
   font-size: 2em;
@@ -351,7 +382,7 @@ span {
   top: 30%;
   margin-left: 2.5%;
   background: transparent;
-  font-size: 1.5em;
+  font-size: 1.6em;
   text-align: center;
   color: rgba(0, 0, 0, 0.4);
   z-index: 101;
@@ -375,14 +406,15 @@ span {
 
 .fixedSideMenuItem {
   cursor: pointer;
-  transform: scale(1);
-  transition: transform 1000ms 0ms;
+  vertical-align: baseline;
 }
 
-.fixedSideMenuItem:hover {
-  color: black;
-  transform: scale(1.5);
-  transition: transform 1000ms 0ms;
+@media screen and (min-width: 999px) {
+  .fixedSideMenuItem:hover {
+    color: black;
+    transform: scale(1.5);
+    transition: transform 1000ms 0ms;
+  }
 }
 
 .fixedFooter {
@@ -398,6 +430,11 @@ span {
   -moz-box-shadow: -7px -5px 9px -6px rgba(0, 0, 0, 0.21);
   box-shadow: -7px -5px 9px -6px rgba(0, 0, 0, 0.21);
   z-index: 100;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
 }
 
 .fixedPhantom {
@@ -409,38 +446,52 @@ span {
 }
 
 .fixedFooterMenuItemLeft {
-  cursor: pointer;
-  float: left;
   margin-left: 20px;
-  transform: scale(1);
-  transition: transform 1000ms 0ms;
 }
 
 .fixedFooterMenuItemRight {
-  cursor: pointer;
-  float: right;
-  margin-right: 20px;
+  margin-right: 5px;
 }
 
-.fixedFooterMenuItemLeft:hover {
-  color: black;
-  transform: scale(1.5);
-  transition: transform 1000ms 0ms;
+.buttonContainer {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  justify-content: space-between;
+  word-break: break-all;
+  word-wrap: break-word;
 }
 
 .button {
   text-align: center;
-  border: solid 1px #3B78B6;
-  background-color: #FFFFFF;
-  font-size: 16px;
-  padding: 5px 15px;
+  background-color: #2980B9;
+  color: white;
+  font-size: 1.2em;
+  padding: 3% 1.5% 3% 1.5%;
+  border-radius: 5px;
+  vertical-align: middle;
   text-decoration: none;
-  border-radius: 999em;
   cursor: pointer;
+  flex-grow: 0;
+  min-width: 20%;
+  transition: opacity 0.7s;
+  font-family: 'Work Sans', 'NanumGothic', sans-serif;
+}
+
+.buttonSubText {
+  color: #FFBF00;
+  font-size: 0.9em;
+}
+
+.buttonMainText {
+  font-size: 1.1em;
 }
 
 .button:hover {
-  opacity: 0.5;
+  opacity: 0.7;
+  transition: opacity 0.7s;
 }
 
 .divider {
@@ -506,7 +557,7 @@ span {
 }
 
 .headerText:hover {
-  color: #DAEDE2;
+  color: #FFBF00;
   -webkit-transition: color 0.5s;
   /* Safari */
   transition: color 0.5s;
@@ -519,8 +570,10 @@ span {
 
 .tagContainer {
   margin-top: 1.5rem;
-  text-align: right;
-  font-size: 0.7em;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  font-size: 0.9em;
+  font-family: 'Merriweather', 'Work Sans', 'NanumGothic', sans-serif;
   color: rgba(0, 0, 0, 0.4);
 }
 
@@ -544,6 +597,10 @@ span {
   float: right;
 }
 
+.marginLeftAuto {
+  margin-left: auto;
+}
+
 .postText {
   color: rgba(0, 0, 0, .44);
   font-size: 0.8em;
@@ -555,9 +612,16 @@ span {
   word-wrap: break-word;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .disqusCount {
   font-family: 'Work Sans', 'RobotoBlack', 'NanumGothic', sans-serif;
   font-weight: 600;
+}
+
+.author {
+  margin-top: 3rem;
+  text-align: right;
+  font-family: 'Work Sans', 'RobotoRegular', 'NanumGothic', sans-serif;
 }

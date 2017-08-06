@@ -36,6 +36,12 @@ const inlineStyles = {
     fontFamily: 'NanumGothic, sans-serif',
   }
 };
+const searchMenu = [
+  {value: 'title', text: '제목'},
+  {value: 'text', text: '내용'},
+  {value: 'all', text: '제목+내용'},
+  {value: 'tags', text: '태그'},
+];
 class Searchbar extends Component{
   constructor(props){
     super(props);
@@ -113,9 +119,9 @@ class Searchbar extends Component{
               floatingLabelText='카테고리'
               value={this.state.type}
               onChange={this.handleTypeChange}>
-              <MenuItem  value={'title'} primaryText='제목' />
-              <MenuItem value={'text'} primaryText='내용' />
-              <MenuItem value={'all'} primaryText='제목+내용' />
+              {searchMenu.map((menu, i)=> {
+                return <MenuItem key={i} value={menu.value} primaryText={menu.text} />;
+              })}
             </SelectField>
           </div>
           <div style={inlineStyles.searchbarStyle}>

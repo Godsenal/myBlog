@@ -26,7 +26,7 @@ const initialState = {
     err: 'ERROR',
     errCode: -1,
   }
-}
+};
 
 export default function comment(state, action){
   if(typeof state === 'undefined'){
@@ -35,112 +35,112 @@ export default function comment(state, action){
 
   switch (action.type) {
 
-    /* ADD COMMENT */
-    case types.COMMENT_ADD:
-      return update(state, {
-        add: {
-          status: {$set: 'WAITING'}
-        }
-      });
-    case types.COMMENT_ADD_SUCCESS:
-      return update(state, {
-        add: {
-          status: {$set: 'SUCCESS'}
-        },
-        list:{
-          comments: {$push: action.comment}
-        }
-      });
-    case types.COMMENT_ADD_FAILURE:
-      return update(state, {
-        add: {
-          status: {$set: 'FAILURE'},
-          err: {$set: action.err},
-          errCode: {$set: action.errCode}
-        }
-      });
-
-    /* LIST COMMENT */
-    case types.COMMENT_LIST:
-      return update(state, {
-        list: {
-          status: {$set: 'WAITING'}
-        }
-      });
-    case types.COMMENT_LIST_SUCCESS:
-      return update(state, {
-        list:{
-          category: {$set: action.category},
-          comments: {$set: action.comments}
-        }
-      });
-    case types.COMMENT_LIST_FAILURE:
-      return update(state, {
-        list: {
-          status: {$set: 'FAILURE'},
-          err: {$set: action.err},
-          errCode: {$set: action.errCode}
-        }
-      });
-
-    /* UPDATE COMMENT */
-    case types.COMMENT_UPDATE:
-      return update(state, {
-        update: {
-          status: {$set: 'WAITING'}
-        }
-      });
-    case types.COMMENT_UPDATE_SUCCESS:
-      for(var i=0; i<state.list.comments.length; i++){
-        // UPDATE 시 list에 있는 것도 업데이트.
-        if(state.list.comments[i].id == action.comment.id){
-          state = update(state, {
-            list:{
-              comments:{
-                [i]: {$set: action.comment}
-              },
-            },
-          });
-
-          break;
-        }
+  /* ADD COMMENT */
+  case types.COMMENT_ADD:
+    return update(state, {
+      add: {
+        status: {$set: 'WAITING'}
       }
-      return update(state, {
-        update:{
-          comment: {$set: action.comment}
-        }
-      });
-    case types.COMMENT_UPDATE_FAILURE:
-      return update(state, {
-        update: {
-          status: {$set: 'FAILURE'},
-          err: {$set: action.err},
-          errCode: {$set: action.errCode}
-        }
-      });
+    });
+  case types.COMMENT_ADD_SUCCESS:
+    return update(state, {
+      add: {
+        status: {$set: 'SUCCESS'}
+      },
+      list:{
+        comments: {$push: action.comment}
+      }
+    });
+  case types.COMMENT_ADD_FAILURE:
+    return update(state, {
+      add: {
+        status: {$set: 'FAILURE'},
+        err: {$set: action.err},
+        errCode: {$set: action.errCode}
+      }
+    });
 
-    /* DELETE COMMENT */
-    case types.COMMENT_DELETE:
-      return update(state, {
-        delete: {
-          status: {$set: 'WAITING'}
-        }
-      });
-    case types.COMMENT_DELETE_SUCCESS:
-      return update(state, {
-        delete:{
-          comment: {$set: action.comment}
-        }
-      });
-    case types.COMMENT_DELETE_FAILURE:
-      return update(state, {
-        delete: {
-          status: {$set: 'FAILURE'},
-          err: {$set: action.err},
-          errCode: {$set: action.errCode}
-        }
-      });
-    default:
-      return state;
+  /* LIST COMMENT */
+  case types.COMMENT_LIST:
+    return update(state, {
+      list: {
+        status: {$set: 'WAITING'}
+      }
+    });
+  case types.COMMENT_LIST_SUCCESS:
+    return update(state, {
+      list:{
+        category: {$set: action.category},
+        comments: {$set: action.comments}
+      }
+    });
+  case types.COMMENT_LIST_FAILURE:
+    return update(state, {
+      list: {
+        status: {$set: 'FAILURE'},
+        err: {$set: action.err},
+        errCode: {$set: action.errCode}
+      }
+    });
+
+  /* UPDATE COMMENT */
+  case types.COMMENT_UPDATE:
+    return update(state, {
+      update: {
+        status: {$set: 'WAITING'}
+      }
+    });
+  case types.COMMENT_UPDATE_SUCCESS:
+    for(var i=0; i<state.list.comments.length; i++){
+      // UPDATE 시 list에 있는 것도 업데이트.
+      if(state.list.comments[i].id == action.comment.id){
+        state = update(state, {
+          list:{
+            comments:{
+              [i]: {$set: action.comment}
+            },
+          },
+        });
+
+        break;
+      }
+    }
+    return update(state, {
+      update:{
+        comment: {$set: action.comment}
+      }
+    });
+  case types.COMMENT_UPDATE_FAILURE:
+    return update(state, {
+      update: {
+        status: {$set: 'FAILURE'},
+        err: {$set: action.err},
+        errCode: {$set: action.errCode}
+      }
+    });
+
+  /* DELETE COMMENT */
+  case types.COMMENT_DELETE:
+    return update(state, {
+      delete: {
+        status: {$set: 'WAITING'}
+      }
+    });
+  case types.COMMENT_DELETE_SUCCESS:
+    return update(state, {
+      delete:{
+        comment: {$set: action.comment}
+      }
+    });
+  case types.COMMENT_DELETE_FAILURE:
+    return update(state, {
+      delete: {
+        status: {$set: 'FAILURE'},
+        err: {$set: action.err},
+        errCode: {$set: action.errCode}
+      }
+    });
+  default:
+    return state;
   }
 }

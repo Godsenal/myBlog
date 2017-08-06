@@ -148,7 +148,7 @@ class Search extends Component{
             <br/>
           </span>
           :null}
-        <span style={{'color':'#EFECCA'}}> '{word}' </span>에 대한 검색결과
+        {type?type.toUpperCase() + ' : ':null }<span style={{'color':'#FFBF00'}}> '{word}' </span>
       </span>;
     const total = parseInt(((searchCount.count)-1) / 10 + 1);
     const posts = search.results;

@@ -7,7 +7,6 @@ import axios from 'axios';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
 import TextField from 'material-ui/TextField';
-import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -18,12 +17,11 @@ import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
 import FaFileImageO from 'react-icons/fa/file-image-o';
 import FaTag from 'react-icons/fa/tag';
-import FaClose from 'react-icons/fa/close';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
 
 import styles from '../../../style/main.css';
-import {addPost, getPost, updatePost} from '../actions/post';
+import {addPost, getPost, updatePost, deletePost} from '../actions/post';
 import {getStatusRequest} from '../actions/authentication';
 
 const path = '/assets/posts/images/';
@@ -95,7 +93,7 @@ class PostEdit extends Component {
       .then(()=>{
         let status = this.props.authentication.status;
         if(!status.valid){
-          browserHistory.push('/');
+          browserHistory.replace('/');
         }
 
         if(this.props.params.postID){
@@ -113,7 +111,7 @@ class PostEdit extends Component {
                 });
               }
               else if(this.props.post.get.status === 'FAILURE'){
-                browserHistory.push('/NotFound');
+                browserHistory.replace('/NotFound');
               }
             });
         }
@@ -126,7 +124,7 @@ class PostEdit extends Component {
   componentDidUpdate() {
     this.attachQuillRefs();
   }
-  handleLeave = (nextLocation)=>{
+  handleLeave = ()=>{
     if(!this.state.isSaved)
       return 'Your work is not saved! Are you sure you want to leave?';
   }
@@ -343,7 +341,7 @@ class PostEdit extends Component {
       .then(()=>{
         let status = this.props.authentication.status;
         if(!status.valid){
-          browserHistory.push('/');
+          browserHistory.replace('/');
         }
         this.props.addPost(post)
           .then(()=>{
@@ -401,7 +399,7 @@ class PostEdit extends Component {
       .then(()=>{
         let status = this.props.authentication.status;
         if(!status.valid){
-          browserHistory.push('/');
+          browserHistory.replace('/');
         }
         this.props.updatePost(post)
           .then(()=>{
@@ -415,6 +413,40 @@ class PostEdit extends Component {
               this.setState({
                 open: true,
                 message: '수정에 실패하였습니다.'
+              });
+            }
+          });
+      });
+  }
+  handleDeletePost = () =>{
+    const _id = this.props.params.postID;
+
+    if(!this.props.params.postID){
+      this.setState({
+        snackOpen: true,
+        snackMessage: '잘못된 접근입니다.',
+      });
+      return;
+    }
+    let token = localStorage.getItem('token');
+    this.props.getStatusRequest(token)
+      .then(()=>{
+        let status = this.props.authentication.status;
+        if(!status.valid){
+          browserHistory.replace('/');
+        }
+        this.props.deletePost(_id)
+          .then(()=>{
+            if(this.props.post.delete.status == 'SUCCESS'){
+              this.setState({
+                open: true,
+                isSaved: true,
+                message: '글이 정상적으로 삭제되었습니다.'
+              });
+            }else{
+              this.setState({
+                open: true,
+                message: '삭제에 실패하였습니다.'
               });
             }
           });
@@ -469,7 +501,7 @@ class PostEdit extends Component {
               key={i}
               badgeContent={
                 <IconButton
-                  iconStyle={{'width':10,'height':10}}
+                  iconStyle={{'width':10,'height':10,padding:0,color:'black'}}
                   onTouchTap={() => this.handleRemoveTag(tag)}
                   tooltip='지우기'>
                   <NavigationClose />
@@ -566,6 +598,13 @@ class PostEdit extends Component {
             label={this.state.type==='edit'?'수정 완료':'새 글 등록'}
             fullWidth={true}
             onTouchTap={this.state.type==='edit'?this.handleEditPost:this.handleAddPost}/>
+          {this.state.type==='edit'?
+            <RaisedButton
+              style={{'marginTop':'3rem'}}
+              secondary
+              label={'이 글 삭제'}
+              fullWidth={true}
+              onTouchTap={this.handleDeletePost}/>:null}
           <Dialog
             title={this.state.type==='edit'?'수정 완료':'새 글 등록'}
             actions={actions}
@@ -618,6 +657,7 @@ PostEdit.defaultProps ={
   addPost : () => {console.log('Post props Error');},
   getPost : () => {console.log('Post props Error');},
   updatePost : () => {console.log('Post props Error');},
+  deletePost: () => {console.log('Post props Error');},
 };
 PostEdit.propTypes = {
   params: PropTypes.object.isRequired,
@@ -629,6 +669,7 @@ PostEdit.propTypes = {
   addPost: PropTypes.func.isRequired,
   getPost: PropTypes.func.isRequired,
   updatePost: PropTypes.func.isRequired,
+  deletePost: PropTypes.func.isRequired,
   getStatusRequest: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => {
@@ -648,6 +689,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     updatePost: (post) => {
       return dispatch(updatePost(post));
+    },
+    deletePost: (postID) => {
+      return dispatch(deletePost(postID));
     },
     getStatusRequest: (token) => {
       return dispatch(getStatusRequest(token));

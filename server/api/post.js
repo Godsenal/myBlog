@@ -12,6 +12,14 @@ function getNextSequence(name) {
   console.log(count);
 }
 
+function getSearchReg(type, word){
+  if(type == 'tags'){
+    return '^' + word + '$';
+  }
+  else{
+    return '.*'+ word +'.*';
+  }
+}
 // GET ALL POST WITHOUT CATEGORY
 router.get('/list/all', function(req, res) {
   Posts.find({})
@@ -258,8 +266,8 @@ router.post('/update', function(req, res) {
 });
 
 // DELETE POST
-router.post('/delete', function(req,res){
-  Posts.remove({_id:req.body._id},function(err, post){
+router.delete('/delete/:postID', function(req,res){
+  Posts.remove({_id:req.params.postID},function(err, post){
     if(err){
       console.log(err);
       return res.status(400).json({error: 'internal server error', code: 1});
@@ -294,7 +302,7 @@ router.post('/increase/viewer',function(req,res){
 
 //SEARCH COUNT ALL
 router.get('/search/count/:word/:type',function(req,res){
-  var searchReg = '.*'+req.params.word +'.*';
+  var searchReg = getSearchReg(req.params.type, req.params.word);
   Posts.find({[req.params.type]: {$regex: searchReg, $options: 'i'}})
     .count()
     .exec(function(err,count){
@@ -321,7 +329,7 @@ router.get('/search/count/:word/:type/:category',function(req,res){
       });
       subCategories.push(req.params.category);
 
-      var searchReg = '.*'+req.params.word +'.*';
+      var searchReg = getSearchReg(req.params.type, req.params.word);
       Posts.find({category: {$in: subCategories}, [req.params.type]: {$regex: searchReg, $options: 'i'}})
         .count()
         .exec(function(err,count){
@@ -337,7 +345,7 @@ router.get('/search/count/:word/:type/:category',function(req,res){
 //SEARCH ALL POSTS
 router.get('/search/:word/:type/:number',function(req,res){
   var skip = (req.params.number - 1) * 10; // skip할 페이지
-  var searchReg = '.*'+req.params.word +'.*';
+  var searchReg = getSearchReg(req.params.type, req.params.word);
 
   var query = Posts.find({[req.params.type]: {$regex: searchReg, $options: 'i'}})
     .sort({_id:-1})
@@ -375,7 +383,7 @@ router.get('/search/:word/:type/:number/:category',function(req,res){
       });
       subCategories.push(req.params.category);
       var skip = (req.params.number - 1) * 10; // skip할 페이지
-      var searchReg = '.*'+req.params.word +'.*';
+      var searchReg = getSearchReg(req.params.type, req.params.word);
 
       var query = Posts.find({category: {$in: subCategories}, [req.params.type]: {$regex: searchReg, $options: 'i'}})
         .sort({_id:-1})

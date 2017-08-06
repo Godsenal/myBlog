@@ -5,7 +5,7 @@ import {Motion, spring} from 'react-motion';
 import moment from 'moment';
 import classNames from 'classNames/bind';
 
-import {Card, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import {Card, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import {GridTile} from 'material-ui/GridList';
 import Paper from 'material-ui/Paper';
 import Avatar from 'material-ui/Avatar';
@@ -25,16 +25,7 @@ const cx = classNames.bind(styles);
 
 const disqusShortname = 'godsenal';
 
-const inlineStyles = {
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
-  gridList: {
-    overflowY: 'auto',
-  },
-};
+
 
 class PostList extends Component{
   constructor(props){
@@ -205,7 +196,7 @@ class PostList extends Component{
     );
   }
   render(){
-    const {isMobile, posts, screenWidth} = this.props;
+    const {posts, screenWidth} = this.props;
     const columnWidth = screenWidth > 1500 ? '30%': screenWidth > 800 ? '50%' : '100%';
     return(
       screenWidth > 800 ? this.renderDesktop(columnWidth, posts):this.renderMobile(posts)

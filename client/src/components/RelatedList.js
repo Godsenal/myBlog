@@ -6,10 +6,8 @@ import moment from 'moment';
 import classNames from 'classNames/bind';
 
 import {Card,  CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import {GridList, GridTile} from 'material-ui/GridList';
-import Paper from 'material-ui/Paper';
+import {GridTile} from 'material-ui/GridList';
 import Avatar from 'material-ui/Avatar';
-import MdRemoveRedEye from 'react-icons/md/remove-red-eye';
 import MdDateRange from 'react-icons/md/date-range';
 const thumbnailPath = '/assets/posts/thumbnails/';
 const DEFAULT_IMAGE = '/assets/images/back.jpg';
@@ -51,7 +49,7 @@ class RelatedList extends Component{
     const tileWidth = isMobile?'100%':'30%';
     return(
       <div className={styles.relatedListContainer}>
-        <div className={styles.tileHeader}>RELATED POST</div>
+        <div className={styles.tileHeader}>RELATED POSTS</div>
         <div className={styles.tileContainer}>
         {posts.map((post, i)=>{
           return (
