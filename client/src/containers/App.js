@@ -5,6 +5,7 @@ import {browserHistory} from 'react-router';
 import classNames from 'classnames/bind';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MdMenu from 'react-icons/lib/md/menu';
 import Headroom from 'react-headroom';
@@ -16,6 +17,12 @@ import styles from '../../../style/main.css';
 import Bluebird from 'bluebird';
 
 const cx = classNames.bind(styles);
+
+const muiTheme = getMuiTheme({
+  svgIcon: {
+    color: '#ECF0F1',
+  },
+});
 
 // Node
 global.Promise = Bluebird;
@@ -74,7 +81,7 @@ class App extends Component{
     const isMobile = screenWidth<1000;
     const sidebarStyle = !isMobile ? styles.sidebarContainer : null;
     return(
-      <MuiThemeProvider>
+      <MuiThemeProvider muiTheme={muiTheme}>
         <div className={styles.appContainer} style={{'overflowX':'hidden', 'overflowY':'hidden', 'margin': 0, 'padding': 0}}>
           <div className={styles.mainContainer}>
             {isMobile?

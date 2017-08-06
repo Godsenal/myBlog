@@ -82,7 +82,7 @@ class Sidebar extends Component{
             hoverColor={hoverColor}
             nestedItems={
               this.handleNestedItems(list,subCategory)
-            }><span className={styles.categoryList}>{subCategory.name}</span>
+            }><span className='categoryList'>{subCategory.name}</span>
           </ListItem>);
       }
     });

@@ -4,8 +4,8 @@ import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
 import axios from 'axios';
 
-import 'react-quill/dist/quill.snow.css';
-import ReactQuill from 'react-quill';
+
+import ReactQuill, {Quill} from 'react-quill';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
@@ -19,7 +19,7 @@ import FaFileImageO from 'react-icons/fa/file-image-o';
 import FaTag from 'react-icons/fa/tag';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
-
+import '../../../style/quill/quill.snow.css';
 import styles from '../../../style/main.css';
 import {addPost, getPost, updatePost, deletePost} from '../actions/post';
 import {getStatusRequest} from '../actions/authentication';
@@ -27,6 +27,9 @@ import {getStatusRequest} from '../actions/authentication';
 const path = '/assets/posts/images/';
 const thumbnailPath = '/assets/posts/thumbnails/';
 
+var Font = Quill.import('formats/font');
+Font.whitelist = [false,'serif','monospace','nanumgothic','nanumgothiceb','roboto','robotoblack'];
+Quill.register(Font, true);
 
 class PostEdit extends Component {
 
@@ -59,8 +62,8 @@ class PostEdit extends Component {
     this.modules = {
       toolbar: {
         container: [
-          [{ 'header': '1'}, {'header': '2'}],
-           [{font:[]}],
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+           [{font:[false,'serif','monospace','nanumgothic','robotoblack']}],
           [{size: []}],
           ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block'],
           [{'list': 'ordered'}, {'list': 'bullet'},

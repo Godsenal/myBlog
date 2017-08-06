@@ -26,7 +26,7 @@ import FaCaretRight from 'react-icons/lib/fa/caret-right';
 
 /*Replace with disqus*/
 import {RelatedList, PostSideMenu, PostFixedFooter} from '../components';
-import 'react-quill/dist/quill.bubble.css';
+import '../../../style/quill/quill.bubble.css';
 import {getPost, getPrevPost, getNextPost, getRelatedTagsPost} from '../actions/post';
 import {getCategory} from '../actions/category';
 import styles from '../../../style/main.css';
@@ -291,7 +291,8 @@ class PostView extends Component {
                 theme='bubble'
                 modules={modules}
                 readOnly={true}
-                value={post.content}>
+                value={post.content}
+                >
               </ReactQuill>
             </div>
             <div className={styles.author}>
