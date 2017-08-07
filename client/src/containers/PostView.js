@@ -248,7 +248,7 @@ class PostView extends Component {
     const {screenWidth} = this.props.environment;
     const isMobile = screenWidth < 1000;
     var category = this.props.categoryGet.category;
-    var path = !this.isEmpty(category) && category.path ? category.path.split(',').filter(el=>el.length != 0).concat([category.name]) : null;
+    var path = !this.isEmpty(category) ? category.path ? category.path.split(',').filter(el=>el.length != 0).concat([category.name]) : [category.name] : null;
     //var path = !this.isEmpty(category) && category.path ?category.path.replace(new RegExp(',', 'g'), '/') + category.name:null;
     return(
       <div>
