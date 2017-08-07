@@ -14,6 +14,12 @@ import TextField from 'material-ui/TextField';
 
 import MdAddCircleOutline from 'react-icons/md/add-circle-outline';
 import FaSignOut from 'react-icons/fa/sign-out';
+import {grey50} from 'material-ui/styles/colors';
+import IconButton from 'material-ui/IconButton';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+
 
 import {Searchbar} from './';
 import {changeActiveCategory, addCategory, listCategory, updateCategory, deleteCategory} from '../actions/category';
@@ -23,6 +29,7 @@ import styles from '../../../style/main.css';
 const cx = classNames.bind(styles);
 
 const hoverColor='#3498DB';
+
 class Sidebar extends Component{
   constructor(props) {
     super(props);
@@ -30,6 +37,7 @@ class Sidebar extends Component{
       categoryName: '',
       parentCategory: {},
       modalOpen: false,
+      updateOpen: false,
       snackOpen: false,
       snackMessage: '',
     };
@@ -78,8 +86,10 @@ class Sidebar extends Component{
         return (
           <ListItem
             key={i}
+            open={this.props.status.valid?true:false}
             onTouchTap={()=>{this.handleSelectCategory(subCategory);}}
             hoverColor={hoverColor}
+            rightIconButton={this.props.status.valid?this.renderRightIconBtn(subCategory):null}
             innerDivStyle={{padding:'16px'}}
             nestedItems={
               this.handleNestedItems(list,subCategory)
@@ -113,11 +123,25 @@ class Sidebar extends Component{
       modalOpen: true,
     });
   }
+  handleOpenUpdate = (categoryID) => {
+    this.setState({
+      categoryName: '',
+      categoryID,
+      updateOpen: true,
+    });
+  }
   handleCloseModal = () => {
     this.setState({
       categoryName: '',
       parentCategory: {},
       modalOpen: false,
+    });
+  }
+  handleCloseUpdate = () => {
+    this.setState({
+      categoryName: '',
+      categoryID: '',
+      updateOpen: false,
     });
   }
   handleSnackClose = () => {
@@ -126,51 +150,7 @@ class Sidebar extends Component{
       snackOpen: false,
     });
   }
-  /* Add Category */
-  handleAddCategory = () => {
-    var {categoryName, parentCategory} = this.state;
-    if(categoryName.length == 0 || !categoryName.trim()){
-      this.setState({
-        snackOpen: true,
-        snackMessage: '카테고리 이름을 입력해주세요.',
-      });
-    }else{
-      this.handleCloseModal();
-      var category = {
-        name: categoryName,
-      };
 
-      if(parentCategory){
-        if(parentCategory.path){
-          category.path = parentCategory.path + parentCategory.name + ',';
-        }
-        else{
-          category.path = ',' + parentCategory.name + ',';
-        }
-      }
-      var token = localStorage.getItem('token');
-      this.props.getStatusRequest(token)
-        .then(()=>{
-          if(this.props.status.valid){
-            this.props.addCategory(category)
-              .then(()=>{
-                if(this.props.category.add.status == 'SUCCESS'){
-                  this.setState({
-                    snackOpen: true,
-                    snackMessage: '정상적으로 등록되었습니다.',
-                  });
-                }
-                else{
-                  this.setState({
-                    snackOpen: true,
-                    snackMessage: '등록에 실패하였습니다.',
-                  });
-                }
-              });
-          }
-        });
-    }
-  }
   renderAddCategory = () => {
     const actions = [
       <FlatButton
@@ -201,11 +181,185 @@ class Sidebar extends Component{
       </Dialog>
     );
   }
+  renderUpdateCategory = () => {
+    const actions = [
+      <FlatButton
+        label="변경"
+        primary={true}
+        keyboardFocused={true}
+        onTouchTap={this.handleUpdateCategory}
+      />,
+      <FlatButton
+        label="취소"
+        keyboardFocused={true}
+        onTouchTap={this.handleCloseUpdate}
+      />,
+    ];
+
+    return (
+      <Dialog
+        title="카테고리 업데이트"
+        actions={actions}
+        modal={false}
+        open={this.state.updateOpen}
+        onRequestClose={this.handleCloseUpdate}>
+        <TextField
+          hintText="카테고리 명"
+          floatingLabelText="카테고리"
+          fullWidth={true}
+          onChange={this.handleChange} />
+      </Dialog>
+    );
+  }
+
+  renderRightIconBtn = (category) => {
+    const iconButtonElement = (
+      <IconButton
+        touch={true}
+        tooltip="more"
+        tooltipPosition="bottom-left"
+      >
+        <MoreVertIcon color={grey50} />
+      </IconButton>
+    );
+
+    const rightIconMenu = (
+      <IconMenu iconButtonElement={iconButtonElement}>
+        <MenuItem onTouchTap={()=>this.handleOpenUpdate(category._id)}>Update</MenuItem>
+        <MenuItem onTouchTap={()=>this.handleDeleteCategory(category)}>Delete</MenuItem>
+      </IconMenu>
+    );
+
+    return rightIconMenu;
+  }
+
+
   /*Select Category*/
   handleSelectCategory(category){
     browserHistory.push('/category/'+category.name);
     if(this.props.isMobile){
       this.props.toggleSidebar();
+    }
+  }
+  /* Add Category */
+  handleAddCategory = () => {
+    var {categoryName, parentCategory} = this.state;
+    if(categoryName.length == 0 || !categoryName.trim()){
+      this.setState({
+        snackOpen: true,
+        snackMessage: '카테고리 이름을 입력해주세요.',
+      });
+    }else{
+      var category = {
+        name: categoryName,
+      };
+
+      if(parentCategory){
+        if(parentCategory.path){
+          category.path = parentCategory.path + parentCategory.name + ',';
+        }
+        else{
+          category.path = ',' + parentCategory.name + ',';
+        }
+      }
+      var token = localStorage.getItem('token');
+      this.props.getStatusRequest(token)
+        .then(()=>{
+          if(this.props.status.valid){
+            this.props.addCategory(category)
+              .then(()=>{
+                if(this.props.category.add.status == 'SUCCESS'){
+                  this.setState({
+                    snackOpen: true,
+                    snackMessage: '정상적으로 등록되었습니다.',
+                  });
+                }
+                else{
+                  this.setState({
+                    snackOpen: true,
+                    snackMessage: '등록에 실패하였습니다.',
+                  });
+                }
+                this.handleCloseModal();
+              });
+          }else{
+            this.setState({
+              snackOpen: true,
+              snackMessage: '권한이 없습니다.',
+            });
+            this.handleCloseModal();
+          }
+        });
+    }
+  }
+  handleDeleteCategory = (category)=>{
+    let token = localStorage.getItem('token');
+    this.props.getStatusRequest(token)
+      .then(()=>{
+        if(this.props.status.valid){
+          this.props.deleteCategory(category._id, category.name)
+            .then(()=>{
+              if(this.props.category.delete.status == 'SUCCESS'){
+                this.setState({
+                  snackOpen: true,
+                  snackMessage: '정상적으로 삭제되었습니다.',
+                });
+              }
+              else{
+                this.setState({
+                  snackOpen: true,
+                  snackMessage: '삭제에 실패하였습니다.',
+                });
+              }
+            });
+        }
+        else{
+          this.setState({
+            snackOpen: true,
+            snackMessage: '권한이 없습니다.',
+          });
+        }
+      });
+  }
+  handleUpdateCategory = ()=>{
+    var {categoryName, categoryID} = this.state;
+    if(categoryName.length == 0 || !categoryName.trim()){
+      this.setState({
+        snackOpen: true,
+        snackMessage: '카테고리 이름을 입력해주세요.',
+      });
+    }else{
+      let token = localStorage.getItem('token');
+      let update = {name: categoryName};
+      this.props.getStatusRequest(token)
+        .then(()=>{
+          if(this.props.status.valid){
+            this.props.updateCategory(categoryID, update)
+              .then(()=>{
+                if(this.props.category.update.status == 'SUCCESS'){
+                  this.setState({
+                    snackOpen: true,
+                    snackMessage: '정상적으로 수정되었습니다.',
+                  });
+                }
+                else{
+                  this.setState({
+                    snackOpen: true,
+                    snackMessage: '수정에 실패하였습니다.',
+                  });
+                }
+                this.handleCloseUpdate();
+              });
+          }
+          else{
+            this.setState({
+              snackOpen: true,
+              snackMessage: '권한이 없습니다.',
+            });
+          }
+          this.handleCloseUpdate();
+        });
+
     }
   }
   handleHeaderClick = () => {
@@ -239,7 +393,9 @@ class Sidebar extends Component{
               <ListItem
                 key={i}
                 hoverColor={hoverColor}
+                open={this.props.status.valid?true:false}
                 innerDivStyle={{padding:'16px'}}
+                rightIconButton={this.props.status.valid?this.renderRightIconBtn(category):null}
                 onTouchTap={()=>{this.handleSelectCategory(category); }}
                 nestedItems={
                   this.handleNestedItems(list,category)
@@ -265,6 +421,7 @@ class Sidebar extends Component{
           onRequestClose={this.handleSnackClose}
         />
       {this.renderAddCategory()}
+      {this.renderUpdateCategory()}
       </Drawer>
     );
   }
@@ -319,11 +476,11 @@ const mapDispatchToProps = (dispatch) => {
     listCategory: () => {
       return dispatch(listCategory());
     },
-    updateCategory: (category) => {
-      return dispatch(updateCategory(category));
+    updateCategory: (categoryID,update) => {
+      return dispatch(updateCategory(categoryID,update));
     },
-    deleteCategory: (category) => {
-      return dispatch(deleteCategory(category));
+    deleteCategory: (categoryID, categoryName) => {
+      return dispatch(deleteCategory(categoryID, categoryName));
     },
     signoutRequest: () => {
       return dispatch(signoutRequest());

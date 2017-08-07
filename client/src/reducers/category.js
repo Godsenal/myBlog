@@ -62,7 +62,7 @@ export default function category(state, action){
         status: {$set: 'SUCCESS'}
       },
       list:{
-        categories: {$unshift: [action.category]}
+        categories: {$push: [action.category]}
       }
     });
   case types.CATEGORY_ADD_FAILURE:
@@ -107,7 +107,7 @@ export default function category(state, action){
   case types.CATEGORY_UPDATE_SUCCESS:
     for(var i=0; i<state.list.categories.length; i++){
       // UPDATE 시 list에 있는 것도 업데이트.
-      if(state.list.categories[i].id == action.category.id){
+      if(state.list.categories[i]._id == action.category._id){
         state = update(state, {
           list:{
             categories:{
@@ -121,7 +121,8 @@ export default function category(state, action){
     }
     return update(state, {
       update:{
-        category: {$set: action.category}
+        category: {$set: action.category},
+        status: {$set: 'SUCCESS'},
       }
     });
   case types.CATEGORY_UPDATE_FAILURE:
@@ -141,10 +142,21 @@ export default function category(state, action){
       }
     });
   case types.CATEGORY_DELETE_SUCCESS:
+
+    for(let i=0; i<state.list.categories.length; i++){
+      // UPDATE 시 list에 있는 것도 업데이트.
+      if(state.list.categories[i]._id == action.categoryID){
+        state = update(state, {
+          list:{
+            categories:{ $splice: [[i,1]] },
+          },
+        });
+        break;
+      }
+    }
     return update(state, {
       delete:{
         status: {$set: 'SUCCESS'},
-        category: {$set: action.category}
       }
     });
   case types.CATEGORY_DELETE_FAILURE:

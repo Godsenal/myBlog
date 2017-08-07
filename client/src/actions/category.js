@@ -49,10 +49,10 @@ export function listCategory(){
   };
 }
 
-export function updateCategory(category){
+export function updateCategory(categoryID, update){
   return (dispatch) => {
     dispatch({type: CATEGORY_UPDATE});
-    return axios.post('/api/category/update',category)
+    return axios.put('/api/category/update',{categoryID, update})
     .then((res)=> {
       dispatch({type: CATEGORY_UPDATE_SUCCESS, category: res.data.category});
     }).catch((err)=>{
@@ -61,12 +61,12 @@ export function updateCategory(category){
   };
 }
 
-export function deleteCategory(categoryID){
+export function deleteCategory(categoryID, categoryName){
   return (dispatch) => {
     dispatch({type: CATEGORY_DELETE});
-    return axios.post('/api/category/delete',{id: categoryID})
+    return axios.delete(`/api/category/delete/${categoryID}/${categoryName}`)
     .then((res)=> {
-      dispatch({type: CATEGORY_DELETE_SUCCESS, category: res.data.category});
+      dispatch({type: CATEGORY_DELETE_SUCCESS, categoryID: res.data.categoryID});
     }).catch((err)=>{
       dispatch({type: CATEGORY_DELETE_FAILURE, err: err.response.data.err, errCode: err.response.data.errCode});
     });

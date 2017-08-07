@@ -49,45 +49,27 @@ router.post('/add', function(req, res) {
 });
 
 //RENAME CATEGORY
-router.post('/update', function(req, res) {
-  var name = req.body.name;
-  var newName = req.body.newName;
-  Categories.find({name: newName}, function(err, category){
-    if(err){
-      console.log(err);
-      return res.status(500).json({error: 'internal server error', code: 1});
-    }
-    if(category){
-      return res.json({error: 'Exist Name', code: 2});
-    }
-    else{
-      Categories.findOneAndUpdate({name: name}, {$set:{name:newName}},{new: true}, function(err, category){
-        if(err){
-          console.log(err);
-          return res.status(500).json({error: 'internal server error', code: 1});
-        }
-        res.json({category});
-      });
-    }
-  });
-
-});
-
-//DELETE CATEGORY
-router.post('/delete', function(req, res) {
-  var name = req.body.name;
-  var path = req.body.path;
-
-  if(!path){
-    return res.json({error:'Cannot Delete Root Category'});
-  }
-
-  Categories.remove({name: name},function(err, category){
+router.put('/update', function(req, res) {
+  var id = req.body.categoryID;
+  var update = req.body.update;
+  Categories.findByIdAndUpdate(id, update,{new: true}, function(err, category){
     if(err){
       console.log(err);
       return res.status(500).json({error: 'internal server error', code: 1});
     }
     res.json({category});
+  });
+});
+
+//DELETE CATEGORY
+router.delete('/delete/:categoryID/:categoryName', function(req, res) {
+  var re = ','+req.params.categoryName+',';
+  Categories.remove({$or:[{_id: req.params.categoryID},{path: {$regex:re}}]},function(err){
+    if(err){
+      console.log(err);
+      return res.status(500).json({error: 'internal server error', code: 1});
+    }
+    res.json({categoryID: req.params.categoryID});
   });
 });
 
