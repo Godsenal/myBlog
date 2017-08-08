@@ -336,20 +336,26 @@ span {
 
 .tags {
   cursor: pointer;
+  color: #E74C3C;
 }
 
-.tags:hover {
-  color: black;
-  transition: color 1s;
+@media screen and (min-width: 999px) {
+  .tags:hover {
+    color: black;
+    transition: color 1s;
+  }
 }
 
 .path {
   cursor: pointer;
+  color: #E74C3C;
 }
 
-.path:hover {
-  color: black;
-  transition: color 1s;
+@media screen and (min-width: 999px) {
+  .path:hover {
+    color: black;
+    transition: color 1s;
+  }
 }
 
 .category {
@@ -414,12 +420,12 @@ span {
 }
 
 .fixedFooter {
-  position: fixed;
+  position: fixed !important;
   box-sizing: border-box;
   bottom: 0;
   width: 100%;
   line-height: 1.4;
-  padding: 10px 0px 10px 0px;
+  padding: 10px 0 10px 0;
   font-size: 1.5em;
   background-color: white;
   color: rgba(0, 0, 0, 0.4);
@@ -480,16 +486,18 @@ span {
 
 .buttonSubText {
   color: #FFBF00;
-  font-size: 0.9em;
+  font-size: 0.8em;
 }
 
 .buttonMainText {
-  font-size: 1.1em;
+  font-size: 1em;
 }
 
-.button:hover {
-  opacity: 0.7;
-  transition: opacity 0.7s;
+@media screen and (min-width: 999px) {
+  .button:hover {
+    opacity: 0.7;
+    transition: opacity 0.7s;
+  }
 }
 
 .divider {
@@ -575,7 +583,7 @@ span {
   text-align: left;
   font-size: 0.9em;
   font-family: 'Merriweather', 'Work Sans', 'NanumGothic', sans-serif;
-  color: rgba(0, 0, 0, 0.4);
+  color: #E74C3C;
 }
 
 .searchbar {
@@ -625,4 +633,17 @@ span {
   margin-top: 3rem;
   text-align: right;
   font-family: 'Work Sans', 'RobotoRegular', 'NanumGothic', sans-serif;
+}
+
+.notFoundContainer {
+  padding: 30;
+  text-align: center;
+  font-family: 'Work Sans', 'RobotoRegular', 'NanumGothic', sans-serif;
+  word-break: break-word;
+  word-wrap: break-word;
+  font-size: 30px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }

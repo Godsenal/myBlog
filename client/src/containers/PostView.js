@@ -132,8 +132,8 @@ class PostView extends Component {
   }
   scrollToElement = (elName) => {
     scroller.scrollTo(elName, {
-      duration: 1500,
-      delay: 100,
+      duration: 500,
+      delay: 20,
       smooth: 'easeInOutQuint',
     });
 
@@ -195,8 +195,8 @@ class PostView extends Component {
     var buttons = [];
     if(this.props.prev.status === 'SUCCESS'){
       if(!this.isEmpty(this.props.prev.post)){
-        let title = this.props.prev.post.title.length > 10 ?
-                    this.props.prev.post.title.substr(0,10) + '...' :
+        let title = this.props.prev.post.title.length > 6 ?
+                    this.props.prev.post.title.substr(0,6) + '...' :
                     this.props.prev.post.title;
         buttons.push(
           <div key={0} className={cx('flex1','button')} onTouchTap={this.handlePushPrev}>
@@ -216,8 +216,8 @@ class PostView extends Component {
     }
     if(this.props.next.status === 'SUCCESS'){
       if(!this.isEmpty(this.props.next.post)){
-        let title = this.props.next.post.title.length > 10 ?
-                    this.props.next.post.title.substr(0,10) + '...' :
+        let title = this.props.next.post.title.length > 6?
+                    this.props.next.post.title.substr(0,6) + '...' :
                     this.props.next.post.title;
         buttons.push(
           <div key={1} className={cx('flex0','button','marginLeftAuto')} onTouchTap={this.handlePushNext}>
@@ -252,16 +252,16 @@ class PostView extends Component {
     //var path = !this.isEmpty(category) && category.path ?category.path.replace(new RegExp(',', 'g'), '/') + category.name:null;
     return(
       <div>
-        <div className={this.props.isMobile?null:styles.postContainer}>
-          <Paper className={this.props.isMobile?styles.mobilePaperContainer:styles.paperContainer} zDepth={0} >
+        <div className={isMobile?null:styles.postContainer}>
+          <Paper className={isMobile?styles.mobilePaperContainer:styles.paperContainer} zDepth={0} >
             <div style={{'textAlign': 'left'}}>
               <span className={styles.postTitle} style={{color:'#454545'}}>{post.title}</span>
               <Subheader >
-                <div className={cx('subHeader','textRight')}>
-                  <span>
+                <div className={cx('subHeader','textRight')} >
+                  <span style={{color:'#E74C3C'}}>
                     <FaArchive/>
                     {path?path.map((el,i)=>{
-                      return <span className={styles.path} key={i} onClick={() => this.handlePathClick(el)}>/{el}</span>;
+                      return <span key={i} onClick={() => this.handlePathClick(el)}><span>/</span><span className={styles.path}>{el}</span></span>;
                     }):null}
                   </span>&nbsp;
                   <span>
@@ -272,11 +272,13 @@ class PostView extends Component {
                     <MdRemoveRedEye/>
                     {post.viewer}
                   </span>&nbsp;
-                  <span>
+                  <span style={{color:'#E74C3C'}}>
                     <MdComment/>
-                    <CommentCount shortname={disqusShortname} config={disqusConfig}>
-                      0
-                    </CommentCount>
+                    <span className={styles.path} onClick={()=>this.scrollToElement('disqusContainer')}>
+                      <CommentCount shortname={disqusShortname} config={disqusConfig}>
+                        0
+                      </CommentCount>
+                    </span>
                   </span>
                 </div>
               </Subheader>
@@ -306,11 +308,11 @@ class PostView extends Component {
               </div>
             </div>
             <Divider style={{'marginTop':'1.5rem','marginBottom':'1.5rem'}}/>
-              <div className={styles.tagContainer} >
+              <div className={styles.tagContainer}>
                 <span><FaTags/></span>&nbsp;
                 {'tags' in post ?
                   post.tags.map((tag,i)=>{
-                    return <span className={styles.tags} key={i} onClick={() => this.handleTagClick(tag)}>{tag}{i!=post.tags.length-1?'/':''}&nbsp;</span>;
+                    return <span key={i} onClick={() => this.handleTagClick(tag)}><span className={styles.tags}>{tag}</span>{i!=post.tags.length-1?' /':''}&nbsp;</span>;
                   }):null
                 }
               </div>

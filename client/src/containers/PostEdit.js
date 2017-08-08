@@ -541,9 +541,11 @@ class PostEdit extends Component {
         onTouchTap={this.handleClose}
       />
     ];
+    const {screenWidth} = this.props.environment;
+    const isMobile = screenWidth < 1000;
     return (
-      <div className={styles.postContainer}>
-        <Paper zDepth={2} className={styles.paperContainer}>
+      <div className={isMobile?null:styles.postContainer}>
+        <Paper zDepth={2} className={isMobile?styles.mobilePaperContainer:styles.paperContainer}  >
           <span>제목 </span>
           <TextField
             id="text-field-default"

@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
-import Divider from 'material-ui/Divider';
-import Paper from 'material-ui/Paper';
 import MdError from 'react-icons/md/error';
 
+import styles from '../../../style/main.css';
 class NotFound extends Component {
   render () {
     return(
-        <div style={{'padding': 30,'textAlign': 'center'}}>
-          <Paper zDepth={2} style={{'padding': 30,'textAlign': 'center','height':'100%'}}>
-            <h1><MdError/> 페이지를 찾을 수 없습니다.</h1>
-            <Divider style={{'marginTop':'3rem','marginBottom':'3rem'}}/>
-          </Paper>
+        <div className={styles.notFoundContainer}>
+          <div style={{marginTop:'30%'}}>
+            <MdError/>
+            <div>Sorry</div>
+            <div>Page can't be found...</div>
+          </div>
         </div>
     );
   }

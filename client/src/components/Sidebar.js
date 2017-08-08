@@ -86,7 +86,7 @@ class Sidebar extends Component{
         return (
           <ListItem
             key={i}
-            open={this.props.status.valid?true:false}
+            open={this.props.status.valid?true:null}
             onTouchTap={()=>{this.handleSelectCategory(subCategory);}}
             hoverColor={hoverColor}
             rightIconButton={this.props.status.valid?this.renderRightIconBtn(subCategory):null}
@@ -371,6 +371,7 @@ class Sidebar extends Component{
   handleSignout = () => {
     this.props.signoutRequest();
   }
+  /* Listitem 의 open 이 false말고 null인 이유는, valid 아닐 경우 false면 절대 안열림 */
   render(){
     const {list} = this.props.category;
     return(
@@ -393,7 +394,7 @@ class Sidebar extends Component{
               <ListItem
                 key={i}
                 hoverColor={hoverColor}
-                open={this.props.status.valid?true:false}
+                open={this.props.status.valid?true:null}
                 innerDivStyle={{padding:'16px'}}
                 rightIconButton={this.props.status.valid?this.renderRightIconBtn(category):null}
                 onTouchTap={()=>{this.handleSelectCategory(category); }}

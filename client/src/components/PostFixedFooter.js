@@ -19,14 +19,15 @@ const PostFixedFooter = (props) => {
   return(
     <div className={styles.fixedFooter}>
       <span className={cx('fixedFooterMenuItemLeft','flex0')}>
+        <FaListAlt className={cx('fixedSideMenuItem','fixedFooterMenuItemRight')} onClick={handleListClick}/>
+      </span>
+      <span className={cx('fixedFooterMenuItemRight','flex1','textRight')} >
+        <FaAngleUp className={cx('fixedSideMenuItem','fixedFooterMenuItemRight')} onClick={scrollToTop}/>
+        <FaAngleDown className={cx('fixedSideMenuItem','fixedFooterMenuItemRight')} onClick={scrollToBottom}/>
+
         <Link to='disqusContainer' spy={true} smooth={true} duration={500}>
           <FaCommentO className={styles.fixedSideMenuItem}/>
         </Link>
-      </span>
-      <span className={cx('fixedFooterMenuItemRight','flex1','textRight')} >
-        <FaAngleDown className={cx('fixedSideMenuItem','fixedFooterMenuItemRight')} onClick={scrollToBottom}/>
-        <FaAngleUp className={cx('fixedSideMenuItem','fixedFooterMenuItemRight')} onClick={scrollToTop}/>
-        <FaListAlt className={cx('fixedSideMenuItem','fixedFooterMenuItemRight')} onClick={handleListClick}/>
       </span>
     </div>
   );
