@@ -190,10 +190,11 @@ class Post extends Component{
                 screenWidth={this.props.environment.screenWidth}
                 screenHeight={this.props.environment.screenHeight}
                 posts={posts}/>:
+                list.status == 'SUCCESS' && list.status == 'FAILURE'?
                 <div style={{'textAlign':'center','fontSize':'3vw'}}>
                   <FaFrownO style={{'fontSize':'10vw'}}/>
                   <h1 >결과가 없습니다.</h1>
-                </div>}
+                </div>:null}
             <div style={{'textAlign':'center'}}>
               <Pagination
                 total = { total }

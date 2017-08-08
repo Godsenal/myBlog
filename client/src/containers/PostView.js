@@ -312,7 +312,7 @@ class PostView extends Component {
                 <span><FaTags/></span>&nbsp;
                 {'tags' in post ?
                   post.tags.map((tag,i)=>{
-                    return <span key={i} onClick={() => this.handleTagClick(tag)}><span className={styles.tags}>{tag}</span>{i!=post.tags.length-1?' /':''}&nbsp;</span>;
+                    return <span key={i}><span className={styles.tags} onClick={() => this.handleTagClick(tag)}>{tag}</span>{i!=post.tags.length-1?' /':''}&nbsp;</span>;
                   }):null
                 }
               </div>
