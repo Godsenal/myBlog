@@ -146,7 +146,13 @@ class PostView extends Component {
     scroll.scrollToBottom();
   }
   handleListClick = () => {
-    browserHistory.push(`/category/${this.props.get.post.category}`);
+    if(typeof this.props.get.post.category == 'undefined'){
+      browserHistory.push(`/category/${this.props.get.post.category}`);
+    }
+    else{
+      browserHistory.push('/category');
+    }
+
   }
   handleTagClick = (tag) => {
     browserHistory.push(`/search/tags/${tag}`);
@@ -183,12 +189,12 @@ class PostView extends Component {
           this.props.getNextPost(postID, this.props.get.post.category);
         }
         else if(status === 'FAILURE'){
-          browserHistory.push('/NotFound');
+          browserHistory.replace('/NotFound');
         }
         return null;
       })
       .catch((err)=>{
-        browserHistory.push('/NotFound');
+        browserHistory.replace('/NotFound');
       });
   }
   renderPrevNext = () => {

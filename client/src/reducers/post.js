@@ -289,6 +289,7 @@ export default function post(state, action){
     case types.POST_COUNT_SUCCESS:
       return update(state, {
         count:{
+          status: {$set: 'SUCCESS'},
           count: {$set: action.count}
         }
       });

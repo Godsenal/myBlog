@@ -97,7 +97,7 @@ class PostList extends Component{
                       onMouseEnter={()=>{this.handleHover(i);}}
                       onMouseLeave={()=>{this.handleHover(false);}}>
                       <CardMedia style={{'display':'inline-block','overflow':'hidden'}}>
-                        <img className={styles.postImage} style={style} src={post.thumbnail? thumbnailPath + post.thumbnail : null } onError={(e)=>e.target.src = DEFAULT_IMAGE} />
+                        <img className={styles.postImage} style={style} src={post.thumbnail? thumbnailPath + post.thumbnail : null } onError={(e)=>{e.target.src = DEFAULT_IMAGE; this.handleResize();}} />
                       </CardMedia>
                       <CardTitle><span className={styles.postCardTitle}>{post.title}</span></CardTitle>
                       <CardText>

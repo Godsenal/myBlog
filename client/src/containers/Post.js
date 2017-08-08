@@ -35,6 +35,7 @@ class Post extends Component{
       display: 7,
       number,
       isReset: false,
+      isInit: true,
     };
   }
   setTotal(event, total) {
@@ -68,19 +69,27 @@ class Post extends Component{
   componentDidMount(){
     window.scrollTo(0, 0);
     if(this.props.params.category){
+      this.props.listPost(this.props.params.category,this.state.number) // 1 means page number.
+        .then(()=>{
+          this.setState({
+            isInit: false,
+          });
+        });
+      this.props.countPost(this.props.params.category);
       this.props.getCategory(this.props.params.category)
         .then(()=>{
-          if(Object.keys(this.props.category).length){
-            this.props.listPost(this.props.params.category,this.state.number);// 1 means page number.
-            this.props.countPost(this.props.params.category);
-          }
-          else{
+          if(!Object.keys(this.props.category).length){
             browserHistory.replace('/NotFound');
           }
         });
     }
     else{
-      this.props.listPost(this.props.params.category,this.state.number);// 1 means page number.
+      this.props.listPost(this.props.params.category,this.state.number)// 1 means page number.
+        .then(()=>{
+          this.setState({
+            isInit: false,
+          });
+        });
       this.props.countPost(this.props.params.category);
     }
   }
@@ -93,21 +102,21 @@ class Post extends Component{
         if(this.props.location.state != nextProps.location.state);
         number = nextProps.location.state.number;
       }
+      var category = nextProps.params.category;
       if(nextProps.params.category){
-        this.props.getCategory(nextProps.params.category)
+
+        this.props.listPost(category,number);// 1 means page number.
+        this.props.countPost(category);
+        this.props.getCategory(category)
           .then(()=>{
-            if(Object.keys(this.props.category).length){
-              this.props.listPost(this.props.params.category,number);// 1 means page number.
-              this.props.countPost(this.props.params.category);
-            }
-            else{
+            if(!Object.keys(category).length){
               browserHistory.replace('/NotFound');
             }
           });
       }
       else{
-        this.props.listPost(nextProps.params.category,number);// 1 means page number.
-        this.props.countPost(nextProps.params.category);
+        this.props.listPost(category,number);// 1 means page number.
+        this.props.countPost(category);
       }
 
       this.setState({
@@ -148,17 +157,12 @@ class Post extends Component{
 
   }
   handleHeaderClick = () => {
-    if(this.props.params.category){
-      this.props.listPost(this.props.params.category,1)
-        .then(()=>{
-          this.props.countPost(this.props.params.category);
-          this.setState({
-            word:'',
-            isSearch: false,
-            number: 1,
-            isReset: false,
-          });
-        });
+    let category = this.props.params.category;
+    if(category){
+      browserHistory.push({pathname: `/category/${category}`, state: {number: 1}});
+    }
+    else{
+      browserHistory.push({pathname: '/category', state: {number: 1}});
     }
   }
   render(){
@@ -167,7 +171,6 @@ class Post extends Component{
     const {screenWidth} = this.props.environment;
     const isMobile = screenWidth < 1000;
     const category = this.props.params.category?this.props.params.category:'Recent Posts';
-
     const total = parseInt(((count.count)-1) / 10 + 1);
     const posts = list.posts;
     return(
@@ -175,7 +178,7 @@ class Post extends Component{
           <div>
             <div className={cx('headerContainer', 'listHeaderContainer')}>
               <span className={cx('headerLeft','category')}>
-                <FaArchive/>&nbsp;{category}
+                <FaArchive/>&nbsp;<span className={styles.headerText} onClick={this.handleHeaderClick}>{category}</span>
               </span>
               {this.props.params.category?
                 <div className={cx('headerRight','category')}>
@@ -183,26 +186,27 @@ class Post extends Component{
                 </div>:null}
             </div>
             <Divider style={{'marginTop':'1.5rem', 'marginBottom':'1.5rem'}} />
-            {posts.length>0?
+            {this.state.isInit?null:list.status == 'SUCCESS'&&posts.length>0 ?
               <PostList
                 handlePostClick={this.handlePostClick}
                 isMobile={isMobile}
                 screenWidth={this.props.environment.screenWidth}
                 screenHeight={this.props.environment.screenHeight}
                 posts={posts}/>:
-                list.status == 'SUCCESS' && list.status == 'FAILURE'?
+                (list.status == 'SUCCESS' || list.status == 'FAILURE')&&posts.length <= 0?
                 <div style={{'textAlign':'center','fontSize':'3vw'}}>
                   <FaFrownO style={{'fontSize':'10vw'}}/>
                   <h1 >결과가 없습니다.</h1>
                 </div>:null}
-            <div style={{'textAlign':'center'}}>
-              <Pagination
-                total = { total }
-                current = { number }
-                display = { display }
-                onChange = { number => this.handlePagination(number) }
-              />
-            </div>
+            {this.state.isInit?null:count.status == 'SUCCESS'&&count.count>0 ?
+              <div style={{'textAlign':'center'}}>
+                <Pagination
+                  total = { total }
+                  current = { number }
+                  display = { display }
+                  onChange = { number => this.handlePagination(number) }
+                />
+              </div>:null}
             {this.props.status.valid?
               <RaisedButton label="새글 추가" fullWidth={true} onTouchTap={this.handleEditPost} />:null}
           </div>

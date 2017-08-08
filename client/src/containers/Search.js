@@ -177,14 +177,15 @@ class Search extends Component{
                     <Searchbar category={category}/>
                   </div>
                 </div>}
-            <div style={{'textAlign':'center'}}>
-              <Pagination
-                total = { total }
-                current = { number }
-                display = { display }
-                onChange = { number => this.handlePagination(number) }
-              />
-            </div>
+            {this.state.isInit?null:searchCount.status == 'SUCCESS'&&searchCount.count>0 ?
+              <div style={{'textAlign':'center'}}>
+                <Pagination
+                  total = { total }
+                  current = { number }
+                  display = { display }
+                  onChange = { number => this.handlePagination(number) }
+                />
+              </div>:null}
             {this.props.status.valid?
               <RaisedButton label="새글 추가" fullWidth={true} onTouchTap={this.handleEditPost} />:null}
           </div>:null}
