@@ -75,7 +75,7 @@ class Post extends Component{
             this.props.countPost(this.props.params.category);
           }
           else{
-            browserHistory.push('/NotFound');
+            browserHistory.replace('/NotFound');
           }
         });
     }
@@ -85,8 +85,9 @@ class Post extends Component{
     }
   }
   componentWillReceiveProps(nextProps) {
-    window.scrollTo(0, 0);
+
     if((this.props.params.category !== nextProps.params.category) || (this.props.location.state != nextProps.location.state) ){
+      window.scrollTo(0, 0);
       let number = 1;
       if(typeof nextProps.location.state != 'undefined'){
         if(this.props.location.state != nextProps.location.state);
@@ -100,7 +101,7 @@ class Post extends Component{
               this.props.countPost(this.props.params.category);
             }
             else{
-              browserHistory.push('/NotFound');
+              browserHistory.replace('/NotFound');
             }
           });
       }
@@ -171,7 +172,6 @@ class Post extends Component{
     const posts = list.posts;
     return(
         <div className={isMobile?styles.mobileListContainer:styles.listContainer}>
-          {list.status === 'SUCCESS'?
           <div>
             <div className={cx('headerContainer', 'listHeaderContainer')}>
               <span className={cx('headerLeft','category')}>
@@ -204,7 +204,7 @@ class Post extends Component{
             </div>
             {this.props.status.valid?
               <RaisedButton label="새글 추가" fullWidth={true} onTouchTap={this.handleEditPost} />:null}
-          </div>:null}
+          </div>
         </div>
 
     );
