@@ -38,7 +38,7 @@ const inlineStyles = {
     padding: 10,
   }
 };
-const title = "LTH's Blog";
+const title = "Godsenal's Blog";
 class App extends Component{
   constructor(props){
     super(props);
