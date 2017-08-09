@@ -51,7 +51,7 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/', express.static(path.join(__dirname, './../public'))); // 정적인 페이지 로드
+app.use('/', express.static(path.join(__dirname, './../public'),{ maxAge: 86400000 })); // 정적인 페이지 로드
 
 app.use('/api',api);
 

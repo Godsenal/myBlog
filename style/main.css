@@ -35,7 +35,7 @@
 
 @font-face {
   font-family: 'Merriweather';
-  src: url(/assets/fonts/Merriweather-RegularItalic.ttf);
+  src: url(/assets/fonts/Merriweather-LightItalic.ttf);
 }
 
 @font-face {
@@ -255,7 +255,7 @@ span {
 .subHeader {
   font-family: 'Merriweather', 'Work Sans', 'NanumGothic', sans-serif;
   letter-spacing: 0em;
-  font-weight: 400;
+  font-weight: 300;
   font-size: 0.85em;
   color: rgba(0, 0, 0, 0.4);
   font-style: italic;
@@ -607,6 +607,7 @@ span {
   margin-bottom: 1.5rem;
   text-align: left;
   font-size: 0.9em;
+  font-weight: 300;
   font-family: 'Merriweather', 'Work Sans', 'NanumGothic', sans-serif;
   color: #E74C3C;
 }

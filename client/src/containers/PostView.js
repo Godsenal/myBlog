@@ -262,7 +262,6 @@ class PostView extends Component {
           <Paper className={isMobile?styles.mobilePaperContainer:styles.paperContainer} zDepth={0} >
             <div style={{'textAlign': 'left'}}>
               <span className={styles.postTitle} style={{color:'#454545'}}>{post.title}</span>
-              <Subheader >
                 <div className={cx('subHeader','textRight')} >
                   <span style={{color:'#E74C3C'}}>
                     <FaArchive/>
@@ -287,7 +286,6 @@ class PostView extends Component {
                     </span>
                   </span>
                 </div>
-              </Subheader>
               <Divider style={{'marginTop':'1.5rem','marginBottom':'1.5rem'}}/>
               <img
                 src={post.thumbnail? thumbnailPath + post.thumbnail : DEFAULT_IMAGE }
