@@ -28,6 +28,31 @@
   src: url(/assets/fonts/Roboto-Black.ttf);
 }
 
+@font-face {
+  font-family: 'Merriweather';
+  src: url(/assets/fonts/Merriweather-Regular.ttf);
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  src: url(/assets/fonts/Merriweather-RegularItalic.ttf);
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: url(/assets/fonts/WorkSans-Regular.ttf);
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: url(/assets/fonts/WorkSans-Medium.ttf);
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: url(/assets/fonts/WorkSans-SemiBold.ttf);
+}
+
 body {
   margin: 0;
   background-color: #EFEFEF;
