@@ -244,7 +244,7 @@ span {
 .postTitle {
   font-family: 'Work Sans', 'RobotoBlack', 'NanumGothic', sans-serif;
   letter-spacing: -.03em;
-  font-size: 32px;
+  font-size: 2em;
   font-weight: 900;
   word-break: keep-all;
   word-wrap: break-word;
@@ -255,6 +255,7 @@ span {
 .subHeader {
   font-family: 'Merriweather', 'Work Sans', 'NanumGothic', sans-serif;
   letter-spacing: 0em;
+  margin-top: 1.7rem;
   font-weight: 300;
   font-size: 0.85em;
   color: rgba(0, 0, 0, 0.4);

@@ -82,7 +82,7 @@ class App extends Component{
     const sidebarStyle = !isMobile ? styles.sidebarContainer : null;
     return(
       <MuiThemeProvider muiTheme={muiTheme}>
-        <div className={styles.appContainer} style={{'overflowX':'hidden', 'overflowY':'hidden', 'margin': 0, 'padding': 0}}>
+        <div className={styles.appContainer} style={{'margin': 0, 'padding': 0}}>
           <div className={styles.mainContainer}>
             {isMobile?
               <Headroom style={inlineStyles.headroom}>

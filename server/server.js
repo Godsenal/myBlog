@@ -66,7 +66,7 @@ app.get('*', (req,res)=>{
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 
-httpServer.listen(config.port, config.host, () => {
+httpServer.listen(config.port, () => {
   console.info('HTTP Express listening on port', config.port);
 });
 
