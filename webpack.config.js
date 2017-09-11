@@ -12,7 +12,7 @@ module.exports = {
         'NODE_ENV': JSON.stringify('production')
       }
     }),
-    new webpack.optimize.UglifyJsPlugin()
+    new webpack.optimize.UglifyJsPlugin({sourceMap : false}) // build 가 너무 느리거나 마무리 안될 때 sourceMap : false로 해결
   ],
   module: {
     loaders: [
