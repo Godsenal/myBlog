@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf build public/bundle.js",
-    "build": "babel server --out-dir build --presets=es2015 && webpack -p",
+    "build": "babel server --out-dir build --presets=es2015 && webpack --progress",
     "start": "nodemon --exec babel-node ./server/server.js",
     "dev": "webpack -wd"
   },
@@ -64,6 +64,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
+    "compression-webpack-plugin": "^1.0.0",
     "css-loader": "^0.26.4",
     "eslint": "^3.19.0",
     "eslint-plugin-react": "^6.10.3",
