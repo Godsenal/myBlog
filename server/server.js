@@ -51,25 +51,36 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/fonts', express.static(path.join(__dirname + './../public/assets/fonts'), {  maxAge: 86400000}));
-app.use('/images', express.static(path.join(__dirname + './../public/assets/images'), {  maxAge: 86400000}));
-app.use('/postImages', express.static(path.join(__dirname + './../public/assets/posts/images'), {  maxAge: 86400000}));
-app.use('/postThumbnails', express.static(path.join(__dirname + './../public/assets/posts/thumbnails'), {  maxAge: 86400000}));
-app.use('/', express.static(path.join(__dirname, './../public'),{ maxAge: 86400000 })); // 정적인 페이지 로드
 
 app.use('/api',api);
+
+app.get('*.js', function(req, res, next) {
+ req.url = req.url + '.gz';
+ res.set('Content-Encoding', 'gzip');
+ res.set('Content-Type', 'text/javascript');
+ next();
+});
+
+app.get('*.css', function(req, res, next) {
+ req.url = req.url + '.gz';
+ res.set('Content-Encoding', 'gzip');
+ res.set('Content-Type', 'text/css');
+ next();
+});
+
+app.use('/fonts', express.static(path.resolve(__dirname + './../public/assets/fonts'), {  maxAge: 86400000}));
+app.use('/images', express.static(path.resolve(__dirname + './../public/assets/images'), {  maxAge: 86400000}));
+app.use('/postImages', express.static(path.resolve(__dirname + './../public/assets/posts/images'), {  maxAge: 86400000}));
+app.use('/postThumbnails', express.static(path.resolve(__dirname + './../public/assets/posts/thumbnails'), {  maxAge: 86400000}));
+app.use('/', express.static(path.resolve(__dirname, './../public'),{ maxAge: 86400000 })); // 정적인 페이지 로드
+
 
 app.get('*', (req,res)=>{
   //req.params.contestId에 따라 다른 페이지를 만들어야함. route일 땐 undefined
   res.sendFile(path.resolve(__dirname, './../public/index.html'));
-
 });
 
-app.get('*.js', function (req, res, next) {
-  req.url = req.url + '.gz';
-  res.set('Content-Encoding', 'gzip');
-  next();
-});
+
 
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
