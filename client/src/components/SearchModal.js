@@ -18,14 +18,12 @@ class SearchModal extends Component{
     super(props);
     this.state = {
       word: '',
-      open: false,
       activeIndex: 0,
     };
   }
   handleClick = (e) => {
     if(e.target.nodeName !== 'INPUT' && e.target.nodeName !== 'SPAN'){
       this.setState({
-        open: false,
         activeIndex: 0,
         word: ''
       });
@@ -62,7 +60,6 @@ class SearchModal extends Component{
   }
   render(){
     const {word} = this.state;
-    const {isOpen} = this.props;
     return(
         <div className='container' onClick={this.handleClick}>
           <div className='innerContainer'>
@@ -89,13 +86,11 @@ class SearchModal extends Component{
 }
 SearchModal.defaultProps = {
   category: '',
-  isOpen: false,
   toggleSearchModal: ()=> {console.log('SearchModal props Error');}
 
 };
 SearchModal.propTypes = {
   category: PropTypes.string.isRequired,
-  isOpen: PropTypes.bool.isRequired,
   toggleSearchModal: PropTypes.func.isRequired,
 
 };
