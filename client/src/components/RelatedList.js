@@ -71,7 +71,7 @@ class RelatedList extends Component{
                           <img height='100%' style={style} src={post.thumbnail? thumbnailPath + post.thumbnail : DEFAULT_IMAGE } onError={(e)=>e.target.src = DEFAULT_IMAGE} />
                         </CardMedia>
                         <CardTitle><span className={cx('postCardTitle')}>{post.title}</span></CardTitle>
-                        <CardText className={cx('postCardFooter')} style={{fontSize:'0.8em'}}>
+                        <CardText className={cx('postCardFooter')}>
                           <div className={cx('flex0','postCardFooterLeft')}>
                             <Avatar backgroundColor={'#32FAE2'} size={12}>{post.author?post.author.substr(0,1).toUpperCase():''}</Avatar>{post.author}
                           </div>

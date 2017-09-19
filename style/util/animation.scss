@@ -1,0 +1,58 @@
+@import './color.scss';
+@mixin keyframes($animation-name) {
+    @-webkit-keyframes #{$animation-name} {
+        @content;
+    }
+    @-moz-keyframes #{$animation-name} {
+        @content;
+    }
+    @-ms-keyframes #{$animation-name} {
+        @content;
+    }
+    @-o-keyframes #{$animation-name} {
+        @content;
+    }
+    @keyframes #{$animation-name} {
+        @content;
+    }
+}
+
+@mixin animation($name) {
+  -webkit-animation: #{$name};
+  -moz-animation: #{$name};
+  -ms-animation: #{$name};
+  -o-animation: #{$name};
+  animation: #{$name};
+}
+
+@include keyframes(changecolor) {
+    0% {
+        border-color: black;
+    }
+
+    100% {
+        border-color: #ccc;
+    }
+}
+
+@include keyframes(fadein) {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@include keyframes(hoverbutton) {
+    0% {
+        background-color: white;
+        color:$secondary-color;
+    }
+
+    100% {
+        background-color: $secondary-color;
+        color: white;
+    }
+}

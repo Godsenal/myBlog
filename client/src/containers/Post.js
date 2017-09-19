@@ -14,6 +14,7 @@ import {Searchbar, PostList} from '../components';
 import {addPost, listPost, updatePost, deletePost, countPost} from '../actions/post';
 import {getCategory} from '../actions/category';
 import {getStatusRequest} from '../actions/authentication';
+import {toggleSearchModal} from '../actions/environment';
 
 const cx = classNames.bind(styles);
 import styles from '../../../style/main.css';
@@ -182,7 +183,10 @@ class Post extends Component{
               </span>
               {this.props.params.category?
                 <div className={cx('headerRight','category')}>
-                  <Searchbar className={cx('headerText')} category={category} handleSearchPost={this.handleSearchPost}/>
+                  <Searchbar
+                    className={cx('headerText')}
+                    category={category}
+                    toggleSearchModal={this.props.toggleSearchModal}/>
                 </div>:null}
             </div>
             <Divider style={{'marginTop':'1.5rem', 'marginBottom':'1.5rem'}} />
@@ -231,6 +235,7 @@ Post.defaultProps ={
   setPostHistory : () => {console.log('Post props Error');},
   getCategory : () => {console.log('Post props Error');},
   getStatusRequest : () => {console.log('Post props Error');},
+  toggleSearchModal : () => {console.log('Post props Error');},
 };
 Post.propTypes = {
   params: PropTypes.object.isRequired,
@@ -246,6 +251,7 @@ Post.propTypes = {
   getCategory: PropTypes.func.isRequired,
   status: PropTypes.object.isRequired,
   getStatusRequest: PropTypes.func.isRequired,
+  toggleSearchModal: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => {
   return {
@@ -277,6 +283,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     getStatusRequest: (token) => {
       return dispatch(getStatusRequest(token));
+    },
+    toggleSearchModal: (isOpen, category) => {
+      return dispatch(toggleSearchModal(isOpen, category));
     },
   };
 };

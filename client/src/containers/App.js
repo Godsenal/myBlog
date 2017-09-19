@@ -10,8 +10,8 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import MdMenu from 'react-icons/lib/md/menu';
 import Headroom from 'react-headroom';
 
-import { Sidebar } from '../components';
-import { initEnvironment} from '../actions/environment';
+import { Sidebar,SearchModal } from '../components';
+import { initEnvironment, toggleSearchModal} from '../actions/environment';
 import { getStatusRequest} from '../actions/authentication';
 import styles from '../../../style/main.css';
 import Bluebird from 'bluebird';
@@ -105,9 +105,18 @@ class App extends Component{
               isMobile
             })}
           </div>
-          <div className={sidebarStyle}>
-            <Sidebar isMobile={isMobile} open={open} toggleSidebar={this.toggleSidebar} title={title}/>
-          </div>
+          {/* splay means route match with wildcard like "*"   */
+            !this.props.params.splat?
+            <div className={sidebarStyle}>
+              <Sidebar isMobile={isMobile} open={open} toggleSidebar={this.toggleSidebar} title={title}/>
+            </div>:null
+          }
+          {/* Search Modal */
+            this.props.environment.searchModal.isOpen?
+            <SearchModal
+              toggleSearchModal={this.props.toggleSearchModal}
+              category={this.props.environment.searchModal.category}/>:null
+          }
         </div>
       </MuiThemeProvider>
     );
@@ -118,6 +127,7 @@ class App extends Component{
 App.defaultProps ={
   initEnvironment : () => {console.log('App props Error');},
   getStatusRequest : () => {console.log('App props Error');},
+  toggleSearchModal : () => {console.log('App props Error');},
   environment : {},
   status: {},
 };
@@ -126,6 +136,7 @@ App.propTypes = {
   status: PropTypes.object.isRequired,
   initEnvironment : PropTypes.func.isRequired,
   getStatusRequest: PropTypes.func.isRequired,
+  toggleSearchModal: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => {
   return {
@@ -140,6 +151,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     getStatusRequest: (token) => {
       return dispatch(getStatusRequest(token));
+    },
+    toggleSearchModal: (isOpen, category) => {
+      return dispatch(toggleSearchModal(isOpen, category));
     }
   };
 };

@@ -7,7 +7,6 @@ import classNames from 'classnames/bind';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import FaArchive from 'react-icons/fa/archive';
-import FaFrownO from 'react-icons/fa/frown-o';
 import CircularProgress from 'material-ui/CircularProgress';
 import Pagination from 'material-ui-pagination';
 
@@ -15,10 +14,13 @@ import Pagination from 'material-ui-pagination';
 import {Searchbar, PostList} from '../components';
 import {searchPost, searchCountPost} from '../actions/post';
 import {getStatusRequest} from '../actions/authentication';
+import {toggleSearchModal} from '../actions/environment';
+
+import styles from '../../../style/main.css';
+import scss from '../../../style/NotFound.scss';
 
 const cx = classNames.bind(styles);
-import styles from '../../../style/main.css';
-
+const sc = classNames.bind(scss);
 
 class Search extends Component{
   constructor(props){
@@ -144,11 +146,10 @@ class Search extends Component{
         {category?
           <span>
             <span style={{'cursor':'pointer', color: '#FFB03B' }} onClick={() => this.handleHeaderClick(category)}> {category}  </span>
-            <span >내</span>
             <br/>
           </span>
           :null}
-        {type?type.toUpperCase() + ' : ':null }<span style={{'color':'#FFBF00'}}> '{word}' </span>
+        {type?type.toUpperCase() + ' : ':null }<span className={sc('header', 'subSpan')}> '{word}' </span>
       </span>;
     const total = parseInt(((searchCount.count)-1) / 10 + 1);
     const posts = search.results;
@@ -161,7 +162,10 @@ class Search extends Component{
                 <FaArchive/>&nbsp;{header}
               </span>
               <div className={cx('headerRight','category')}>
-                <Searchbar className={cx('headerText')} category={category}/>
+                <Searchbar
+                  className={cx('headerText')}
+                  toggleSearchModal={this.props.toggleSearchModal}
+                  category={category}/>
               </div>
             </div>
             <Divider style={{'marginTop':'1.5rem', 'marginBottom':'1.5rem'}} />
@@ -170,12 +174,19 @@ class Search extends Component{
                 isMobile={isMobile}
                 screenWidth={screenWidth}
                 posts={posts}/>:
-                <div style={{'textAlign':'center','fontSize':'3vw'}}>
-                  <FaFrownO style={{'fontSize':'10vw','margin':'2rem'}}/>
-                  <h2 >No Result for '{<span style={{'color':'#329FFF'}}>{word}</span>}'.</h2>
-                  <div style={{'margin':'2rem'}}>
-                    <Searchbar category={category}/>
-                  </div>
+                <div className={sc('notFoundContainer')}>
+                  <h1 className={sc('header', 'bigHeader')}>SORRY...</h1>
+                  <h1 className={sc('header', 'mainHeader')}>No Result for '{<span className={sc('header', 'subSpan')}>{word}</span>}'.</h1>
+                  <ul className={sc('list')}>
+                    <li>
+                      <a className={sc('header', 'subHeader')}>
+                        <Searchbar
+                          className={cx('headerText')}
+                          toggleSearchModal={this.props.toggleSearchModal}
+                          category={category}/>
+                      </a>
+                    </li>
+                  </ul>
                 </div>}
             {this.state.isInit?null:searchCount.status == 'SUCCESS'&&searchCount.count>0 ?
               <div style={{'textAlign':'center'}}>
@@ -204,6 +215,7 @@ Search.defaultProps ={
   status: {},
   setPostHistory : () => {console.log('Post props Error');},
   getStatusRequest : () => {console.log('Post props Error');},
+  toggleSearchModal : () => {console.log('Post props Error');},
 };
 Search.propTypes = {
   params: PropTypes.object.isRequired,
@@ -215,6 +227,7 @@ Search.propTypes = {
   searchCountPost: PropTypes.func.isRequired,
   status: PropTypes.object.isRequired,
   getStatusRequest: PropTypes.func.isRequired,
+  toggleSearchModal: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => {
   return {
@@ -234,6 +247,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     getStatusRequest: (token) => {
       return dispatch(getStatusRequest(token));
+    },
+    toggleSearchModal: (isOpen,category) => {
+      return dispatch(toggleSearchModal(isOpen,category));
     },
   };
 };

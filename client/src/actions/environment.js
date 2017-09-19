@@ -1,6 +1,7 @@
 import{
   CHANGE_IS_MOBILE,
   CHANGE_WIDTH_AND_HEIGHT,
+  TOGGLE_SEARCH_MODAL,
 } from './ActionTypes';
 
 function changeIsMobile(isMobile) {
@@ -15,6 +16,15 @@ function changeWidthAndHeight(screenHeight, screenWidth) {
     type: CHANGE_WIDTH_AND_HEIGHT,
     screenHeight,
     screenWidth
+  };
+}
+export function toggleSearchModal(isOpen, category='') {
+  return (dispatch) => {
+    dispatch({
+      type: TOGGLE_SEARCH_MODAL,
+      isOpen,
+      category
+    });
   };
 }
 

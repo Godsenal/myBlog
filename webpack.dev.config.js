@@ -65,6 +65,28 @@ module.exports = {
         exclude: [/node_modules/,/style\/quill/],
         loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
       },
+      {
+        test: /\.scss$/,
+        use:
+        [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader',
+            options:
+            {
+              sourceMap: true
+            }
+          },
+          {
+            loader: 'sass-loader',
+            options:
+            {
+              sourceMap: true
+            }
+          }]
+      }
     ],
   },
 

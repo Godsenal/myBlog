@@ -260,7 +260,7 @@ class PostView extends Component {
       <div>
         <div className={isMobile?null:styles.postContainer}>
           <Paper className={isMobile?styles.mobilePaperContainer:styles.paperContainer} zDepth={0} >
-            <div style={{'textAlign': 'left'}}>
+            <div className={styles.postHeader}>
               <span className={styles.postTitle} style={{color:'#454545'}}>{post.title}</span>
                 <div className={cx('subHeader','textRight')} >
                   <span style={{color:'#E74C3C'}}>
