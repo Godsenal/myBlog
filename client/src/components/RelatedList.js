@@ -61,7 +61,7 @@ class RelatedList extends Component{
                 };
                 return(
                     <GridTile
-                      style={{'cursor': 'pointer', 'borderRadius':10, width:tileWidth, marginTop:'1rem'}}
+                      style={{'cursor': 'pointer', 'borderRadius':5, width:tileWidth, marginTop:'1rem'}}
                       onTouchTap={ () => this.handlePostClick(post._id)}>
                       <Card
                         onMouseEnter={()=>{this.handleHover(i);}}

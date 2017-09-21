@@ -91,8 +91,8 @@ class PostList extends Component{
               };
               let text = post.text?post.text.length > 200 ? post.text.substr(0,200) + '...' : post.text : '';
               return(
-                <Paper zDepth={3} style={{'borderRadius': 10,marginTop: 10}}>
-                  <GridTile style={{'cursor': 'pointer', 'borderRadius':10}} onTouchTap={ () => this.handlePostClick(post._id)}>
+                <Paper zDepth={3} style={{'borderRadius': 5,marginTop: 10}}>
+                  <GridTile style={{'cursor': 'pointer', 'borderRadius': 5}} onTouchTap={ () => this.handlePostClick(post._id)}>
                     <Card
                       onMouseEnter={()=>{this.handleHover(i);}}
                       onMouseLeave={()=>{this.handleHover(false);}}>
@@ -132,7 +132,7 @@ class PostList extends Component{
   }
   renderMobile = (posts) => {
     return (
-      <div style={{maxWidth:'100%'}}>
+      <div className={styles.mobileGridContainer}>
       {posts.map((post, i)=>{
         var disqusConfig = {
           //url: `http://www.godsenal.com/#${disqusShortname}`,
@@ -151,17 +151,17 @@ class PostList extends Component{
               let containerStyle = {
                 WebkitTransform: `translate3d(0, ${y}px, 0)`,
                 transform: `translate3d(0, ${y}px, 0)`,
-                borderRadius: 10,
+                borderRadius: 5,
                 marginTop: 10
               };
               let text = post.text?post.text.length > 200 ? post.text.substr(0,200) + '...' : post.text : '';
               return(
                 <Paper zDepth={3} style={containerStyle}>
-                  <GridTile style={{'cursor': 'pointer', 'borderRadius':10}} onTouchTap={ () => this.handlePostClick(post._id)}>
+                  <GridTile style={{'cursor': 'pointer', 'borderRadius':5}} onTouchTap={ () => this.handlePostClick(post._id)}>
                     <Card
                       onMouseEnter={()=>{this.handleHover(i);}}
                       onMouseLeave={()=>{this.handleHover(false);}}>
-                      <CardMedia style={{'display':'inline-block','overflow':'hidden'}}>
+                      <CardMedia style={{'display':'inline-block','overflow':'hidden',width: '100%'}}>
                         <img className={styles.postImage} style={style} src={post.thumbnail? thumbnailPath + post.thumbnail : null } onError={(e)=>e.target.src = DEFAULT_IMAGE} />
                       </CardMedia>
                       <CardTitle><span className={styles.postCardTitle}>{post.title}</span></CardTitle>
@@ -199,7 +199,7 @@ class PostList extends Component{
     const {posts, screenWidth} = this.props;
     const columnWidth = screenWidth > 1500 ? '30%': screenWidth > 800 ? '50%' : '100%';
     return(
-      screenWidth > 800 ? this.renderDesktop(columnWidth, posts):this.renderMobile(posts)
+      screenWidth > 999 ? this.renderDesktop(columnWidth, posts):this.renderMobile(posts)
     );
   }
 }

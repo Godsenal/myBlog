@@ -1,24 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FaSearch from 'react-icons/fa/search';
+import styles from '../../../style/main.css';
 
 
 
-const inlineStyles = {
-  iconStyle: {
-    cursor: 'pointer'
-  },
-};
 const Searchbar = (props) => {
   const {toggleSearchModal, category} = props;
-  
+
   const handleOpen = () => {
     toggleSearchModal(true,category);
   };
 
   return(
-    <div>
-      <FaSearch onClick={handleOpen} style={inlineStyles.iconStyle}/>
+    <div className={styles.searchContainer} onClick={handleOpen}>
+      <FaSearch/>
     </div>
   );
 };

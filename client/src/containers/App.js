@@ -62,7 +62,31 @@ class App extends Component{
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleWindowSizeChange);
   }
-
+  componentWillReceiveProps(nextProps){
+    if(nextProps.environment.searchModal.isOpen){
+      document.body.style.position = 'fixed';
+      document.body.style.overflow = 'hidden';
+    }
+    else{
+      document.body.style.position = null;
+      document.body.style.overflow = null;
+    }
+  }
+  /*
+  stopBodyScrolling = (scroll) => {
+    if (scroll) {
+      document.body.addEventListener('touchmove', this.freezeScroll, false);
+    } else {
+      document.body.removeEventListener('touchmove', this.freezeScroll, false);
+    }
+  }
+  freezeScroll = (e) => {
+    e.preventDefault();
+  }
+  handleWindowSizeChange = () => {
+    this.props.initEnvironment();
+  };
+  */
   handleWindowSizeChange = () => {
     this.props.initEnvironment();
   };
@@ -76,7 +100,7 @@ class App extends Component{
     browserHistory.push('/');
   }
   render(){
-    const {screenHeight, screenWidth} = this.props.environment;
+    const {screenWidth, searchModal} = this.props.environment;
     const {open} = this.state;
     const isMobile = screenWidth<1000;
     const sidebarStyle = !isMobile ? styles.sidebarContainer : null;
@@ -112,10 +136,10 @@ class App extends Component{
             </div>:null
           }
           {/* Search Modal */
-            this.props.environment.searchModal.isOpen?
+            searchModal.isOpen?
             <SearchModal
               toggleSearchModal={this.props.toggleSearchModal}
-              category={this.props.environment.searchModal.category}/>:null
+              category={searchModal.category}/>:null
           }
         </div>
       </MuiThemeProvider>
@@ -125,6 +149,7 @@ class App extends Component{
 }
 
 App.defaultProps ={
+  params: {},
   initEnvironment : () => {console.log('App props Error');},
   getStatusRequest : () => {console.log('App props Error');},
   toggleSearchModal : () => {console.log('App props Error');},
@@ -132,6 +157,7 @@ App.defaultProps ={
   status: {},
 };
 App.propTypes = {
+  params: PropTypes.object.isRequired,
   environment : PropTypes.object.isRequired,
   status: PropTypes.object.isRequired,
   initEnvironment : PropTypes.func.isRequired,

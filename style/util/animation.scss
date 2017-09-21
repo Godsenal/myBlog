@@ -56,3 +56,15 @@
         color: white;
     }
 }
+
+@include keyframes(hovernegative) {
+    0% {
+        background-color: white;
+        color:$negative-color;
+    }
+
+    100% {
+        background-color: $negative-color;
+        color: white;
+    }
+}

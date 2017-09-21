@@ -1,16 +1,7 @@
 import Posts from '../models/Posts';
 import Categories from '../models/Categories';
-import Counters from '../models/Counters';
 import express from 'express';
 const router = express.Router();
-
-/* AUTO_INCREMENT FOR POST ID */
-function getNextSequence(name) {
-  var count = Counters.findByIdAndUpdate({ _id: name },{ $inc: { seq: 1 } },{new: true},function(err, count){
-    return count.seq;
-  });
-  console.log(count);
-}
 
 function getSearchReg(type, word){
   if(type == 'tags'){

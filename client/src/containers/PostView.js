@@ -7,7 +7,6 @@ import Waypoint from 'react-waypoint';
 import {Element, animateScroll as scroll, scrollSpy, scroller} from 'react-scroll';
 import classNames from 'classnames/bind';
 
-import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import CircularProgress from 'material-ui/CircularProgress';
 import Divider from 'material-ui/Divider';
@@ -146,7 +145,7 @@ class PostView extends Component {
     scroll.scrollToBottom();
   }
   handleListClick = () => {
-    if(typeof this.props.get.post.category == 'undefined'){
+    if(this.props.get.post.category !== 'undefined'){
       browserHistory.push(`/category/${this.props.get.post.category}`);
     }
     else{

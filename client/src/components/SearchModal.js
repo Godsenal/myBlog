@@ -21,6 +21,7 @@ class SearchModal extends Component{
       activeIndex: 0,
     };
   }
+  
   handleClick = (e) => {
     if(e.target.nodeName !== 'INPUT' && e.target.nodeName !== 'SPAN'){
       this.setState({
@@ -30,6 +31,7 @@ class SearchModal extends Component{
       this.props.toggleSearchModal(false);
     }
   }
+
   handleCategorySelect = (i) => {
     this.setState({
       activeIndex: i,

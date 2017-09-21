@@ -407,7 +407,9 @@ class Sidebar extends Component{
           }
         })}
         <div className={styles.categoryList} style={{'marginTop':'2rem'}}>
-          <span onTouchTap={this.props.isMobile? this.props.toggleSidebar:null}><Searchbar toggleSearchModal={this.props.toggleSearchModal}/></span>
+          <div className={styles.categoryTool} onClick={this.props.isMobile? this.props.toggleSidebar:null}>
+            <Searchbar toggleSearchModal={this.props.toggleSearchModal}/>
+          </div>
         </div>
         {this.props.status.valid?
           <ListItem

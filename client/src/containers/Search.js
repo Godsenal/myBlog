@@ -18,9 +18,11 @@ import {toggleSearchModal} from '../actions/environment';
 
 import styles from '../../../style/main.css';
 import scss from '../../../style/NotFound.scss';
+import scss2 from '../../../style/Search.scss';
 
 const cx = classNames.bind(styles);
 const sc = classNames.bind(scss);
+const sc2 = classNames.bind(scss2);
 
 class Search extends Component{
   constructor(props){
@@ -78,9 +80,9 @@ class Search extends Component{
       });
   }
   componentWillReceiveProps(nextProps) {
-    window.scrollTo(0, 0);
-    if((this.props.params !== nextProps.params) ||(this.props.location.state != nextProps.location.state)){
 
+    if((this.props.params !== nextProps.params) ||(this.props.location.state != nextProps.location.state)){
+      window.scrollTo(0, 0);
       const {word, type, category} = nextProps.params;
 
       let number = 1;
@@ -128,9 +130,13 @@ class Search extends Component{
     browserHistory.push({pathname: path, state: {number: number}});
 
   }
-  handleHeaderClick = (category) => {
+  handleHeaderClick = () => {
+    let {category} = this.props.params;
     if(category){
       browserHistory.push(`/category/${category}`);
+    }
+    else{
+      browserHistory.push('/');
     }
   }
   render(){
@@ -139,37 +145,30 @@ class Search extends Component{
     const {type, word} = this.props.params;
     const {screenWidth} = this.props.environment;
     const isMobile = screenWidth < 1000;
-    const category = this.props.params.category?this.props.params.category:'';
+    const category = this.props.params.category?this.props.params.category:'ALL';
 
-    const header =
-      <span style={{lineHeight:'200%'}}>
-        {category?
-          <span>
-            <span style={{'cursor':'pointer', color: '#FFB03B' }} onClick={() => this.handleHeaderClick(category)}> {category}  </span>
-            <br/>
-          </span>
-          :null}
-        {type?type.toUpperCase() + ' : ':null }<span className={sc('header', 'subSpan')}> '{word}' </span>
-      </span>;
     const total = parseInt(((searchCount.count)-1) / 10 + 1);
     const posts = search.results;
     return(
-        <div className={styles.listContainer}>
+        <div className={isMobile?styles.mobileListContainer:styles.listContainer}>
           {search.status === 'SUCCESS'?
           <div>
             <div className={cx('headerContainer', 'listHeaderContainer')}>
-              <span className={cx('headerLeft','category','searchHeader')}>
-                <FaArchive/>&nbsp;{header}
+              <span className={cx('headerLeft','category')} >
+                <span className={styles.headerText} onClick={this.handleHeaderClick}>{category}</span>
               </span>
               <div className={cx('headerRight','category')}>
                 <Searchbar
                   className={cx('headerText')}
                   toggleSearchModal={this.props.toggleSearchModal}
-                  category={category}/>
+                  category={this.props.params.category}/>
               </div>
             </div>
+            <div className={sc2('resultContainer')}>
+              <span style={{fontSize: '1.2em'}}>{type?type.toUpperCase() + ' : ':null }<span className={sc('header', 'subSpan')}> '{word}' </span></span>
+            </div>
             <Divider style={{'marginTop':'1.5rem', 'marginBottom':'1.5rem'}} />
-            {posts.length>0?
+            {this.state.isInit?null:search.status == 'SUCCESS'&&posts.length>0?
               <PostList
                 isMobile={isMobile}
                 screenWidth={screenWidth}
@@ -177,16 +176,12 @@ class Search extends Component{
                 <div className={sc('notFoundContainer')}>
                   <h1 className={sc('header', 'bigHeader')}>SORRY...</h1>
                   <h1 className={sc('header', 'mainHeader')}>No Result for '{<span className={sc('header', 'subSpan')}>{word}</span>}'.</h1>
-                  <ul className={sc('list')}>
-                    <li>
-                      <a className={sc('header', 'subHeader')}>
-                        <Searchbar
-                          className={cx('headerText')}
-                          toggleSearchModal={this.props.toggleSearchModal}
-                          category={category}/>
-                      </a>
-                    </li>
-                  </ul>
+                    <a className={sc('header','searchIcon')}>
+                      <Searchbar
+                        className={cx('headerText')}
+                        toggleSearchModal={this.props.toggleSearchModal}
+                        category={this.props.params.category}/>
+                    </a>
                 </div>}
             {this.state.isInit?null:searchCount.status == 'SUCCESS'&&searchCount.count>0 ?
               <div style={{'textAlign':'center'}}>

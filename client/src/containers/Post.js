@@ -4,7 +4,6 @@ import {browserHistory} from 'react-router';
 import PropTypes from 'prop-types';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
-import FaArchive from 'react-icons/fa/archive';
 import FaFrownO from 'react-icons/fa/frown-o';
 import CircularProgress from 'material-ui/CircularProgress';
 import Pagination from 'material-ui-pagination';
@@ -17,7 +16,9 @@ import {getStatusRequest} from '../actions/authentication';
 import {toggleSearchModal} from '../actions/environment';
 
 const cx = classNames.bind(styles);
+const sc = classNames.bind(scss);
 import styles from '../../../style/main.css';
+import scss from '../../../style/NotFound.scss';
 
 
 class Post extends Component{
@@ -178,8 +179,8 @@ class Post extends Component{
         <div className={isMobile?styles.mobileListContainer:styles.listContainer}>
           <div>
             <div className={cx('headerContainer', 'listHeaderContainer')}>
-              <span className={cx('headerLeft','category')}>
-                <FaArchive/>&nbsp;<span className={styles.headerText} onClick={this.handleHeaderClick}>{category}</span>
+              <span className={cx('headerLeft','category')} >
+                <span className={styles.headerText} onClick={this.handleHeaderClick}>{category}</span>
               </span>
               {this.props.params.category?
                 <div className={cx('headerRight','category')}>
@@ -198,9 +199,16 @@ class Post extends Component{
                 screenHeight={this.props.environment.screenHeight}
                 posts={posts}/>:
                 (list.status == 'SUCCESS' || list.status == 'FAILURE')&&posts.length <= 0?
-                <div style={{'textAlign':'center','fontSize':'3vw'}}>
-                  <FaFrownO style={{'fontSize':'10vw'}}/>
-                  <h1 >결과가 없습니다.</h1>
+                <div className={sc('notFoundContainer')}>
+                  <h1 className={sc('header', 'bigHeader')}>SORRY...</h1>
+                  <h1 className={sc('header', 'mainHeader')}>NOTHING FOUND</h1>
+                  <ul className={sc('list')}>
+                    <li>
+                      <a className={sc('header', 'subHeader')} onClick={()=>browserHistory.push('/')}>
+                        main
+                      </a>
+                    </li>
+                  </ul>
                 </div>:null}
             {this.state.isInit?null:count.status == 'SUCCESS'&&count.count>0 ?
               <div style={{'textAlign':'center'}}>
