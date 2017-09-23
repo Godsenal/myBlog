@@ -4,7 +4,6 @@ import {browserHistory} from 'react-router';
 import PropTypes from 'prop-types';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
-import FaFrownO from 'react-icons/fa/frown-o';
 import CircularProgress from 'material-ui/CircularProgress';
 import Pagination from 'material-ui-pagination';
 import classNames from 'classnames/bind';
@@ -96,7 +95,7 @@ class Post extends Component{
     }
   }
   componentWillReceiveProps(nextProps) {
-
+    //location.state has number of page.
     if((this.props.params.category !== nextProps.params.category) || (this.props.location.state != nextProps.location.state) ){
       window.scrollTo(0, 0);
       let number = 1;

@@ -302,7 +302,7 @@ class PostView extends Component {
             </div>
             <div className={styles.author}>
               <div style={{'float':'right'}}>
-                <Avatar style={{display: 'block'}} size={60} src='/assets/images/profile.jpg'/>
+                <Avatar style={{display: 'block'}} size={60} src='/assets/images/profile.png'/>
               </div>
               <div>
                 <span style={{marginRight: '0.7rem'}}>{post.author}</span><br/>

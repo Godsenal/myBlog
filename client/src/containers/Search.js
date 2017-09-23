@@ -6,23 +6,20 @@ import classNames from 'classnames/bind';
 
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
-import FaArchive from 'react-icons/fa/archive';
 import CircularProgress from 'material-ui/CircularProgress';
 import Pagination from 'material-ui-pagination';
 
 
-import {Searchbar, PostList} from '../components';
+import {PostList, SearchInput} from '../components';
 import {searchPost, searchCountPost} from '../actions/post';
 import {getStatusRequest} from '../actions/authentication';
 import {toggleSearchModal} from '../actions/environment';
 
 import styles from '../../../style/main.css';
 import scss from '../../../style/NotFound.scss';
-import scss2 from '../../../style/Search.scss';
 
 const cx = classNames.bind(styles);
 const sc = classNames.bind(scss);
-const sc2 = classNames.bind(scss2);
 
 class Search extends Component{
   constructor(props){
@@ -157,16 +154,12 @@ class Search extends Component{
               <span className={cx('headerLeft','category')} >
                 <span className={styles.headerText} onClick={this.handleHeaderClick}>{category}</span>
               </span>
-              <div className={cx('headerRight','category')}>
-                <Searchbar
-                  className={cx('headerText')}
-                  toggleSearchModal={this.props.toggleSearchModal}
-                  category={this.props.params.category}/>
-              </div>
             </div>
-            <div className={sc2('resultContainer')}>
-              <span style={{fontSize: '1.2em'}}>{type?type.toUpperCase() + ' : ':null }<span className={sc('header', 'subSpan')}> '{word}' </span></span>
-            </div>
+            <SearchInput
+              category={this.props.params.category}
+              type={type}
+              word={word}
+              toggleSearchModal={this.props.toggleSearchModal} />
             <Divider style={{'marginTop':'1.5rem', 'marginBottom':'1.5rem'}} />
             {this.state.isInit?null:search.status == 'SUCCESS'&&posts.length>0?
               <PostList
@@ -176,12 +169,6 @@ class Search extends Component{
                 <div className={sc('notFoundContainer')}>
                   <h1 className={sc('header', 'bigHeader')}>SORRY...</h1>
                   <h1 className={sc('header', 'mainHeader')}>No Result for '{<span className={sc('header', 'subSpan')}>{word}</span>}'.</h1>
-                    <a className={sc('header','searchIcon')}>
-                      <Searchbar
-                        className={cx('headerText')}
-                        toggleSearchModal={this.props.toggleSearchModal}
-                        category={this.props.params.category}/>
-                    </a>
                 </div>}
             {this.state.isInit?null:searchCount.status == 'SUCCESS'&&searchCount.count>0 ?
               <div style={{'textAlign':'center'}}>

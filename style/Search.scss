@@ -98,7 +98,9 @@ $desktop-span-size: 26px;
   @include centerer;
   width: 90%;
 }
-
+.searchContainer{
+  padding: 1.5rem 0;
+}
 .input{
   width: 100%;
   z-index: 3;
