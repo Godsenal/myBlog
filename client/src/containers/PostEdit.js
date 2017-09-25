@@ -85,8 +85,12 @@ class PostEdit extends Component {
     ];
   }
   attachQuillRefs = () => {
-    if (typeof this.reactQuillRef.getEditor !== 'function') return;
-    this.quillRef = this.reactQuillRef.getEditor();
+
+    if(this.reactQuillRef){
+      if (typeof this.reactQuillRef.getEditor !== 'function') return;
+      this.quillRef = this.reactQuillRef.getEditor();
+    }
+
   }
   componentDidMount() {
     window.addEventListener('beforeunload',this.handleBackButton);
@@ -128,14 +132,17 @@ class PostEdit extends Component {
     this.attachQuillRefs();
   }
   handleLeave = ()=>{
-    if(!this.state.isSaved)
+    if(!this.state.isSaved && this.props.authentication.status.valid)
       return 'Your work is not saved! Are you sure you want to leave?';
   }
   handleBackButton = (e) => {
     e = e || window.event;
 
+    if(!this.props.authentication.status.valid){
+      return ;
+    }
   // For IE<8 and Firefox prior to version 4
-    if (e && !this.isSaved) {
+    if (e && !this.state.isSaved) {
       e.returnValue = 'Your work is not saved! Are you sure you want to leave?';
     }
 
@@ -521,7 +528,7 @@ class PostEdit extends Component {
 
   /* HANDLE ETC */
   handleClose = () =>{
-    browserHistory.replace(`/category/${this.props.params.category}`);
+    browserHistory.replace('/');
   }
 
   /* Do i need this? */
@@ -544,6 +551,7 @@ class PostEdit extends Component {
     const {screenWidth} = this.props.environment;
     const isMobile = screenWidth < 1000;
     return (
+      this.props.authentication.status.valid?
       <div className={isMobile?null:styles.postContainer}>
         <Paper zDepth={2} className={isMobile?styles.mobilePaperContainer:styles.paperContainer}  >
           <span>제목 </span>
@@ -648,7 +656,7 @@ class PostEdit extends Component {
             onRequestClose={this.handleSnackClose}
           />
         </Paper>
-      </div>
+      </div>:null
     );
   }
 }
