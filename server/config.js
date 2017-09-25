@@ -15,6 +15,7 @@ export default {
   //dbUrl : 'mongodb://localhost:27017/chatDB',
   dbUrl : localDB,
   jwtSecret: 'Godsenal!3737',
+  sslPath : '/etc/letsencrypt/live/blog.godsenal.com/',
   pathToCert: nodeEnv != 'development'?__dirname + '/ssl/lth.com.crt':__dirname + '/ssl/server.crt',
   pathToKey: nodeEnv != 'development'?__dirname + '/ssl/lth.com.key':__dirname+'/ssl/server.key',
   //sessionSecret: 'Godsenal!3737',
