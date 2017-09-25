@@ -1,6 +1,7 @@
 import{
   CHANGE_IS_MOBILE,
   CHANGE_WIDTH_AND_HEIGHT,
+  TOGGLE_SEARCH_MODAL,
 } from './ActionTypes';
 
 function changeIsMobile(isMobile) {
@@ -17,13 +18,19 @@ function changeWidthAndHeight(screenHeight, screenWidth) {
     screenWidth
   };
 }
+export function toggleSearchModal(isOpen, category='') {
+  return (dispatch) => {
+    dispatch({
+      type: TOGGLE_SEARCH_MODAL,
+      isOpen,
+      category
+    });
+  };
+}
 
 export function initEnvironment() {
   return dispatch => {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    if (isMobile) {
-      document.body.style.overflow = 'hidden';
-    }
 
     dispatch(changeIsMobile(isMobile));
     dispatch(changeWidthAndHeight(window.innerHeight, window.innerWidth));

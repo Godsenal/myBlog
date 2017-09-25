@@ -22,6 +22,7 @@ import MenuItem from 'material-ui/MenuItem';
 
 
 import {Searchbar} from './';
+import {toggleSearchModal} from '../actions/environment';
 import {changeActiveCategory, addCategory, listCategory, updateCategory, deleteCategory} from '../actions/category';
 import {getStatusRequest, signoutRequest} from '../actions/authentication';
 import styles from '../../../style/main.css';
@@ -374,6 +375,7 @@ class Sidebar extends Component{
   /* Listitem 의 open 이 false말고 null인 이유는, valid 아닐 경우 false면 절대 안열림 */
   render(){
     const {list} = this.props.category;
+
     return(
       <Drawer
         containerClassName={styles.font}
@@ -405,7 +407,9 @@ class Sidebar extends Component{
           }
         })}
         <div className={styles.categoryList} style={{'marginTop':'2rem'}}>
-          <span onTouchTap={this.props.isMobile? this.props.toggleSidebar:null}><Searchbar/></span>
+          <div className={styles.categoryTool} onClick={this.props.isMobile? this.props.toggleSidebar:null}>
+            <Searchbar toggleSearchModal={this.props.toggleSearchModal}/>
+          </div>
         </div>
         {this.props.status.valid?
           <ListItem
@@ -443,6 +447,7 @@ Sidebar.defaultProps ={
   deleteCategory : () => {console.log('Sidebar props Error');},
   getStatusRequest : () => {console.log('Sidebar props Error');},
   signoutRequest : () => {console.log('Sidebar props Error');},
+  toggleSearchModal : () => {console.log('Sidebar props Error');},
 };
 Sidebar.propTypes = {
   title: PropTypes.string.isRequired,
@@ -459,6 +464,7 @@ Sidebar.propTypes = {
   deleteCategory: PropTypes.func.isRequired,
   getStatusRequest: PropTypes.func.isRequired,
   signoutRequest : PropTypes.func.isRequired,
+  toggleSearchModal : PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => {
   return {
@@ -489,7 +495,9 @@ const mapDispatchToProps = (dispatch) => {
     getStatusRequest: (token) => {
       return dispatch(getStatusRequest(token));
     },
-
+    toggleSearchModal: (isOpen) => {
+      return dispatch(toggleSearchModal(isOpen));
+    }
   };
 };
 

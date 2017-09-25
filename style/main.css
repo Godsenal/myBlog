@@ -4,13 +4,37 @@
 }
 
 @font-face {
-  font-family: 'NanumBrush';
-  src: url(/assets/fonts/NanumBrush.ttf);
+  font-family: 'NanumGothicBold';
+  src: url(/assets/fonts/NanumGothicBold.ttf);
+}
+
+@font-face {
+  font-family: 'NanumSquareExtraBold';
+  src: url(/assets/fonts/NanumSquareExtraBold.ttf);
+}
+@font-face {
+  font-family: 'NanumSquareBold';
+  src: url(/assets/fonts/NanumSquareBold.ttf);
+}
+@font-face {
+  font-family: 'NanumSquareRegular';
+  src: url(/assets/fonts/NanumSquareRegular.ttf);
+}
+@font-face {
+  font-family: 'NanumSquareLight';
+  src: url(/assets/fonts/NanumSquareLight.ttf);
 }
 
 @font-face {
   font-family: 'NanumGothic';
-  src: url(/assets/fonts/NanumGothic.ttf);
+	font-weight: normal;
+	src:url(/assets/fonts/NanumGothic.ttf);
+
+	src:local('NanumGothic'),
+      url('/assets/fonts/NanumGothic.woff') format('woff'),
+      url('/assets/fonts/NanumGothic.otf') format('opentype'),
+      url('/assets/fonts/NanumGothic.ttf') format('truetype'),
+      url('/assets/fonts/NanumGothic.eof') format('embedded-opentype');
 }
 
 @font-face {
@@ -28,7 +52,40 @@
   src: url(/assets/fonts/Roboto-Black.ttf);
 }
 
+@font-face {
+  font-family: 'Merriweather';
+  src: url(/assets/fonts/Merriweather-Regular.ttf);
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  src: url(/assets/fonts/Merriweather-LightItalic.ttf);
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: url(/assets/fonts/WorkSans-Regular.ttf);
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: url(/assets/fonts/WorkSans-Medium.ttf);
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: url(/assets/fonts/WorkSans-SemiBold.ttf);
+}
+
+@font-face {
+  font-family: 'VT323';
+  font-weight: 400;
+  src: url(/assets/fonts/VT323-Regular.ttf);
+}
+
 body {
+  width: 100%;
+  height: 100%;
   margin: 0;
   background-color: #EFEFEF;
   font-size: 80%;
@@ -61,7 +118,7 @@ h2 {
 
 span {
   font-size: 1em;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .font {
@@ -135,7 +192,9 @@ span {
   padding: 1.5rem;
   overflow: hidden;
 }
-
+.mobileGridContainer{
+  max-width: 100%;
+}
 .gridContainer {
   overflow-y: auto,
 }
@@ -183,23 +242,22 @@ span {
 }
 
 .postCardTitle {
-  font-family: 'Work Sans', 'RobotoBlack', 'NanumGothic', sans-serif;
+  font-family: 'RobotoRegular', 'NanumSquareRegular', sans-serif;
   letter-spacing: -0.1em;
   font-size: 1.9em;
-  font-weight: 600;
   word-break: keep-all;
   word-wrap: break-word;
 }
 
 .postCardFooter {
-  font-family: 'Work Sans', 'RobotoBlack', 'NanumGothic', sans-serif;
-  font-weight: 600;
+  font-family: 'RobotoRegular', 'NanumGothic', sans-serif;
+  font-weight: 400;
   display: -webkit-box;
   display: -moz-box;
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
-  font-size: 0.8em;
+  font-size: 0.9em;
   -ms-flex-align: center;
   align-items: center;
 }
@@ -215,22 +273,36 @@ span {
   text-align: right;
   vertical-align: bottom;
 }
+.postHeader{
+  text-align: center;
+  margin-top: 2rem;
+}
 
 .postTitle {
-  font-family: 'Work Sans', 'RobotoBlack', 'NanumGothic', sans-serif;
+  font-family: 'RobotoBlack', 'NanumSquareBold', sans-serif;
   letter-spacing: -.03em;
-  font-size: 32px;
-  font-weight: 900;
   word-break: keep-all;
   word-wrap: break-word;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-}
 
+
+}
+@media screen and (max-width: 999px) {
+  .postTitle{
+    font-size: 26px;
+  }
+}
+@media screen and (min-width: 999px) {
+  .postTitle{
+    font-size: 32px;
+  }
+}
 .subHeader {
   font-family: 'Merriweather', 'Work Sans', 'NanumGothic', sans-serif;
   letter-spacing: 0em;
-  font-weight: 400;
+  margin-top: 1.7rem;
+  font-weight: 300;
   font-size: 0.85em;
   color: rgba(0, 0, 0, 0.4);
   font-style: italic;
@@ -269,7 +341,6 @@ span {
   text-align: center;
   margin: 0 auto;
   padding: 1.5rem;
-  border-radius: 20px;
   background-color: #2980B9;
   color: #ECF0F1;
 }
@@ -481,12 +552,13 @@ span {
   flex-grow: 0;
   min-width: 20%;
   transition: opacity 0.7s;
-  font-family: 'Work Sans', 'NanumGothic', sans-serif;
+  font-family: 'RobotoRegular', 'NanumGothic', sans-serif;
 }
 
 .buttonSubText {
   color: #FFBF00;
   font-size: 0.8em;
+  font-family: 'Work Sans', 'NanumGothic', sans-serif;
 }
 
 .buttonMainText {
@@ -523,7 +595,6 @@ span {
 
 .listHeaderContainer {
   padding: 1.5rem;
-  border-radius: 20px;
   background-color: #2980B9;
   color: #ECF0F1;
 }
@@ -539,7 +610,7 @@ span {
   -ms-flex: 1 1 auto;
   /* IE 10 */
   flex: 1 1 auto;
-  align-self: flex-start;
+  align-self: center;
 }
 
 .headerRight {
@@ -553,7 +624,7 @@ span {
   -ms-flex: 0 0 auto;
   /* IE 10 */
   flex: 0 0 auto;
-  align-self: flex-end;
+  align-self: center;
 }
 
 .headerText {
@@ -577,17 +648,37 @@ span {
   color: #ECF0F1;
 }
 
+.categoryTool{
+  display: inline-block;
+  padding: 5px;
+}
 .tagContainer {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
   text-align: left;
   font-size: 0.9em;
+  font-weight: 300;
   font-family: 'Merriweather', 'Work Sans', 'NanumGothic', sans-serif;
   color: #E74C3C;
 }
 
 .searchbar {
   width: 5%;
+}
+
+.searchContainer{
+  display: inline-block;
+  padding: 5px;
+  cursor: pointer;
+}
+
+@media screen and (min-width: 999px) {
+  .searchContainer:hover {
+    color: #FFBF00;
+    -webkit-transition: color 0.5s;
+    /* Safari */
+    transition: color 0.5s;
+  }
 }
 
 .textLeft {
@@ -612,7 +703,7 @@ span {
 
 .postText {
   color: rgba(0, 0, 0, .44);
-  font-size: 0.8em;
+  font-size: 0.9em;
   font-family: 'RobotoRegular', 'NanumGothic', sans-serif;
   line-height: 1.2;
   letter-spacing: 0;

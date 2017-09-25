@@ -10,8 +10,8 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import MdMenu from 'react-icons/lib/md/menu';
 import Headroom from 'react-headroom';
 
-import { Sidebar } from '../components';
-import { initEnvironment} from '../actions/environment';
+import { Sidebar,SearchModal } from '../components';
+import { initEnvironment, toggleSearchModal} from '../actions/environment';
 import { getStatusRequest} from '../actions/authentication';
 import styles from '../../../style/main.css';
 import Bluebird from 'bluebird';
@@ -62,7 +62,31 @@ class App extends Component{
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleWindowSizeChange);
   }
-
+  componentWillReceiveProps(nextProps){
+    if(nextProps.environment.searchModal.isOpen){
+      document.body.style.position = 'fixed';
+      document.body.style.overflow = 'hidden';
+    }
+    else{
+      document.body.style.position = null;
+      document.body.style.overflow = null;
+    }
+  }
+  /*
+  stopBodyScrolling = (scroll) => {
+    if (scroll) {
+      document.body.addEventListener('touchmove', this.freezeScroll, false);
+    } else {
+      document.body.removeEventListener('touchmove', this.freezeScroll, false);
+    }
+  }
+  freezeScroll = (e) => {
+    e.preventDefault();
+  }
+  handleWindowSizeChange = () => {
+    this.props.initEnvironment();
+  };
+  */
   handleWindowSizeChange = () => {
     this.props.initEnvironment();
   };
@@ -76,13 +100,13 @@ class App extends Component{
     browserHistory.push('/');
   }
   render(){
-    const {screenHeight, screenWidth} = this.props.environment;
+    const {screenWidth, searchModal} = this.props.environment;
     const {open} = this.state;
     const isMobile = screenWidth<1000;
     const sidebarStyle = !isMobile ? styles.sidebarContainer : null;
     return(
       <MuiThemeProvider muiTheme={muiTheme}>
-        <div className={styles.appContainer} style={{'overflowX':'hidden', 'overflowY':'hidden', 'margin': 0, 'padding': 0}}>
+        <div className={styles.appContainer} style={{'margin': 0, 'padding': 0}}>
           <div className={styles.mainContainer}>
             {isMobile?
               <Headroom style={inlineStyles.headroom}>
@@ -105,9 +129,18 @@ class App extends Component{
               isMobile
             })}
           </div>
-          <div className={sidebarStyle}>
-            <Sidebar isMobile={isMobile} open={open} toggleSidebar={this.toggleSidebar} title={title}/>
-          </div>
+          {/* splay means route match with wildcard like "*"   */
+            !this.props.params.splat?
+            <div className={sidebarStyle}>
+              <Sidebar isMobile={isMobile} open={open} toggleSidebar={this.toggleSidebar} title={title}/>
+            </div>:null
+          }
+          {/* Search Modal */
+            searchModal.isOpen?
+            <SearchModal
+              toggleSearchModal={this.props.toggleSearchModal}
+              category={searchModal.category}/>:null
+          }
         </div>
       </MuiThemeProvider>
     );
@@ -116,16 +149,20 @@ class App extends Component{
 }
 
 App.defaultProps ={
+  params: {},
   initEnvironment : () => {console.log('App props Error');},
   getStatusRequest : () => {console.log('App props Error');},
+  toggleSearchModal : () => {console.log('App props Error');},
   environment : {},
   status: {},
 };
 App.propTypes = {
+  params: PropTypes.object.isRequired,
   environment : PropTypes.object.isRequired,
   status: PropTypes.object.isRequired,
   initEnvironment : PropTypes.func.isRequired,
   getStatusRequest: PropTypes.func.isRequired,
+  toggleSearchModal: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => {
   return {
@@ -140,6 +177,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     getStatusRequest: (token) => {
       return dispatch(getStatusRequest(token));
+    },
+    toggleSearchModal: (isOpen, category) => {
+      return dispatch(toggleSearchModal(isOpen, category));
     }
   };
 };

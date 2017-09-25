@@ -51,14 +51,41 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/', express.static(path.join(__dirname, './../public'))); // 정적인 페이지 로드
 
 app.use('/api',api);
 
+app.get('*.js', function(req, res, next) {
+  req.url = req.url + '.gz';
+  res.set('Content-Encoding', 'gzip');
+  res.set('Content-Type', 'text/javascript');
+  next();
+});
+
+app.get('*.css', function(req, res, next) {
+  req.url = req.url + '.gz';
+  res.set('Content-Encoding', 'gzip');
+  res.set('Content-Type', 'text/css');
+  next();
+});
+
+app.get('*.scss', function(req, res, next) {
+  req.url = req.url + '.gz';
+  res.set('Content-Encoding', 'gzip');
+  res.set('Content-Type', 'text/x-scss');
+  next();
+});
+
+app.use('/fonts', express.static(path.resolve(__dirname + './../public/assets/fonts'), {  maxAge: 31536000000}));
+app.use('/images', express.static(path.resolve(__dirname + './../public/assets/images'), {  maxAge: 31536000000}));
+app.use('/postImages', express.static(path.resolve(__dirname + './../public/assets/posts/images'), {  maxAge: 31536000000}));
+app.use('/postThumbnails', express.static(path.resolve(__dirname + './../public/assets/posts/thumbnails'), {  maxAge: 31536000000}));
+app.use('/', express.static(path.resolve(__dirname, './../public'),{ maxAge: 86400000 })); // 정적인 페이지 로드
+
+
 app.get('*', (req,res)=>{
   //req.params.contestId에 따라 다른 페이지를 만들어야함. route일 땐 undefined
+  res.set('Cache-Control', 'max-age= 86400000');
   res.sendFile(path.resolve(__dirname, './../public/index.html'));
-
 });
 
 

@@ -3,6 +3,10 @@ import update from 'react-addons-update';
 
 const initialState = {
   isMobile: false,
+  searchModal:{
+    isOpen: false,
+    category: '',
+  },
   screenHeight: window.innerHeight,
   screenWidth: window.innerHeight,
   notification: {
@@ -33,6 +37,13 @@ export default function environment(state, action) {
   case types.NOTIFICATION_ADD:
     return update(state,{
       notification: {$merge: action.notification},
+    });
+  case types.TOGGLE_SEARCH_MODAL:
+    return update(state,{
+      searchModal:{
+        isOpen: {$set: action.isOpen},
+        category: {$set: action.category}
+      },
     });
   default:
     return state;

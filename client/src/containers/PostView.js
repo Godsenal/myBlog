@@ -7,7 +7,6 @@ import Waypoint from 'react-waypoint';
 import {Element, animateScroll as scroll, scrollSpy, scroller} from 'react-scroll';
 import classNames from 'classnames/bind';
 
-import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import CircularProgress from 'material-ui/CircularProgress';
 import Divider from 'material-ui/Divider';
@@ -55,8 +54,10 @@ class PostView extends Component {
   componentDidMount(){
     //window.addEventListener('scroll',this.handleScroll);
     var {postID}= this.props.params;
-
     scrollSpy.update();
+
+    window.scrollTo(0,0);
+    
     if(postID){
       this.loadPost(postID);
     }
@@ -146,7 +147,7 @@ class PostView extends Component {
     scroll.scrollToBottom();
   }
   handleListClick = () => {
-    if(typeof this.props.get.post.category == 'undefined'){
+    if(this.props.get.post.category !== 'undefined'){
       browserHistory.push(`/category/${this.props.get.post.category}`);
     }
     else{
@@ -159,6 +160,10 @@ class PostView extends Component {
   }
   handlePathClick = (path) => {
     browserHistory.push(`/category/${path}`);
+  }
+  handleDateClick = (date) => {
+    let created = new Date(date);
+    browserHistory.push(`/date/${created.getFullYear()}/${created.getMonth()+1}`);
   }
   handlePushPrev = () => {
     if(this.props.prev.post){
@@ -260,9 +265,8 @@ class PostView extends Component {
       <div>
         <div className={isMobile?null:styles.postContainer}>
           <Paper className={isMobile?styles.mobilePaperContainer:styles.paperContainer} zDepth={0} >
-            <div style={{'textAlign': 'left'}}>
+            <div className={styles.postHeader}>
               <span className={styles.postTitle} style={{color:'#454545'}}>{post.title}</span>
-              <Subheader >
                 <div className={cx('subHeader','textRight')} >
                   <span style={{color:'#E74C3C'}}>
                     <FaArchive/>
@@ -270,9 +274,9 @@ class PostView extends Component {
                       return <span key={i} onClick={() => this.handlePathClick(el)}><span>/</span><span className={styles.path}>{el}</span></span>;
                     }):null}
                   </span>&nbsp;
-                  <span>
+                  <span style={{color:'#E74C3C'}}>
                     <MdDateRange/>
-                    {moment(post.created).format('LL')}
+                    <span className={styles.path} onClick={()=>this.handleDateClick(post.created)}>{moment(post.created).format('LL')}</span>
                   </span>&nbsp;
                   <span>
                     <MdRemoveRedEye/>
@@ -287,7 +291,6 @@ class PostView extends Component {
                     </span>
                   </span>
                 </div>
-              </Subheader>
               <Divider style={{'marginTop':'1.5rem','marginBottom':'1.5rem'}}/>
               <img
                 src={post.thumbnail? thumbnailPath + post.thumbnail : DEFAULT_IMAGE }
@@ -305,7 +308,7 @@ class PostView extends Component {
             </div>
             <div className={styles.author}>
               <div style={{'float':'right'}}>
-                <Avatar style={{display: 'block'}} size={60} src='/assets/images/profile.jpg'/>
+                <Avatar style={{display: 'block'}} size={60} src='/assets/images/profile.png'/>
               </div>
               <div>
                 <span style={{marginRight: '0.7rem'}}>{post.author}</span><br/>

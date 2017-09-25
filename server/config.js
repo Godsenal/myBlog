@@ -6,7 +6,7 @@ export const nodeEnv = env.NODE_ENV || 'development';
 export default {
   port: env.PORT || 8080,
   portHttps: 8443,
-  host: env.HOST || 'localhost',
+  host: env.HOST,
   domain: env.DOMAIN || 'localhost',
   get serverUrl() {
     return `https://${this.host}:${this.port}`;

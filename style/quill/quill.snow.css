@@ -4,35 +4,6 @@
  * Copyright (c) 2014, Jason Chen
  * Copyright (c) 2013, salesforce.com
  */
- @font-face {
-  font-family: 'NanumGothicExtraBold';
-  src: url(/assets/fonts/NanumGothicExtraBold.ttf);
-}
-
-@font-face {
-  font-family: 'NanumBrush';
-  src: url(/assets/fonts/NanumBrush.ttf);
-}
-
-@font-face {
-  font-family: 'NanumGothic';
-  src: url(/assets/fonts/NanumGothic.ttf);
-}
-
-@font-face {
-  font-family: 'RobotoLight';
-  src: url(/assets/fonts/Roboto-Light.ttf);
-}
-
-@font-face {
-  font-family: 'RobotoRegular';
-  src: url(/assets/fonts/Roboto-Regular.ttf);
-}
-
-@font-face {
-  font-family: 'RobotoBlack';
-  src: url(/assets/fonts/Roboto-Black.ttf);
-}
 
 .ql-container {
   box-sizing: border-box;

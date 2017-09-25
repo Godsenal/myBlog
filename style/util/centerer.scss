@@ -1,0 +1,20 @@
+@mixin centerer($width: 50%, $height: 50%, $horizontal: true, $vertical: true) {
+  position: absolute;
+  @if ($horizontal and $vertical) {
+    top: $height;
+    left: $width;
+    transform: translate(-$width, -$height);
+  } @else if ($horizontal) {
+    left: $width;
+    transform: translate(-$width, 0);
+  } @else if ($vertical) {
+    top: $height;
+    transform: translate(0, -$height);
+  }
+}
+
+@mixin centererFlex{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
