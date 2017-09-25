@@ -92,15 +92,14 @@ app.get('*', (req,res)=>{
 
 
 
-var httpServer = http.createServer(credentials, app);
+//var httpServer = http.createServer(credentials, app);
 var httpsServer = https.createServer(credentials, app);
-
+/*
 httpServer.listen(config.port, config.host, () => {
   console.info('HTTP Express listening on port', config.port);
 });
+*/
 
-/*
 httpsServer.listen(config.portHttps, config.host, () => {
   console.info('HTTPS Express listening on port', config.portHttps);
 });
-*/
