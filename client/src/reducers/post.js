@@ -373,6 +373,50 @@ export default function post(state, action){
         errCode: {$set: action.errCode}
       }
     });
+    /* DATE POST*/
+  case types.POST_DATE:
+    return update(state, {
+      list: {
+        status: {$set: 'WAITING'}
+      }
+    });
+  case types.POST_DATE_SUCCESS:
+    return update(state, {
+      list:{
+        posts:{$set: action.posts},
+        status:{$set: 'SUCCESS'}
+      },
+    });
+  case types.POST_DATE_FAILURE:
+    return update(state, {
+      list: {
+        posts: {$set: 'FAILURE'},
+        err: {$set: action.err},
+        errCode: {$set: action.errCode}
+      }
+    });
+    /* DATE POST COUNT*/
+  case types.POST_DATE_COUNT:
+    return update(state, {
+      count: {
+        status: {$set: 'WAITING'}
+      }
+    });
+  case types.POST_DATE_COUNT_SUCCESS:
+    return update(state, {
+      count:{
+        count:{$set: action.count},
+        status:{$set: 'SUCCESS'}
+      },
+    });
+  case types.POST_DATE_COUNT_FAILURE:
+    return update(state, {
+      count: {
+        status: {$set: 'FAILURE'},
+        err: {$set: action.err},
+        errCode: {$set: action.errCode}
+      }
+    });
   default:
     return state;
   }

@@ -422,6 +422,38 @@ router.post('/search/count',function(req,res){
     });
 });
 
+//COUNT DATE
+router.get('/date/count/:year/:month',function(req,res){
+  var start = new Date(req.params.year, parseInt(req.params.month)-1, 1);
+  var end = new Date(req.params.year, parseInt(req.params.month),1);
+  Posts.find({created: {$gte: start, $lt: end}})
+    .count()
+    .exec(function(err,count){
+      if(err){
+        console.log(err);
+        return res.status(400).json({error: 'internal server error', code: 1});
+      }
+      res.json({count});
+    });
+});
+//DATE
+router.get('/date/:year/:month/:number',function(req,res){
+  var skip = (req.params.number - 1) * 10; // skip할 페이지
+  var start = new Date(req.params.year, parseInt(req.params.month)-1, 1);
+  var end = new Date(req.params.year, parseInt(req.params.month),1);
+  var query = Posts.find({created: {$gte: start, $lt: end}})
+    .sort({_id:-1})
+    .limit(10)
+    .skip(skip);
+
+  query.exec(function(err, posts) {
+    if(err) {
+      console.log(err);
+      return res.status(500).json({error: 'internal server error', code: 1});
+    }
+    res.json({posts});
+  });
+});
 
 
 export default router;

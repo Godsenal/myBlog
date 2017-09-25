@@ -35,6 +35,12 @@ import {
   POST_SEARCH_COUNT,
   POST_SEARCH_COUNT_SUCCESS,
   POST_SEARCH_COUNT_FAILURE,
+  POST_DATE,
+  POST_DATE_SUCCESS,
+  POST_DATE_FAILURE,
+  POST_DATE_COUNT,
+  POST_DATE_COUNT_SUCCESS,
+  POST_DATE_COUNT_FAILURE,
 } from './ActionTypes';
 
 import axios from 'axios';
@@ -207,5 +213,35 @@ export function searchCountPost(word, type, category ){
       }).catch((err)=>{
         dispatch({type: POST_SEARCH_COUNT_FAILURE, err: err.response.data.err, errCode: err.response.data.errCode});
       });
+  };
+}
+
+export function datePost(year, month, number){
+  return (dispatch) => {
+    dispatch({type: POST_DATE});
+    var url = `/api/post/date/${year}/${month}`;
+    if(number){
+      url += `/${number}`;
+    }
+
+    return axios.get(url)
+    .then((res)=> {
+      dispatch({type: POST_DATE_SUCCESS, posts: res.data.posts});
+    }).catch((err)=>{
+      dispatch({type: POST_DATE_FAILURE, err: err.response.data.err, errCode: err.response.data.errCode});
+    });
+  };
+}
+
+export function dateCountPost(year, month){
+  return (dispatch) => {
+    dispatch({type: POST_DATE_COUNT});
+    var url = `/api/post/date/count/${year}/${month}`;
+    return axios.get(url)
+    .then((res)=> {
+      dispatch({type: POST_DATE_COUNT_SUCCESS, count: res.data.count});
+    }).catch((err)=>{
+      dispatch({type: POST_DATE_COUNT_FAILURE, err: err.response.data.err, errCode: err.response.data.errCode});
+    });
   };
 }

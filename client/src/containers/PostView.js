@@ -54,8 +54,10 @@ class PostView extends Component {
   componentDidMount(){
     //window.addEventListener('scroll',this.handleScroll);
     var {postID}= this.props.params;
-
     scrollSpy.update();
+
+    window.scrollTo(0,0);
+    
     if(postID){
       this.loadPost(postID);
     }
@@ -158,6 +160,10 @@ class PostView extends Component {
   }
   handlePathClick = (path) => {
     browserHistory.push(`/category/${path}`);
+  }
+  handleDateClick = (date) => {
+    let created = new Date(date);
+    browserHistory.push(`/date/${created.getFullYear()}/${created.getMonth()+1}`);
   }
   handlePushPrev = () => {
     if(this.props.prev.post){
@@ -268,9 +274,9 @@ class PostView extends Component {
                       return <span key={i} onClick={() => this.handlePathClick(el)}><span>/</span><span className={styles.path}>{el}</span></span>;
                     }):null}
                   </span>&nbsp;
-                  <span>
+                  <span style={{color:'#E74C3C'}}>
                     <MdDateRange/>
-                    {moment(post.created).format('LL')}
+                    <span className={styles.path} onClick={()=>this.handleDateClick(post.created)}>{moment(post.created).format('LL')}</span>
                   </span>&nbsp;
                   <span>
                     <MdRemoveRedEye/>

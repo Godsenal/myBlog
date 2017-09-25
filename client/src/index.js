@@ -6,7 +6,7 @@ import { createStore, applyMiddleware } from 'redux';
 
 import thunk from 'redux-thunk';
 
-import {App, Post, PostView, PostEdit, Signin, Search, NotFound} from './containers';
+import {App, Post, PostView, PostEdit, Signin, Search, NotFound, DatePost} from './containers';
 import reducers from './reducers';
 
 const store = createStore(reducers, applyMiddleware(thunk));
@@ -25,6 +25,9 @@ ReactDOM.render(
             <Route path="edit/:postID" component={PostEdit}/>
             <Route path="new/:category" component={PostEdit}/>
             <Route path=":postID" component={PostView}/>
+          </Route>
+          <Route path="date">
+            <Route path=":year/:month" component={DatePost}/>
           </Route>
           <Route path='signin' component={Signin}/>
           <Route path='*' component={NotFound}/>

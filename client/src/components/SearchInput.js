@@ -46,7 +46,7 @@ class SearchInput extends Component{
       e.preventDefault();
       const {word,activeIndex} = this.state;
       let type = searchMenu[activeIndex].value;
-      if(!this.state.word && this.state.word.trim()){
+      if(!word && !word.trim()){
         return ;
       }
       browserHistory.push(`/search/${type}/${word.trim()}/${this.props.category}`);
@@ -60,6 +60,7 @@ class SearchInput extends Component{
         <div className={sc('spaceBetween','categoryContainer')}>
           {searchMenu.map((el, i) => {
             return <span
+                      tabIndex={i}
                       className={sc('flex-1-0',this.state.activeIndex===i?'selectedCategory':'category')}
                       onClick={()=>this.handleCategorySelect(i)}>{el.text}</span>;
           })}
