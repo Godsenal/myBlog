@@ -34,14 +34,13 @@
   line-height: 1.42;
   height: auto;
   outline: none;
-  overflow-y: hidden;
+  overflow: hidden;
   padding: 0px 0px;
   tab-size: 4;
   -moz-tab-size: 4;
   text-align: left;
-  white-space: pre-wrap;
-  word-break: break-word;
   word-wrap: break-word;
+  word-break: break-all;
 }
 .ql-editor p,
 .ql-editor ol,
