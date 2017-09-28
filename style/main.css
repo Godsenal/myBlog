@@ -149,6 +149,12 @@ span {
   order: 0;
 }
 
+@media screen and (max-width: 999px) {
+  .mainContainer{
+    width: 100%;
+  }
+}
+
 .sidebarContainer {
   -webkit-box-flex: 0 0 400px;
   /* OLD - iOS 6-, Safari 3.1-6 */
