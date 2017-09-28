@@ -40,7 +40,6 @@
   -moz-tab-size: 4;
   text-align: left;
   word-wrap: break-word;
-  word-break: break-all;
 }
 .ql-editor p,
 .ql-editor ol,
