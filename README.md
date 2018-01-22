@@ -2,6 +2,6 @@
 LTH's First Blog
 
 ## TODO
-- [] change editor (toast-editor)
-- [] change layout
-- [] https server
+- [ ] change editor (toast-editor)
+- [ ] change layout
+- [ ] https server
