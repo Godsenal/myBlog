@@ -2,6 +2,6 @@
 LTH's First Blog
 
 ## TODO
-- [ ] Hosting
-- [ ] 404 page
-- [ ] Title Size
+- [] change editor (toast-editor)
+- [] change layout
+- [] https server
