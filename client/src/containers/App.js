@@ -10,6 +10,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import MdMenu from 'react-icons/lib/md/menu';
 import Headroom from 'react-headroom';
 
+import {RightSidebar} from './';
 import { Sidebar,SearchModal } from '../components';
 import { initEnvironment, toggleSearchModal} from '../actions/environment';
 import { getStatusRequest} from '../actions/authentication';
@@ -141,6 +142,13 @@ class App extends Component{
               toggleSearchModal={this.props.toggleSearchModal}
               category={searchModal.category}/>:null
           }
+          {screenWidth < 1300?
+            null
+            :
+            <div className={styles.rightSidebarContainer}>
+              <RightSidebar />
+            </div>}
+          
         </div>
       </MuiThemeProvider>
     );

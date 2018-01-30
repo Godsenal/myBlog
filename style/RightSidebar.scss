@@ -1,0 +1,53 @@
+@import 'util/flex.scss';
+
+$mobile-size: 999px;
+
+.right-sidebar{
+  height: 100%;
+}
+
+.divider-horizontal{
+  @include flex-flow(0);
+  @include flex-grow(0);
+  @include flex-basis(1px);
+  padding: 50% 0;
+  div{
+    background: #3F3F3F;
+    width: 1px;
+    height: 100%;
+  }
+}
+
+.sidebar-main{
+  padding: 5rem 2rem;
+}
+
+.sidebar-searchIcon{
+
+}
+
+.sidebar-item{
+  margin-top: 2rem;
+  width: 100%;
+  text-align: center;
+  border-radius: 5px;
+  background: white;
+  font-family: 'Ubuntu', 'Nanum Gothic', monospace;
+}
+
+.sidebar-item-header{
+  color: white;
+  background-color: rgb(51, 55, 69);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding: 0.7rem;
+  font-size: 1.5em;
+}
+
+.sidebar-date{
+  padding: 1rem 0;
+  font-size: 1.3em;
+  line-height: 1.5;
+  font-family: 'Ubuntu', 'Nanum Gothic', monospace;
+}
+

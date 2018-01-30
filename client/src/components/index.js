@@ -7,6 +7,8 @@ import PostList from './PostList';
 import PostSideMenu from './PostSideMenu';
 import PostFixedFooter from './PostFixedFooter';
 import RelatedList from './RelatedList';
+import MiniSearch from './MiniSearch';
+import PostDate from './PostDate';
 export {
-  Sidebar, Comment, Searchbar, SearchModal, SearchInput, PostList, PostSideMenu, PostFixedFooter, RelatedList,
+  Sidebar, Comment, Searchbar, SearchModal, SearchInput, PostList, PostSideMenu, PostFixedFooter, RelatedList, MiniSearch, PostDate
 };

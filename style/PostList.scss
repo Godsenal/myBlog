@@ -1,0 +1,93 @@
+@import 'util/flex.scss';
+
+$mobile-size: 999px;
+$hover-color: #FFBF00;
+
+.listContainer{
+  width: 100%;
+  @include flexbox();
+  @include flex-direction(row);
+  margin: auto;
+  padding: 1rem;
+  font-weight: 300;
+}
+.divider{
+  background-color: rgb(224, 224, 224);
+  width: 100%;
+  height: 1px;
+  max-width: 50rem;
+  margin: 1rem auto;
+}
+.thumbnailContainer{
+  @include flex(0);
+  @include flex-basis(250px);
+  display: inline-block;
+  overflow: hidden;
+}
+
+.thumbnail{
+  width: 250px;
+  height: 100%;
+}
+
+.contentsContainer{
+  @include flex(1);
+  overflow: hidden;
+  padding: 0 1.5rem;
+}
+
+.title{
+  font-family: 'Scope One','Noto Sans Kr',monospace,sans-serif;
+  font-size: 1.5em;
+  word-break: break-word;
+  word-wrap: break-word;
+  color: #454545;
+}
+
+.contents{
+  font-family: 'Scope One','Nanum Gothic',monospace,sans-serif;
+  font-size: 1.2em;
+  line-height: 2em;
+  word-break: break-word;
+  word-wrap: break-word;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+@media screen and (min-width: 999px) {
+  .thumbnail:hover{
+    cursor: pointer;
+  }
+  .title:hover {
+    cursor: pointer;
+    color: #FFBF00;
+    transition: color 0.3s;
+  }
+  .contents:hover {
+    cursor: pointer;
+    color: #FFBF00;
+    transition: color 0.3s;
+  }
+  .category-text:hover{
+    cursor: pointer;
+    color: #FFBF00;
+    transition: color 0.3s;
+  }
+}
+
+.categoryContainer{
+  text-align: left;
+  margin-bottom: 0.5rem;
+  font-size: 1.2em;
+  color: #747474;
+  @include flexbox();
+  align-items: center;
+}
+
+.category-text{
+  font-family: 'Ubuntu', Nanum Gothic, monospace;
+}
+
+
+.created-text{
+  text-align: right;
+}

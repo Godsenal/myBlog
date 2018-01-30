@@ -1,0 +1,13 @@
+$secondary-color: #2980B9;
+$tertiary-color: rgb(255, 191, 0);
+.date-item{
+  color: $secondary-color;
+}
+@media screen and (min-width: 999px) {
+  .date-item:hover{
+    cursor: pointer;
+    color: $tertiary-color;
+    -webkit-transition: .2s ease-in-out;
+    transition: .2s ease-in-out;
+  }
+}

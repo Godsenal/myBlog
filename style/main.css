@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Ubuntu');
+@import url('https://fonts.googleapis.com/earlyaccess/nanumgothic.css');
+@import url('https://fonts.googleapis.com/earlyaccess/notosanskr.css');
+@import url('http://fonts.googleapis.com/earlyaccess/hanna.css');
+@import url('http://fonts.googleapis.com/earlyaccess/jejugothic.css');
+@import url('https://fonts.googleapis.com/css?family=Scope+One');
+
 @font-face {
   font-family: 'NanumGothicExtraBold';
   src: url(/assets/fonts/NanumGothicExtraBold.ttf);
@@ -83,11 +90,11 @@
   src: url(/assets/fonts/VT323-Regular.ttf);
 }
 
+
 body {
   width: 100%;
   height: 100%;
   margin: 0;
-  background-color: #EFEFEF;
   font-size: 80%;
 }
 
@@ -99,21 +106,20 @@ body, span, div {
 
 body, button, input, select, textarea {
   line-height: 1.5;
-  font-family: 'Work sans', 'RobotoRegular', 'NanumGothic', sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 h1 {
-  font-family: 'RobotoRegular', 'NanumGothic', cursive;
+  font-family: 'RobotoRegular', 'Nanum Gothic', cursive;
   font-size: 2.5em;
   margin: 1.5rem;
 }
 
 h2 {
   font-size: 2em;
-  font-family: 'RobotoRegular', 'NanumGothic', cursive;
+  font-family: 'RobotoRegular', 'Nanum Gothic', cursive;
 }
 
 span {
@@ -146,7 +152,7 @@ span {
   -ms-flex: 1 1 auto;
   /* IE 10 */
   flex: 1 1 auto;
-  order: 0;
+  order: 1;
 }
 
 @media screen and (max-width: 999px) {
@@ -156,17 +162,17 @@ span {
 }
 
 .sidebarContainer {
-  -webkit-box-flex: 0 0 400px;
+  -webkit-box-flex: 0 0 250px;
   /* OLD - iOS 6-, Safari 3.1-6 */
-  -moz-box-flex: 0 0 400px;
+  -moz-box-flex: 0 0 250px;
   /* OLD - Firefox 19- */
   /* For old syntax, otherwise collapses. */
-  -webkit-flex: 0 0 400px;
+  -webkit-flex: 0 0 250px;
   /* Chrome */
-  -ms-flex: 0 0 400px;
+  -ms-flex: 0 0 250px;
   /* IE 10 */
-  flex: 0 0 400px;
-  order: 1;
+  flex: 0 0 250px;
+  order: 0;
 }
 
 .mobileSidebarContainer {
@@ -183,13 +189,29 @@ span {
   order: 1;
 }
 
+.rightSidebarContainer{
+  -webkit-box-flex: 0 0 20rem;
+  /* OLD - iOS 6-, Safari 3.1-6 */
+  -moz-box-flex: 0 0 20rem;
+  /* OLD - Firefox 19- */
+  /* For old syntax, otherwise collapses. */
+  -webkit-flex: 0 0 20rem;
+  /* Chrome */
+  -ms-flex: 0 0 20rem;
+  /* IE 10 */
+  flex: 0 0 20rem;
+  order: 2;
+  background-color: #FBFBFB;
+}
 .drawer {
   background-color: #91AA9D;
 }
 
 .listContainer {
-  max-width: 100%;
-  padding: 1.5rem;
+  width: 100%;
+  max-width: 45rem;
+  margin: auto;
+  padding: 3rem 0;
   overflow: hidden;
 }
 
@@ -319,7 +341,6 @@ span {
 }
 
 .postContainer {
-  background-color: #fafafa;
 }
 
 .relatedListContainer {
@@ -340,7 +361,7 @@ span {
 }
 
 .tileHeader {
-  font-family: 'Work Sans', 'NanumGothic', sans-serif;
+  font-family: 'Ubuntu', 'Nanum Gothic', sans-serif;
   letter-spacing: -0.05em;
   font-size: 2em;
   font-weight: 600;
@@ -352,7 +373,7 @@ span {
 }
 
 .searchHeader {
-  font-family: 'Work Sans', 'NanumGothic', sans-serif;
+  font-family: 'Ubuntu', 'Nanum Gothic', sans-serif;
   letter-spacing: -0.05em;
   font-size: 3em;
   font-weight: 600;
@@ -408,7 +429,10 @@ span {
 }
 
 .paperContainer {
-  padding: 1.2rem 20% 1.2rem 20%;
+  background-color: #FBFBFB;
+  max-width: 45rem;
+  margin: auto;
+  padding: 0 50px;
 }
 
 .tags {
@@ -436,9 +460,8 @@ span {
 }
 
 .category {
-  letter-spacing: -0.1em;
   font-size: 2em;
-  font-family: 'Work Sans', 'RobotoBlack', 'NanumGothic', sans-serif;
+  font-family: 'Scope One', 'Nanum Gothic', sans-serif;
   font-weight: 600;
   line-height: 16px;
   vertical-align: text-top;
@@ -458,13 +481,20 @@ span {
 
 .fixedSideMenu {
   position: fixed;
-  top: 30%;
-  margin-left: 2.5%;
+  top: 50%;
+  right: 250px;
+  width: 50px;
   background: transparent;
   font-size: 1.6em;
   text-align: center;
   color: rgba(0, 0, 0, 0.4);
   z-index: 101;
+}
+
+@media screen and (max-width: 1299px) {
+  .fixedSideMenu {
+    right: 50px;
+  }
 }
 
 .fixedUpButton {
@@ -491,8 +521,8 @@ span {
 @media screen and (min-width: 999px) {
   .fixedSideMenuItem:hover {
     color: black;
-    transform: scale(1.5);
-    transition: transform 1000ms 0ms;
+    transform: scale(1.2);
+    transition: transform 500ms 0ms;
   }
 }
 
@@ -558,13 +588,13 @@ span {
   flex-grow: 0;
   min-width: 20%;
   transition: opacity 0.7s;
-  font-family: 'RobotoRegular', 'NanumGothic', sans-serif;
+  font-family: 'Ubuntu', 'Nanum Gothic', sans-serif;
 }
 
 .buttonSubText {
   color: #FFBF00;
   font-size: 0.8em;
-  font-family: 'Work Sans', 'NanumGothic', sans-serif;
+  font-family: 'Ubuntu', 'Nanum Gothic', sans-serif;
 }
 
 .buttonMainText {
@@ -584,7 +614,7 @@ span {
 }
 
 .header {
-  font-family: 'Work Sans', sans-serif;
+  font-family: 'Scope One','Noto Sans Kr', sans-serif;
   font-size: 1.5rem;
   color: #ECF0F1;
 }
@@ -600,11 +630,9 @@ span {
 }
 
 .listHeaderContainer {
-  padding: 1.5rem;
-  background-color: #2980B9;
-  color: #ECF0F1;
+  padding: 3rem 1rem;
+  color: #454545;
 }
-
 .headerLeft {
   -webkit-box-flex: 1 1 auto;
   /* OLD - iOS 6-, Safari 3.1-6 */
@@ -635,8 +663,7 @@ span {
 
 .headerText {
   cursor: pointer;
-  font-family: 'Work Sans', 'NanumGothic', sans-serif;
-  letter-spacing: -0.1em;
+  font-family: 'Scope One', 'Noto Sans KR', sans-serif;
 }
 
 @media screen and (min-width: 999px) {
@@ -650,7 +677,7 @@ span {
 
 .categoryList {
   text-align: center;
-  font-family: 'Work Sans', 'NanumGothic', sans-serif;
+  font-family: 'Scope One', 'Noto Sans KR', sans-serif;
   color: #ECF0F1;
 }
 

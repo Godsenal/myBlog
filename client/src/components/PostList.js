@@ -15,7 +15,7 @@ import MdComment from 'react-icons/md/comment';
 import StackGrid from 'react-stack-grid';
 
 import { CommentCount } from '../disqus';
-import styles from '../../../style/main.css';
+import styles from '../../../style/PostList.scss';
 
 const thumbnailPath = '/assets/posts/thumbnails/';
 const DEFAULT_IMAGE = '/assets/images/back.jpg';
@@ -48,6 +48,9 @@ class PostList extends Component{
   handlePostClick = (postID) => {
     browserHistory.push(`/post/${postID}`);
   }
+  handleCategoryClick = (category) => {
+    browserHistory.push(`/category/${category}`);
+  }
   handleHover = (active) => {
     this.setState({isHover: active});
   }
@@ -68,66 +71,50 @@ class PostList extends Component{
   }
   renderDesktop = (columnWidth, posts) => {
     return (
-      <StackGrid
-        columnWidth={columnWidth}
-        gridRef={grid => this.grid = grid}
-        gutterWidth={20}
-        gutterHeight={10}
-        monitorImagesLoaded={true}
-        duration={700}
-      >
-      {posts.map((post, i)=>{
-        var disqusConfig = {
-          //url: `http://www.godsenal.com/#${disqusShortname}`,
-          identifier: post._id,
-          title: post.title,
-        };
-        return (
-          <Motion key={i} {...this.getPostSpringProps(i)}>
-            {interpolatingStyle => {
-              let style = {
-                transform: 'scale(' + interpolatingStyle.scale + ')',
-                verticalAlign: 'middle',
-              };
-              let text = post.text?post.text.length > 200 ? post.text.substr(0,200) + '...' : post.text : '';
-              return(
-                <Paper zDepth={3} style={{'borderRadius': 5,marginTop: 10}}>
-                  <GridTile style={{'cursor': 'pointer', 'borderRadius': 5}} onTouchTap={ () => this.handlePostClick(post._id)}>
-                    <Card
-                      onMouseEnter={()=>{this.handleHover(i);}}
-                      onMouseLeave={()=>{this.handleHover(false);}}>
-                      <CardMedia style={{'display':'inline-block','overflow':'hidden'}}>
-                        <img className={styles.postImage} style={style} src={post.thumbnail? thumbnailPath + post.thumbnail : null } onError={(e)=>{e.target.src = DEFAULT_IMAGE; this.handleResize();}} />
-                      </CardMedia>
-                      <CardTitle><span className={styles.postCardTitle}>{post.title}</span></CardTitle>
-                      <CardText>
-                        <span className={styles.postText}>{text}</span>
-                      </CardText>
-                      <CardText>
-                        <div className={cx('postCardFooter')}>
-                          <div className={cx('flex0','postCardFooterLeft')}>
-                            <Avatar backgroundColor={'#32FAE2'} size={16}>{post.author?post.author.substr(0,1).toUpperCase():''}</Avatar>{post.author}
-                          </div>
-                          <div className={cx('flex1','postCardFooterRight')}>
-                            <MdDateRange/>
-                            {moment(post.created).format('LL')}
-                            <br/>
-                            <MdRemoveRedEye/>
-                            {post.viewer}
-                            <MdComment/>
-                            <CommentCount className={cx('disqusCount')} shortname={disqusShortname} config={disqusConfig}>
-                              0
-                            </CommentCount>
-                          </div>
-                        </div>
-                      </CardText>
-                    </Card>
-                  </GridTile>
-                </Paper>);
-            }}
-          </Motion>);
-      })}
-    </StackGrid>
+      <div>
+        {posts.map((post, i)=>{
+          let text = post.text?post.text.length > 100 ? post.text.substr(0,100) + '...' : post.text : '';
+          return(
+            <div key={i}>
+              <div className={cx('listContainer')}>
+                <div 
+                  className={cx('thumbnailContainer')} 
+                  onTouchTap={ () => this.handlePostClick(post._id)}
+                  onMouseEnter={()=>{this.handleHover(i);}}
+                  onMouseLeave={()=>{this.handleHover(false);}}>
+                  <Motion {...this.getPostSpringProps(i)}>
+                    {interpolatingStyle => {
+                      const {scale} = interpolatingStyle;
+                      let style = {
+                        transform: 'scale(' + scale + ')',
+                        verticalAlign: 'middle',
+                      };
+                      return <img className={cx('thumbnail')} style={style} src={post.thumbnail? thumbnailPath + post.thumbnail : DEFAULT_IMAGE } onError={(e)=>e.target.src = DEFAULT_IMAGE} />
+                    }}
+                  </Motion>
+                </div>
+                <div className={cx('contentsContainer')}>
+                  <div className={cx('categoryContainer')}>
+                    <div>
+                      <span className={cx('category-text')} onTouchTap={()=>this.handleCategoryClick(post.category)}>{post.category}</span>
+                    </div>
+                  </div>
+                  <div className={cx('title')}>
+                    <span onTouchTap={ () => this.handlePostClick(post._id)}>{post.title}</span>
+                    </div>
+                  <div className={cx('contents')}>
+                    <span onTouchTap={ () => this.handlePostClick(post._id)}>{text}</span>
+                  </div>
+                  <div className={cx('created-text')}>
+                    {moment(post.created).format('LL')}
+                  </div>
+                </div>
+              </div>
+              <div className={cx('divider')}/>
+            </div>
+          );
+        })}
+      </div>
     );
   }
   renderMobile = (posts) => {

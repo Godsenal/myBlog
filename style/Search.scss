@@ -148,3 +148,28 @@ $desktop-span-size: 26px;
   margin: 3% 0;
   color: $secondary-color;
 }
+
+.mini-search-container{
+  width: 100%;
+}
+
+.mini-input{
+  width: 100%;
+  z-index: 3;
+  font-family: 'Ubuntu', 'Nanum Gothic', serif;
+  text-align: left;
+  background-color: rgb(51, 55, 69);
+  color: white;
+  font-size: 16px;
+  line-height: 1;
+  vertical-align: baseline;
+  border: 0;
+  border-radius: 5px;
+  padding: 1em 1em;
+  outline: 0;
+  -webkit-appearance: none;
+  &:focus{
+    outline: 0;
+    -webkit-appearance: none;
+  }
+}

@@ -2,9 +2,8 @@ import React,{Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
+
 import axios from 'axios';
-
-
 import ReactQuill, {Quill} from 'react-quill';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -30,6 +29,7 @@ const thumbnailPath = '/assets/posts/thumbnails/';
 var Font = Quill.import('formats/font');
 Font.whitelist = [false,'serif','monospace','nanumgothic','nanumgothiceb','roboto','robotoblack'];
 Quill.register(Font, true);
+
 
 class PostEdit extends Component {
 
@@ -577,7 +577,6 @@ class PostEdit extends Component {
             formats={this.formats}
             value={this.state.content}
             onChange={this.handleContentChange} >
-            <div className={styles.editorContainer}/>
           </ReactQuill>
           <div>
             {this.renderTag()}

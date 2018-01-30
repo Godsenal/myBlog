@@ -379,17 +379,17 @@ class Sidebar extends Component{
     return(
       <Drawer
         containerClassName={styles.font}
-        width={this.props.isMobile?300:400}
+        width={this.props.isMobile?300:250}
         docked={!this.props.isMobile}
         onRequestChange={this.props.isMobile? this.props.toggleSidebar:null}
-        openSecondary={true}
+        openSecondary={this.props.isMobile?true:false}
         open={this.props.open || !this.props.isMobile}
         containerStyle={{'backgroundColor':'#333745'}}
         style={{'textAlign':'center'}}>
-        <div style={{'fontSize':'2em','margin':'3rem','textAlign':'center','display':'block'}}>
+        <div style={{'fontSize':'2em','margin':'3rem 1rem','textAlign':'center','display':'block'}}>
           <span className={cx('header','headerText')} onClick={this.handleHeaderClick}>{this.props.title}</span>
         </div>
-        <Divider inset={true} style={{'margin':'3rem'}} />
+        <div style={{background: '#E0E0E0', height: 1, width: '80%', margin:'3rem auto'}} />
         {list.categories.map((category,i)=>{
           if(!category.path){
             return (
@@ -397,7 +397,7 @@ class Sidebar extends Component{
                 key={i}
                 hoverColor={hoverColor}
                 open={this.props.status.valid?true:null}
-                innerDivStyle={{padding:'16px'}}
+                innerDivStyle={{padding:'16px 12px'}}
                 rightIconButton={this.props.status.valid?this.renderRightIconBtn(category):null}
                 onTouchTap={()=>{this.handleSelectCategory(category); }}
                 nestedItems={

@@ -189,7 +189,9 @@ class Post extends Component{
                     toggleSearchModal={this.props.toggleSearchModal}/>
                 </div>:null}
             </div>
-            <Divider style={{'marginTop':'1.5rem', 'marginBottom':'1.5rem'}} />
+            <div style={{padding: '0 1rem'}}>
+              <Divider style={{'marginTop':'1.5rem', 'marginBottom':'1.5rem'}} />
+            </div>
             {this.state.isInit?null:list.status == 'SUCCESS'&&posts.length>0 ?
               <PostList
                 handlePostClick={this.handlePostClick}

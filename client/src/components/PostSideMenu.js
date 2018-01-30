@@ -26,23 +26,25 @@ const PostSideMenu = (props) =>{
   const {scrollToTop, handleListClick, scrollToBottom} = props;
 
   return(
-    <Motion {...getSideMenuDefaultStyle()}>
-      {interpolatedStyle =>{
-        let style={
-          transform: 'translateY(-'+interpolatedStyle.translateY+'%)',
-        };
-        return (<div className={styles.fixedSideMenu} style={style}>
-      <span style={{fontSize:'0.5em'}}>MOVE</span><br/>
-      <p className={styles.fixedSideMenuItem}><FaAngleUp onClick={scrollToTop}/></p>
-      <p className={styles.fixedSideMenuItem}><FaListAlt onClick={handleListClick}/></p>
-      <Link to='disqusContainer' spy={true} smooth={true} duration={500}>
-        <FaCommentO className={styles.fixedSideMenuItem}/>
-      </Link>
-      <p className={styles.fixedSideMenuItem}><FaAngleDown onClick={scrollToBottom}/></p>
-    </div>);
-      }
-      }
-    </Motion>
+    <div>
+      <Motion {...getSideMenuDefaultStyle()}>
+        {interpolatedStyle =>{
+          let style={
+            transform: 'translateY(-'+interpolatedStyle.translateY+'%)',
+          };
+          return (<div className={styles.fixedSideMenu} style={style}>
+        <span style={{fontSize:'0.5em'}}>MOVE</span><br/>
+        <p className={styles.fixedSideMenuItem}><FaAngleUp onClick={scrollToTop}/></p>
+        <p className={styles.fixedSideMenuItem}><FaListAlt onClick={handleListClick}/></p>
+        <Link to='disqusContainer' spy={true} smooth={true} duration={500}>
+          <FaCommentO className={styles.fixedSideMenuItem}/>
+        </Link>
+        <p className={styles.fixedSideMenuItem}><FaAngleDown onClick={scrollToBottom}/></p>
+      </div>);
+        }
+        }
+      </Motion>
+    </div>
   );
 };
 

@@ -39,25 +39,20 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use:
-        [
+        use: [
           {
-            loader: 'style-loader'
+            loader: require.resolve('style-loader'),
           },
           {
-            loader: 'css-loader',
-            options:
-            {
-              sourceMap: true
+            loader: require.resolve('css-loader'),
+            options: {
+              importLoaders: 1,
             }
           },
           {
-            loader: 'sass-loader',
-            options:
-            {
-              sourceMap: true
-            }
-          }]
+            loader: require.resolve('sass-loader'),
+          },
+        ]
       }
     ],
   },
